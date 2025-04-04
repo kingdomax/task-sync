@@ -1,3 +1,4 @@
+# -------------------------- Frontend --------------------------
 # Logs
 logs
 *.log
@@ -36,3 +37,97 @@ build
 tsconfig.tsbuildinfo
 .ncurc.js
 knip.jsonc
+# ---------------------------------------------------------------
+
+# -------------------------- Backend ----------------------------
+# Build results
+bin/
+obj/
+[Ll]og/
+*.log
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+*.userprefs
+
+# Auto-generated files
+*.generated.cs
+*.g.cs
+*.g.i.cs
+
+# Backup & crash reports
+*.bak
+*.orig
+*.tmp
+
+# ASP.NET specific
+project.lock.json
+project.fragment.lock.json
+artifacts/
+App_Data/
+App_Start/
+Generated_Code/
+BundleConfig.cs
+packages/
+*.dbmdl
+*.pdb
+
+# IIS Express
+.vs/
+.idea/
+.vscode/
+*.vspscc
+*.vssscc
+*.cache
+*.dbmdl
+*.dbproj.schemaview
+
+# Rider
+.idea/
+
+# .NET Core
+project.assets.json
+project.nuget.cache
+*.deps.json
+*.runtimeconfig.json
+*.runtimeconfig.dev.json
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+*.nuspec
+*.psmdcp
+*.symbols.nupkg
+packages/
+.nuget/
+
+# Microsoft Visual Studio Code
+.vscode/
+
+# Local test results
+TestResults/
+*.coverage
+*.coveragexml
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Resharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# dotCover
+*.dotCover
+
+# logs
+*.log
+logs/
+
+# .NET 8 SDK-specific
+*.tsbuildinfo
+*.net8.*
+# ---------------------------------------------------------------
