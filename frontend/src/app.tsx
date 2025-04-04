@@ -13,47 +13,47 @@ import { Iconify } from 'src/components/iconify';
 // ----------------------------------------------------------------------
 
 type AppProps = {
-  children: React.ReactNode;
+    children: React.ReactNode;
 };
 
 export default function App({ children }: AppProps) {
-  useScrollToTop();
+    useScrollToTop();
 
-  const githubButton = () => (
-    <Fab
-      size="medium"
-      aria-label="Github"
-      href="https://github.com/minimal-ui-kit/material-kit-react"
-      sx={{
-        zIndex: 9,
-        right: 20,
-        bottom: 20,
-        width: 48,
-        height: 48,
-        position: 'fixed',
-        bgcolor: 'grey.800',
-      }}
-    >
-      <Iconify width={24} icon="socials:github" sx={{ '--color': 'white' }} />
-    </Fab>
-  );
+    const githubButton = () => (
+        <Fab
+            size="medium"
+            aria-label="Github"
+            href="https://github.com/minimal-ui-kit/material-kit-react"
+            sx={{
+                zIndex: 9,
+                right: 20,
+                bottom: 20,
+                width: 48,
+                height: 48,
+                position: 'fixed',
+                bgcolor: 'grey.800',
+            }}
+        >
+            <Iconify width={24} icon="socials:github" sx={{ '--color': 'white' }} />
+        </Fab>
+    );
 
-  return (
-    <ThemeProvider>
-      {children}
-      {githubButton()}
-    </ThemeProvider>
-  );
+    return (
+        <ThemeProvider>
+            {children}
+            {githubButton()}
+        </ThemeProvider>
+    );
 }
 
 // ----------------------------------------------------------------------
 
 function useScrollToTop() {
-  const pathname = usePathname();
+    const pathname = usePathname();
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
 
-  return null;
+    return null;
 }

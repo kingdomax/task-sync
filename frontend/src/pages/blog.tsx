@@ -6,11 +6,11 @@ import { BlogView } from 'src/sections/blog/view';
 // ----------------------------------------------------------------------
 
 export default function Page() {
-  return (
-    <>
-      <title>{`Blog - ${CONFIG.appName}`}</title>
+    return (
+        <>
+            <title>{`Blog - ${CONFIG.appName}`}</title>
 
-      <BlogView posts={_posts} />
-    </>
-  );
+            <BlogView posts={_posts} />
+        </>
+    );
 }

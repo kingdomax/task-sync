@@ -17,87 +17,89 @@ import { Scrollbar } from 'src/components/scrollbar';
 // ----------------------------------------------------------------------
 
 type Props = CardProps & {
-  title?: string;
-  subheader?: string;
-  list: {
-    id: string;
-    title: string;
-    coverUrl: string;
-    description: string;
-    postedAt: string | number | null;
-  }[];
+    title?: string;
+    subheader?: string;
+    list: {
+        id: string;
+        title: string;
+        coverUrl: string;
+        description: string;
+        postedAt: string | number | null;
+    }[];
 };
 
 export function AnalyticsNews({ title, subheader, list, sx, ...other }: Props) {
-  return (
-    <Card sx={sx} {...other}>
-      <CardHeader title={title} subheader={subheader} sx={{ mb: 1 }} />
+    return (
+        <Card sx={sx} {...other}>
+            <CardHeader title={title} subheader={subheader} sx={{ mb: 1 }} />
 
-      <Scrollbar sx={{ minHeight: 405 }}>
-        <Box sx={{ minWidth: 640 }}>
-          {list.map((item) => (
-            <Item key={item.id} item={item} />
-          ))}
-        </Box>
-      </Scrollbar>
+            <Scrollbar sx={{ minHeight: 405 }}>
+                <Box sx={{ minWidth: 640 }}>
+                    {list.map((item) => (
+                        <Item key={item.id} item={item} />
+                    ))}
+                </Box>
+            </Scrollbar>
 
-      <Box sx={{ p: 2, textAlign: 'right' }}>
-        <Button
-          size="small"
-          color="inherit"
-          endIcon={<Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />}
-        >
-          View all
-        </Button>
-      </Box>
-    </Card>
-  );
+            <Box sx={{ p: 2, textAlign: 'right' }}>
+                <Button
+                    size="small"
+                    color="inherit"
+                    endIcon={
+                        <Iconify icon="eva:arrow-ios-forward-fill" width={18} sx={{ ml: -0.5 }} />
+                    }
+                >
+                    View all
+                </Button>
+            </Box>
+        </Card>
+    );
 }
 
 // ----------------------------------------------------------------------
 
 type ItemProps = BoxProps & {
-  item: Props['list'][number];
+    item: Props['list'][number];
 };
 
 function Item({ item, sx, ...other }: ItemProps) {
-  return (
-    <Box
-      sx={[
-        (theme) => ({
-          py: 2,
-          px: 3,
-          gap: 2,
-          display: 'flex',
-          alignItems: 'center',
-          borderBottom: `dashed 1px ${theme.vars.palette.divider}`,
-        }),
-        ...(Array.isArray(sx) ? sx : [sx]),
-      ]}
-      {...other}
-    >
-      <Avatar
-        variant="rounded"
-        alt={item.title}
-        src={item.coverUrl}
-        sx={{ width: 48, height: 48, flexShrink: 0 }}
-      />
+    return (
+        <Box
+            sx={[
+                (theme) => ({
+                    py: 2,
+                    px: 3,
+                    gap: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    borderBottom: `dashed 1px ${theme.vars.palette.divider}`,
+                }),
+                ...(Array.isArray(sx) ? sx : [sx]),
+            ]}
+            {...other}
+        >
+            <Avatar
+                variant="rounded"
+                alt={item.title}
+                src={item.coverUrl}
+                sx={{ width: 48, height: 48, flexShrink: 0 }}
+            />
 
-      <ListItemText
-        primary={<Link color="inherit">{item.title}</Link>}
-        secondary={item.description}
-        slotProps={{
-          primary: { noWrap: true },
-          secondary: {
-            noWrap: true,
-            sx: { mt: 0.5 },
-          },
-        }}
-      />
+            <ListItemText
+                primary={<Link color="inherit">{item.title}</Link>}
+                secondary={item.description}
+                slotProps={{
+                    primary: { noWrap: true },
+                    secondary: {
+                        noWrap: true,
+                        sx: { mt: 0.5 },
+                    },
+                }}
+            />
 
-      <Box sx={{ flexShrink: 0, typography: 'caption', color: 'text.disabled' }}>
-        {fToNow(item.postedAt)}
-      </Box>
-    </Box>
-  );
+            <Box sx={{ flexShrink: 0, typography: 'caption', color: 'text.disabled' }}>
+                {fToNow(item.postedAt)}
+            </Box>
+        </Box>
+    );
 }

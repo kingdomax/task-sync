@@ -9,21 +9,21 @@ import { ErrorBoundary } from './routes/components';
 // ----------------------------------------------------------------------
 
 const router = createBrowserRouter([
-  {
-    Component: () => (
-      <App>
-        <Outlet />
-      </App>
-    ),
-    errorElement: <ErrorBoundary />,
-    children: routesSection,
-  },
+    {
+        Component: () => (
+            <App>
+                <Outlet />
+            </App>
+        ),
+        errorElement: <ErrorBoundary />,
+        children: routesSection,
+    },
 ]);
 
 const root = createRoot(document.getElementById('root')!);
 
 root.render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>
+    <StrictMode>
+        <RouterProvider router={router} />
+    </StrictMode>
 );

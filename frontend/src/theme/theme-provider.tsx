@@ -11,18 +11,18 @@ import type { ThemeOptions } from './types';
 // ----------------------------------------------------------------------
 
 export type ThemeProviderProps = Partial<MuiThemeProviderProps> & {
-  themeOverrides?: ThemeOptions;
+    themeOverrides?: ThemeOptions;
 };
 
 export function ThemeProvider({ themeOverrides, children, ...other }: ThemeProviderProps) {
-  const theme = createTheme({
-    themeOverrides,
-  });
+    const theme = createTheme({
+        themeOverrides,
+    });
 
-  return (
-    <ThemeVarsProvider disableTransitionOnChange theme={theme} {...other}>
-      <CssBaseline />
-      {children}
-    </ThemeVarsProvider>
-  );
+    return (
+        <ThemeVarsProvider disableTransitionOnChange theme={theme} {...other}>
+            <CssBaseline />
+            {children}
+        </ThemeVarsProvider>
+    );
 }
