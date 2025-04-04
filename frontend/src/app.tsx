@@ -10,11 +10,7 @@ import { ThemeProvider } from 'src/theme/theme-provider';
 
 import { Iconify } from 'src/components/iconify';
 
-// ----------------------------------------------------------------------
-
-type AppProps = {
-    children: React.ReactNode;
-};
+type AppProps = { children: React.ReactNode };
 
 export default function App({ children }: AppProps) {
     useScrollToTop();
@@ -23,7 +19,7 @@ export default function App({ children }: AppProps) {
         <Fab
             size="medium"
             aria-label="Github"
-            href="https://github.com/minimal-ui-kit/material-kit-react"
+            href="https://github.com/kingdomax/task-sync"
             sx={{
                 zIndex: 9,
                 right: 20,
@@ -45,8 +41,6 @@ export default function App({ children }: AppProps) {
         </ThemeProvider>
     );
 }
-
-// ----------------------------------------------------------------------
 
 function useScrollToTop() {
     const pathname = usePathname();

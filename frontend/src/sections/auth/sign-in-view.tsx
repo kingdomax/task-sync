@@ -13,8 +13,6 @@ import { useRouter } from 'src/routes/hooks';
 
 import { Iconify } from 'src/components/iconify';
 
-// ----------------------------------------------------------------------
-
 export function SignInView() {
     const router = useRouter();
 
@@ -43,9 +41,11 @@ export function SignInView() {
                 }}
             />
 
+            {/*
             <Link variant="body2" color="inherit" sx={{ mb: 1.5 }}>
                 Forgot password?
             </Link>
+            */}
 
             <TextField
                 fullWidth
