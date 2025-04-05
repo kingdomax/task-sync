@@ -13,14 +13,32 @@ import { useRouter } from 'src/routes/hooks';
 
 import { Iconify } from 'src/components/iconify';
 
+interface TestResponse {
+    message: string;
+}
+
 export function SignInView() {
     const router = useRouter();
 
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleSignIn = useCallback(() => {
-        router.push('/');
-    }, [router]);
+    //const handleSignIn = useCallback(() => {
+    //    router.push('/');
+    //}, [router]);
+
+    const handleSignIn = async () => {
+        const response: any = await fetch('https://localhost:7126/Authentication/Test', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: 888, name: 'Hiiiii' }),
+        });
+
+        const data: TestResponse = await response.json();
+
+        alert(data.message);
+    };
 
     const renderForm = (
         <Box
@@ -34,7 +52,7 @@ export function SignInView() {
                 fullWidth
                 name="email"
                 label="Email address"
-                defaultValue="hello@gmail.com"
+                defaultValue="admin@tasksync.com"
                 sx={{ mb: 3 }}
                 slotProps={{
                     inputLabel: { shrink: true },
@@ -51,7 +69,7 @@ export function SignInView() {
                 fullWidth
                 name="password"
                 label="Password"
-                defaultValue="@demo1234"
+                defaultValue="admin"
                 type={showPassword ? 'text' : 'password'}
                 slotProps={{
                     inputLabel: { shrink: true },
