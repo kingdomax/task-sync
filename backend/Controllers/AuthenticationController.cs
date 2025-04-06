@@ -1,6 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
 using TaskSync.Models.Request;
-using TaskSync.Models.Response;
+using Microsoft.AspNetCore.Mvc;
+using TaskSync.Services.Interfaces;
+using TaskSync.ActionFilterAttributes;
+using Microsoft.EntityFrameworkCore;
+using TaskSync.Repositories;
 
 namespace TaskSync.Controllers
 {
@@ -8,17 +11,21 @@ namespace TaskSync.Controllers
     [Route("[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        //private readonly IAuthenticationService _authenticationService;
+        private readonly IUserService _userService;
 
-        public AuthenticationController()
+        public AuthenticationController(IUserService userService)
         {
-            //_authenticationService = authenticationService;
+            _userService = userService;
         }
 
         [HttpPost("Test")]
-        public IActionResult Test([FromBody] TestRequest request)
+        [ValidateRequest]
+        public async Task<IActionResult> Test([FromBody] TestRequest request)
         {
-            var result = request != null ? new TestResponse(request.Name + request.Id) : null;
+            Console.WriteLine("AuthenticationController/Test");
+            
+            var result = await _userService.GetUserAsync();
+
             return Ok(result);
         }
     }

@@ -14,7 +14,7 @@ import { useRouter } from 'src/routes/hooks';
 import { Iconify } from 'src/components/iconify';
 
 interface TestResponse {
-    message: string;
+    username: string;
 }
 
 export function SignInView() {
@@ -37,7 +37,7 @@ export function SignInView() {
 
         const data: TestResponse = await response.json();
 
-        alert(data.message);
+        alert(data.username);
     };
 
     const renderForm = (
