@@ -1,0 +1,42 @@
+version: "3.8" # Compose file version (use 3.8 for modern compatibility)
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: tasksync-postgres
+    restart: always # Restart container automatically if it crashes or after reboot
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456789
+      POSTGRES_DB: tasksync # Database name to auto-create
+    volumes:
+      - pgdata:/var/lib/postgresql/data # Persist Postgres data outside the container
+
+  backend:
+    build:
+      context: ./backend # Use Dockerfile in the ./backend directory
+    container_name: tasksync-backend
+    restart: always
+    ports:
+      - "5070:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=tasksync;Username=postgres;Password=123456789
+        # Use double underscore (__) to map to nested JSON config keys, use internal docker port 5432 for Postgres
+    depends_on:
+      - postgres # Start Postgres first
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: tasksync-frontend
+    restart: always
+    ports:
+      - "3039:80"
+    depends_on:
+      - backend # Ensure backend is up before serving frontend
+
+volumes:
+  pgdata: # Named volume to store Postgres data (managed by Docker)

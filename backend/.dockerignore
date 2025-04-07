@@ -1,0 +1,11 @@
+bin/
+obj/
+.vs/
+*.user
+*.suo
+*.dll
+*.pdb
+.env
+Dockerfile
+*.md
+.git

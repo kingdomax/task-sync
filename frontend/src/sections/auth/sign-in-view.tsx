@@ -27,7 +27,7 @@ export function SignInView() {
     //}, [router]);
 
     const handleSignIn = async () => {
-        const response: any = await fetch('https://localhost:7126/Authentication/Test', {
+        const response: any = await fetch('http://localhost:5070/Authentication/Test', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
