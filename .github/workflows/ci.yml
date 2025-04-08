@@ -25,6 +25,9 @@ jobs: # Define the jobs (units of work) to run in parallel or series
       - name: Build backend
         run: dotnet build ./backend --configuration Release
 
+      - name: Docker build backend image # Build Docker image from ./backend/Dockerfile
+        run: docker build -t tasksync-backend ./backend
+
   build-frontend:
     name: Build Frontend #
     runs-on: ubuntu-latest
@@ -44,3 +47,6 @@ jobs: # Define the jobs (units of work) to run in parallel or series
       - name: Build frontend
         run: npm run build
         working-directory: ./frontend
+
+      - name: Docker build frontend image
+        run: docker build -t tasksync-frontend ./frontend
