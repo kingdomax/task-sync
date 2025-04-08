@@ -1,0 +1,46 @@
+name: Build & Dockerize
+
+on: # When this workflow should run
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs: # Define the jobs (units of work) to run in parallel or series
+  build-backend: # Job ID for the backend build
+    name: Build Backend
+    runs-on: ubuntu-latest
+    steps: # List of actions (steps) in this job
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3 # Install .NET SDK 8.0.x
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore backend dependencies
+        run: dotnet restore ./backend
+
+      - name: Build backend
+        run: dotnet build ./backend --configuration Release
+
+  build-frontend:
+    name: Build Frontend #
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js # Install Node.js (you use 22.1.4)
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.1.4
+
+      - name: Install dependencies
+        run: npm ci # (ci = clean install)
+        working-directory: ./frontend # Set working dir to your frontend folder
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: ./frontend
