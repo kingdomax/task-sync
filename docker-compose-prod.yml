@@ -1,0 +1,39 @@
+version: "3.8" # Base file for production (Docker Hub pulls)
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: tasksync-postgres
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456789
+      POSTGRES_DB: tasksync
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    image: kingdomax/tasksync-backend:latest
+    container_name: tasksync-backend
+    restart: always
+    ports:
+      - "5070:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=tasksync;Username=postgres;Password=123456789
+    depends_on:
+      - postgres
+
+  frontend:
+    image: kingdomax/tasksync-frontend:latest
+    container_name: tasksync-frontend
+    restart: always
+    ports:
+      - "3039:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
