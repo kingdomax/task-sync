@@ -14,7 +14,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
                 "http://localhost:3039",  // Dev
-                "https://tasksync.com"    // Production
+                "http://131.189.90.113:3039"    // Production
         )
         .AllowAnyHeader()
         .AllowAnyMethod();
