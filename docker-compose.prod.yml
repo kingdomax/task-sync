@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:17
     container_name: tasksync-postgres
-    restart: always
+    restart: always # Restart container automatically if it crashes or after reboot
     ports:
       - "5433:5432"
     environment:

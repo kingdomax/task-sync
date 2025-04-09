@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:17
     container_name: tasksync-postgres
-    restart: always # Restart container automatically if it crashes or after reboot
+    restart: on-failure # Restart container automatically if it crashes
     ports:
       - "5433:5432"
     environment:
@@ -18,7 +18,7 @@ services:
     build:
       context: ./backend # Use Dockerfile in the ./backend directory
     container_name: tasksync-backend
-    restart: always
+    restart: on-failure
     ports:
       - "5070:8080"
     environment:
@@ -32,7 +32,7 @@ services:
     build:
       context: ./frontend
     container_name: tasksync-frontend
-    restart: always
+    restart: on-failure
     ports:
       - "3039:80"
     depends_on:
