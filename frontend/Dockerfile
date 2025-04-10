@@ -19,11 +19,14 @@ RUN npm run build
 # 7. Use Nginx to serve the static frontend files
 FROM nginx:alpine
 
-# 8. Copy build files from builder to Nginx's web root
+# 8. Add your custom Nginx config
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+
+# 9. Copy build files from builder to Nginx's web root
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# 9. Expose port 80 (Nginx default)
+# 10. Expose port 80 (Nginx default)
 EXPOSE 80
 
-# 10. Start Nginx when the container runs
+# 11. Start Nginx when the container runs
 CMD ["nginx", "-g", "daemon off;"]
