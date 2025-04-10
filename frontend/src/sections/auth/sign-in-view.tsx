@@ -11,6 +11,8 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import { useRouter } from 'src/routes/hooks';
 
+import { getApiUrl } from 'src/utils/env';
+
 import { Iconify } from 'src/components/iconify';
 
 interface TestResponse {
@@ -27,7 +29,7 @@ export function SignInView() {
     //}, [router]);
 
     const handleSignIn = async () => {
-        const response: any = await fetch('http://localhost:5070/Authentication/Test', {
+        const response: any = await fetch(`${getApiUrl()}/Authentication/Test`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
