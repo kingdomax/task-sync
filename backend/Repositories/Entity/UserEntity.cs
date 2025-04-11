@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace TaskSync.Repositories.Entity
+﻿namespace TaskSync.Repositories.Entity
 {
     public class UserEntity
     {
@@ -9,5 +7,6 @@ namespace TaskSync.Repositories.Entity
         public required string Firstname { get; set; }
         public required string Lastname { get; set; }
         public required string Email { get; set; }
+        public required string Password { get; set; }
     }
 }

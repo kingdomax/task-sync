@@ -3,12 +3,13 @@ using TaskSync.Repositories;
 using TaskSync.Repositories.Entity;
 using TaskSync.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using TaskSync.Repositories.Interfaces;
 
 namespace TaskSync.Configurations
 {
-    public static class DiInjectionConfiguration
+    public static class DiRegisterConfiguration
     {
-        public static IServiceCollection AddDiInjections(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection RegisterDependecies(this IServiceCollection services, IConfiguration configuration)
         {
             // DbContext
             services.AddDbContext<AppDbContext>(options =>
@@ -19,7 +20,9 @@ namespace TaskSync.Configurations
             services.AddScoped<IRepository<UserEntity>, UserRepository>();
 
             // Services
+            services.AddSingleton<IJwtService, JwtService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             return services;
         }

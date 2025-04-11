@@ -1,5 +1,6 @@
 ﻿using TaskSync.Repositories.Entity;
 using Microsoft.EntityFrameworkCore;
+using TaskSync.Repositories.Interfaces;
 
 namespace TaskSync.Repositories
 {
@@ -13,11 +14,10 @@ namespace TaskSync.Repositories
         {
             return await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == 1);
         }
-    }
 
-    // Segregate interface pattern (SOLID)
-    public interface IRepository<T>
-    {
-        public Task<T?> GetAsync();
+        public async Task<UserEntity?> GetAsync(string email)
+        {
+            return await _dbContext.Users.SingleOrDefaultAsync(x => x.Email == email);
+        }
     }
 }

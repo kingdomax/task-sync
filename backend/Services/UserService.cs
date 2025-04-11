@@ -1,7 +1,7 @@
 ﻿using TaskSync.Repositories.Entity;
-using TaskSync.Repositories;
 using TaskSync.Services.Interfaces;
 using TaskSync.Models;
+using TaskSync.Repositories.Interfaces;
 
 namespace TaskSync.Services
 {
@@ -16,9 +16,20 @@ namespace TaskSync.Services
 
         public async Task<User?> GetUserAsync()
         {
-            var userDto = await _userRepository.GetAsync();
+            var userEntity = await _userRepository.GetAsync();
 
-            return userDto != null ? new User(userDto.Username, userDto.Firstname, userDto.Lastname, userDto.Email) : null;
+            return userEntity != null 
+                    ? new User(userEntity.Id, userEntity.Username, userEntity.Firstname, userEntity.Lastname, userEntity.Email, userEntity.Password)
+                    : null;
+        }
+
+        public async Task<User?> GetUserAsync(string email)
+        {
+            var userEntity = await _userRepository.GetAsync(email);
+
+            return userEntity != null
+                    ? new User(userEntity.Id, userEntity.Username, userEntity.Firstname, userEntity.Lastname, userEntity.Email, userEntity.Password)
+                    : null;
         }
     }
 }

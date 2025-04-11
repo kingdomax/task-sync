@@ -2,31 +2,57 @@ using TaskSync.Models.Request;
 using Microsoft.AspNetCore.Mvc;
 using TaskSync.Services.Interfaces;
 using TaskSync.ActionFilterAttributes;
-using Microsoft.EntityFrameworkCore;
-using TaskSync.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace TaskSync.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/auth")]
     public class AuthenticationController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IAuthenticationService _authenticationService;
 
-        public AuthenticationController(IUserService userService)
+        public AuthenticationController(IUserService userService, IAuthenticationService authenticationService)
         {
             _userService = userService;
+            _authenticationService = authenticationService;
         }
 
-        [HttpPost("Test")]
         [ValidateRequest]
+        [HttpPost("test")]
         public async Task<IActionResult> Test([FromBody] TestRequest request)
         {
-            Console.WriteLine("AuthenticationController/Test");
-            
+            Console.WriteLine("In auth/test controller");
+
             var result = await _userService.GetUserAsync();
 
             return Ok(result);
+        }
+
+        [ValidateRequest]
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        {
+            var token = await _authenticationService.Authenticate(request);
+            return token != null ? Ok(new { token }) : Unauthorized("Invalid credentials");
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public IActionResult Me()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var email = User.FindFirstValue(ClaimTypes.Email); 
+
+            return Ok(new
+            {
+                userId,
+                email
+            });
         }
     }
 }
