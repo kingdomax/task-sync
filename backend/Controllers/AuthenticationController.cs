@@ -1,10 +1,9 @@
+using System.Security.Claims;
 using TaskSync.Models.Request;
 using Microsoft.AspNetCore.Mvc;
 using TaskSync.Services.Interfaces;
 using TaskSync.ActionFilterAttributes;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace TaskSync.Controllers
 {
@@ -26,7 +25,7 @@ namespace TaskSync.Controllers
         [HttpPost("test")]
         public async Task<IActionResult> Test([FromBody] TestRequest request)
         {
-            Console.WriteLine("In auth/test controller");
+            Console.WriteLine("In 'auth/test' controller");
 
             var result = await _userService.GetUserAsync();
 
