@@ -1,4 +1,5 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+
 import { SignInView } from './sign-in-view';
 
 jest.mock('src/utils/auth-token', () => ({
