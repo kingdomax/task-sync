@@ -1,84 +1,88 @@
-name: CI Build & Docker Push
+name: CI Build & Run Tests & Docker Push
 
 on: # When this workflow should run
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+    push:
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
 
 jobs: # Define the jobs (units of work) to run in parallel or series
-  build-backend: # Job ID for the backend build
-    name: 🧪 Build Backend
-    runs-on: ubuntu-latest
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v3
+    build-backend: # Job ID for the backend build
+        name: 🧪 Build Backend
+        runs-on: ubuntu-latest
+        steps:
+            - name: 📥 Checkout code
+              uses: actions/checkout@v3
 
-      - name: 🧰 Setup .NET 8 # Install .NET SDK 8.0.x
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 8.0.x
+            - name: 🧰 Setup .NET 8 # Install .NET SDK 8.0.x
+              uses: actions/setup-dotnet@v3
+              with:
+                  dotnet-version: 8.0.x
 
-      - name: 🔧 Restore backend dependencies
-        run: dotnet restore ./backend
+            - name: 🔧 Restore backend dependencies
+              run: dotnet restore ./backend
 
-      - name: 🛠 Build backend
-        run: dotnet build ./backend --configuration Release
+            - name: 🛠 Build backend
+              run: dotnet build ./backend --configuration Release
 
-  build-frontend: # Job ID for the frontend build
-    name: 🧪 Build Frontend
-    runs-on: ubuntu-latest
+    build-frontend: # Job ID for the frontend build
+        name: 🧪 Build Frontend
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v3
+        steps:
+            - name: 📥 Checkout code
+              uses: actions/checkout@v3
 
-      - name: 🧰 Setup Node.js # Install Node.js 22.1.4
-        uses: actions/setup-node@v3
-        with:
-          node-version: 22.14.0
+            - name: 🧰 Setup Node.js # Install Node.js 22.1.4
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 22.14.0
 
-      - name: 📦 Install dependencies
-        run: npm ci # (ci = clean install)
-        working-directory: ./frontend # Set working dir to your frontend folder
+            - name: 📦 Install dependencies
+              run: npm ci # (ci = clean install)
+              working-directory: ./frontend # Set working dir to your frontend folder
 
-      - name: 🛠 Build frontend
-        run: npm run build
-        working-directory: ./frontend
+            - name: 🧪 Run unit tests
+                run: npm test
+                working-directory: ./frontend
 
-  docker-push:
-    name: 🐳 Docker Build & Push
-    runs-on: ubuntu-latest
-    needs: [build-backend, build-frontend] # Wait for both to pass
-    if: github.event_name == 'push'
+            - name: 🛠 Build frontend
+              run: npm run build
+              working-directory: ./frontend
 
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v3
+    docker-push:
+        name: 🐳 Docker Build & Push
+        runs-on: ubuntu-latest
+        needs: [build-backend, build-frontend] # Wait for both to pass
+        if: github.event_name == 'push'
 
-      - name: 🔐 Docker login to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        steps:
+            - name: 📥 Checkout code
+              uses: actions/checkout@v3
 
-      - name: 🐳 Build and tag backend image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest ./backend
-          docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.sha }}
-          docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.ref_name }}
+            - name: 🔐 Docker login to Docker Hub
+              run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: 🚀 Push backend image
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.sha }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.ref_name }}
+            - name: 🐳 Build and tag backend image
+              run: |
+                  docker build -t ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest ./backend
+                  docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.sha }}
+                  docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.ref_name }}
 
-      - name: 🐳 Build and tag frontend image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest ./frontend
-          docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.sha }}
-          docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.ref_name }}
+            - name: 🚀 Push backend image
+              run: |
+                  docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest
+                  docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.sha }}
+                  docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.ref_name }}
 
-      - name: 🚀 Push frontend image
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.sha }}
-          docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.ref_name }}
+            - name: 🐳 Build and tag frontend image
+              run: |
+                  docker build -t ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest ./frontend
+                  docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.sha }}
+                  docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.ref_name }}
+
+            - name: 🚀 Push frontend image
+              run: |
+                  docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest
+                  docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.sha }}
+                  docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.ref_name }}

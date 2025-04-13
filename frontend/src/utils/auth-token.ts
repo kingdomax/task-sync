@@ -1,5 +1,5 @@
-const TOKEN_KEY: string = 'authToken';
-const EXPIRATION_KEY: string = 'authTokenExpiration';
+export const TOKEN_KEY: string = 'authToken';
+export const EXPIRATION_KEY: string = 'authTokenExpiration';
 
 export const setAuthToken = (token: string): void => {
     const expiresIn = 3 * 60 * 60 * 1000; // 3 hour in milliseconds
