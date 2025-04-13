@@ -6,7 +6,7 @@ import {
     EXPIRATION_KEY,
 } from './auth-token';
 
-describe('', () => {
+describe('auth-token.ts', () => {
     beforeEach(() => {
         localStorage.clear();
         jest.useFakeTimers(); // to control time

@@ -61,7 +61,7 @@ jobs: # Define the jobs (units of work) to run in parallel or series
               uses: dorny/test-reporter@v1
               if: always()
               with:
-                  name: Frontend Tests
+                  name: Jest Test Report
                   path: frontend/test-results/jest/results.xml
                   reporter: jest-junit
 
