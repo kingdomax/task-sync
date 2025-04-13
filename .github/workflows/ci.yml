@@ -1,10 +1,14 @@
-name: Run Tests > Build > Push Docker Image
+name: CI/CD
 
 on: # When this workflow should run
     push:
         branches: ["main"]
     pull_request:
         branches: ["main"]
+
+permissions: # Grant proper permissions
+    checks: write
+    contents: read
 
 jobs: # Define the jobs (units of work) to run in parallel or series
     build-backend: # Job ID for the backend build
