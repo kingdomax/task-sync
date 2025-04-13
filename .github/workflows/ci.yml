@@ -43,8 +43,8 @@ jobs: # Define the jobs (units of work) to run in parallel or series
               working-directory: ./frontend # Set working dir to your frontend folder
 
             - name: 🧪 Run unit tests
-                run: npm test
-                working-directory: ./frontend
+              run: npm run test
+              working-directory: ./frontend
 
             - name: 🛠 Build frontend
               run: npm run build
