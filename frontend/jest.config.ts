@@ -13,4 +13,14 @@ export default {
     clearMocks: true,
     resetModules: true,
     restoreMocks: true,
+    reporters: [
+        'default',
+        [
+            'jest-junit',
+            {
+                outputDirectory: 'test-results/jest',
+                outputName: 'results.xml',
+            },
+        ],
+    ],
 };

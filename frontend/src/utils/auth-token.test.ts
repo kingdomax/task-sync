@@ -16,14 +16,6 @@ describe('', () => {
         jest.useRealTimers();
     });
 
-    //export const setAuthToken = (token: string): void => {
-    //    const expiresIn = 3 * 60 * 60 * 1000; // 3 hour in milliseconds
-    //    const expirationTime = new Date().getTime() + expiresIn;
-    //
-    //    localStorage.setItem(TOKEN_KEY, token);
-    //    localStorage.setItem(EXPIRATION_KEY, expirationTime.toString());
-    //};
-
     test('setAuthToken should store token and expiration', () => {
         setAuthToken('dummy-token-1');
 
