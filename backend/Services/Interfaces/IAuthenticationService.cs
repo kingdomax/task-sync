@@ -4,6 +4,6 @@ namespace TaskSync.Services.Interfaces
 {
     public interface IAuthenticationService
     {
-        public Task<string?> Authenticate(LoginRequest request);
+        public Task<string?> AuthenticateAsync(LoginRequest request);
     }
 }

@@ -15,7 +15,7 @@ namespace TaskSync.Services
             _userService = userService;
         }
 
-        public async Task<string?> Authenticate(LoginRequest request)
+        public async Task<string?> AuthenticateAsync(LoginRequest request)
         {
             var user = await _userService.GetUserAsync(request.Email);
 

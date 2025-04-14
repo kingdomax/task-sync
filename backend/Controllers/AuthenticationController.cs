@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using TaskSync.Services.Interfaces;
 using TaskSync.ActionFilterAttributes;
 using Microsoft.AspNetCore.Authorization;
+using TaskSync.Models.Response;
 
 namespace TaskSync.Controllers
 {
@@ -36,8 +37,8 @@ namespace TaskSync.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var token = await _authenticationService.Authenticate(request);
-            return token != null ? Ok(new { token }) : Unauthorized("Invalid credentials");
+            var token = await _authenticationService.AuthenticateAsync(request);
+            return token != null ? Ok(new LoginResponse { Token = token }) : Unauthorized("Invalid credentials");
         }
 
         [Authorize]
