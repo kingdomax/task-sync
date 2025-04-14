@@ -133,7 +133,7 @@ jobs: # Define the jobs (units of work) to run in parallel or series
 
             - name: 🐳 Build and tag backend image
               run: |
-                  docker build -t ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest ./backend
+                  docker build -t ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest . -f backend/Dockerfile
                   docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.sha }}
                   docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.ref_name }}
 
