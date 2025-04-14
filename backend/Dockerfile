@@ -1,24 +1,21 @@
 # 1. Use SDK image to build the app
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS builder
-WORKDIR /app
+WORKDIR /src
 
-# 2. Copy .csproj and restore as distinct layers
-COPY *.csproj .
-RUN dotnet restore
-
-# 3. Copy everything else and build
+# 2. Copy the solution file and all project folders
 COPY . .
-RUN dotnet publish -c Release -o out
 
-# 4. Use ASP.NET runtime image to run the app
+# 3. Restore using the .sln file
+RUN dotnet restore backend/TaskSync.sln
+
+# 4. Publish the main app project (TaskSync.csproj)
+WORKDIR /src/backend
+RUN dotnet publish TaskSync.csproj -c Release -o /app/publish
+
+# 5. Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
+COPY --from=builder /app/publish .
 
-# 5. Copy the published app from build stage
-COPY --from=builder /app/out .
-
-# 6. Expose the HTTP port your app runs on (from launchSettings.json it's 5070, but ASP.NET automatically 8080)
 EXPOSE 8080
-
-# 7. Set the entrypoint
 ENTRYPOINT ["dotnet", "TaskSync.dll"]

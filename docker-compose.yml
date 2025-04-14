@@ -14,7 +14,8 @@ services:
 
     backend:
         build:
-            context: ./backend # Use Dockerfile in the ./backend directory
+            context: . #  build from project roo
+            dockerfile: backend/Dockerfile # Use Dockerfile in the ./backend directory
         container_name: tasksync-backend
         restart: on-failure
         ports:
