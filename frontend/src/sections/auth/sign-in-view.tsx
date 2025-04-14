@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
@@ -12,41 +12,46 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { useRouter } from 'src/routes/hooks';
 
 import { getApiUrl } from 'src/utils/env';
+import { setAuthToken } from 'src/utils/auth-token';
 
 import { Iconify } from 'src/components/iconify';
 
-interface TestResponse {
-    username: string;
+interface LoginResponse {
+    token: string;
 }
 
 export function SignInView() {
     const router = useRouter();
-
+    const [email, setEmail] = useState('admin@tasksync.com');
+    const [password, setPassword] = useState('123456789');
+    const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
-    //const handleSignIn = useCallback(() => {
-    //    router.push('/');
-    //}, [router]);
-
     const handleSignIn = async () => {
-        const response: any = await fetch(`${getApiUrl()}/Authentication/Test`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ id: 888, name: 'Hiiiii' }),
-        });
+        try {
+            const response: Response = await fetch(`${getApiUrl()}/api/v1/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
 
-        const data: TestResponse = await response.json();
-
-        alert(data.username);
+            if (response.ok) {
+                const data: LoginResponse = await response.json();
+                setAuthToken(data.token);
+                router.push('/');
+            } else {
+                setError(`${response.statusText} (${response.status})`);
+            }
+        } catch {
+            setError('Network Error');
+        }
     };
 
     const renderForm = (
         <Box
             sx={{
                 display: 'flex',
-                alignItems: 'flex-end',
+                alignItems: 'center',
                 flexDirection: 'column',
             }}
         >
@@ -54,11 +59,10 @@ export function SignInView() {
                 fullWidth
                 name="email"
                 label="Email address"
-                defaultValue="admin@tasksync.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 sx={{ mb: 3 }}
-                slotProps={{
-                    inputLabel: { shrink: true },
-                }}
+                slotProps={{ inputLabel: { shrink: true } }}
             />
 
             {/*
@@ -71,8 +75,10 @@ export function SignInView() {
                 fullWidth
                 name="password"
                 label="Password"
-                defaultValue="admin"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 type={showPassword ? 'text' : 'password'}
+                sx={{ mb: 3 }}
                 slotProps={{
                     inputLabel: { shrink: true },
                     input: {
@@ -94,8 +100,13 @@ export function SignInView() {
                         ),
                     },
                 }}
-                sx={{ mb: 3 }}
             />
+
+            {error && (
+                <Typography color="error" variant="body2" sx={{ mb: '1em' }}>
+                    {error}
+                </Typography>
+            )}
 
             <Button
                 fullWidth
@@ -103,7 +114,7 @@ export function SignInView() {
                 type="submit"
                 color="inherit"
                 variant="contained"
-                onClick={handleSignIn}
+                onClick={() => handleSignIn()}
             >
                 Sign in
             </Button>

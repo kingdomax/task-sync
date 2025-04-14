@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Greeting /> greeting renders and match snapshot 1`] = `
+<div>
+  <h1>
+    Hello 
+    Pramoch
+  </h1>
+</div>
+`;
