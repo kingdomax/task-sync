@@ -6,7 +6,9 @@ WORKDIR /src
 COPY . .
 
 # 3. Restore using the .sln file
-RUN dotnet restore backend/TaskSync.sln
+WORKDIR /src/backend
+RUN dotnet restore TaskSync.sln
+#RUN dotnet restore backend/TaskSync.sln
 
 # 4. Publish the main app project (TaskSync.csproj)
 WORKDIR /src/backend
