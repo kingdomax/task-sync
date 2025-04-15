@@ -1,18 +1,34 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
 import Button from '@mui/material/Button';
+import Avatar from '@mui/material/Avatar';
+import Popover from '@mui/material/Popover';
+import MenuList from '@mui/material/MenuList';
+import CardHeader from '@mui/material/CardHeader';
+import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
+import CardContent from '@mui/material/CardContent';
+import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 
 import { DashboardContent } from 'src/layouts/dashboard';
-import { _posts, _tasks, _traffic, _timeline } from 'src/_mock';
 
 import { Iconify } from 'src/components/iconify';
 
 import { AnalyticsWidgetSummary } from '../../overview/analytics-widget-summary';
 
 export const KanbanBoardView = () => {
-    const [test, useTest] = useState(false);
+    const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
+
+    const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+        setOpenPopover(event.currentTarget);
+    }, []);
+
+    const handleClosePopover = useCallback(() => {
+        setOpenPopover(null);
+    }, []);
 
     return (
         <DashboardContent maxWidth="xl">
@@ -32,11 +48,75 @@ export const KanbanBoardView = () => {
                 </Button>
             </Box>
 
+            <Popover
+                open={!!openPopover}
+                anchorEl={openPopover}
+                onClose={handleClosePopover}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+                //transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <MenuList
+                    disablePadding
+                    sx={{
+                        p: 0.5,
+                        gap: 0.5,
+                        width: 160,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        [`& .${menuItemClasses.root}`]: {
+                            px: 1,
+                            gap: 2,
+                            borderRadius: 0.75,
+                            [`&.${menuItemClasses.selected}`]: { bgcolor: 'action.selected' },
+                        },
+                    }}
+                >
+                    <MenuItem onClick={handleClosePopover}>
+                        <Iconify icon="material-symbols:pending-actions-rounded" />
+                        BACKLOG
+                    </MenuItem>
+                    <MenuItem onClick={handleClosePopover}>
+                        <Iconify icon="material-symbols:checklist-rounded" />
+                        TODO
+                    </MenuItem>
+                    <MenuItem onClick={handleClosePopover}>
+                        <Iconify icon="material-symbols:sync-rounded" />
+                        IN PROGRESS
+                    </MenuItem>
+                    <MenuItem onClick={handleClosePopover}>
+                        <Iconify icon="material-symbols:check-circle-rounded" />
+                        DONE
+                    </MenuItem>
+                    <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
+                        <Iconify icon="solar:trash-bin-trash-bold" />
+                        Delete
+                    </MenuItem>
+                </MenuList>
+            </Popover>
+
             <Grid container spacing={3}>
                 <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Box sx={{ ml: 1, mb: 2, typography: 'h6' }}>BACKLOG</Box>
 
-                    {/* Card Items */}
+                    {/* Use Card Items */}
+                    <Card>
+                        <CardHeader
+                            avatar={<Avatar />}
+                            action={
+                                <IconButton aria-label="settings" onClick={handleOpenPopover}>
+                                    <Iconify icon="eva:more-vertical-fill" />
+                                </IconButton>
+                            }
+                            // see user-table-row.tsx for open menu
+                            //subheader="Un assigned"
+                            //title="Shrimp and Chorizo Paella"
+                        />
+                        <CardContent sx={{ pl: 3, pr: 3 }}>
+                            <Typography variant="subtitle2">
+                                Implement authentication flow
+                            </Typography>
+                        </CardContent>
+                    </Card>
                     <AnalyticsWidgetSummary
                         title="Weekly sales"
                         percent={2.6}
