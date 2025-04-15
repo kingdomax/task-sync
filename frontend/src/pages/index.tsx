@@ -1,6 +1,6 @@
 import { CONFIG } from 'src/config-global';
 
-import { OverviewAnalyticsView as DashboardView } from 'src/sections/overview/view';
+import { KanbanBoardView } from 'src/sections/kanbanboard/view';
 
 // ----------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ export default function Page() {
                 content="react,material,kit,application,dashboard,admin,template"
             />
 
-            <DashboardView />
+            <KanbanBoardView />
         </>
     );
 }
