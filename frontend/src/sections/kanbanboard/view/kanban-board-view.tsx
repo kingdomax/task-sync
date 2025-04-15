@@ -107,11 +107,13 @@ export const KanbanBoardView = () => {
                                     <Iconify icon="eva:more-vertical-fill" />
                                 </IconButton>
                             }
-                            // see user-table-row.tsx for open menu
-                            //subheader="Un assigned"
+                            //subheader="#1"
                             //title="Shrimp and Chorizo Paella"
                         />
                         <CardContent sx={{ pl: 3, pr: 3 }}>
+                            <Typography variant="caption" color="grey">
+                                #1
+                            </Typography>
                             <Typography variant="subtitle2">
                                 Implement authentication flow
                             </Typography>
