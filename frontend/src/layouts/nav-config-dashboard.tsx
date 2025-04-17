@@ -17,21 +17,6 @@ export const navData = [
         title: 'Board',
         path: '/',
         icon: icon('ic-lock'),
-    },
-    {
-        title: 'Dashboard (TODO)',
-        path: '/dashboard',
-        icon: icon('ic-analytics'),
-    },
-    {
-        title: 'User (TODO)',
-        path: '/user',
-        icon: icon('ic-user'),
-    },
-    {
-        title: 'Product (TODO)',
-        path: '/products',
-        icon: icon('ic-cart'),
         info: (
             <Label color="error" variant="inverted">
                 +3
@@ -39,7 +24,22 @@ export const navData = [
         ),
     },
     {
-        title: 'Blog (TODO)',
+        title: 'Analytic',
+        path: '/dashboard',
+        icon: icon('ic-analytics'),
+    },
+    {
+        title: 'User',
+        path: '/user',
+        icon: icon('ic-user'),
+    },
+    {
+        title: 'Product',
+        path: '/products',
+        icon: icon('ic-cart'),
+    },
+    {
+        title: 'Blog',
         path: '/blog',
         icon: icon('ic-blog'),
     },

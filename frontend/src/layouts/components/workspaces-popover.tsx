@@ -54,7 +54,7 @@ export function WorkspacesPopover({ data = [], sx, ...other }: WorkspacesPopover
     );
 
     const renderLabel = (plan: string) => (
-        <Label color={plan === 'Free' ? 'default' : 'info'}>{plan}</Label>
+        <Label color={plan === 'Inactive' ? 'default' : 'info'}>{plan}</Label>
     );
 
     return (
