@@ -23,6 +23,8 @@ namespace TaskSync.Configurations
             services.AddSingleton<IJwtService, JwtService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IProjectService, ProjectService>();
+            services.AddScoped<ITaskService, TaskService>();
 
             return services;
         }
