@@ -2,7 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using TaskSync.Configurations.Models;
+using TaskSync.Configurations.Settings;
 using TaskSync.Models;
 using TaskSync.Services.Interfaces;
 

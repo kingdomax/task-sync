@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using TaskSync.Configurations.Models;
+using TaskSync.Configurations.Settings;
 
 namespace TaskSync.Configurations
 {

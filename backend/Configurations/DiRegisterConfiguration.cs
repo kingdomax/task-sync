@@ -1,9 +1,9 @@
 ﻿using TaskSync.Services;
 using TaskSync.Repositories;
-using TaskSync.Repositories.Entity;
 using TaskSync.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using TaskSync.Repositories.Interfaces;
+using TaskSync.Repositories.Entities;
 
 namespace TaskSync.Configurations
 {
@@ -18,12 +18,12 @@ namespace TaskSync.Configurations
 
             // Repositories
             services.AddScoped<IRepository<UserEntity>, UserRepository>();
+            services.AddScoped<IRepository<IList<TaskEntity>>, TaskRepository>();
 
             // Services
             services.AddSingleton<IJwtService, JwtService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
-            services.AddScoped<IProjectService, ProjectService>();
             services.AddScoped<ITaskService, TaskService>();
 
             return services;

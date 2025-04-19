@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TaskSync.Models.Dto;
 using TaskSync.Services.Interfaces;
 
 namespace TaskSync.Controllers
@@ -13,6 +14,14 @@ namespace TaskSync.Controllers
         public TaskController(ITaskService taskService)
         {
             _taskService = taskService;
+        }
+
+        [HttpGet("getTasks/{projectId}")]
+        public async Task<IActionResult> GetTasks([FromRoute] int projectId)
+        {
+            var tasks = await _taskService.GetTasksAsync(projectId);
+
+            return Ok(new TaskResponse() { Tasks = tasks });
         }
     }
 }

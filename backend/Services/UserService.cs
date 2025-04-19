@@ -1,7 +1,7 @@
-﻿using TaskSync.Repositories.Entity;
-using TaskSync.Services.Interfaces;
+﻿using TaskSync.Services.Interfaces;
 using TaskSync.Models;
 using TaskSync.Repositories.Interfaces;
+using TaskSync.Repositories.Entities;
 
 namespace TaskSync.Services
 {

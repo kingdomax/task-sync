@@ -1,6 +1,6 @@
-﻿using TaskSync.Repositories.Entity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using TaskSync.Repositories.Interfaces;
+using TaskSync.Repositories.Entities;
 
 namespace TaskSync.Repositories
 {
@@ -18,6 +18,11 @@ namespace TaskSync.Repositories
         public async Task<UserEntity?> GetAsync(string email)
         {
             return await _dbContext.Users.SingleOrDefaultAsync(x => x.Email == email);
+        }
+
+        public Task<UserEntity?> GetAsync(int param1)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TaskSync.Repositories.Entity
+namespace TaskSync.Repositories.Entities
 {
     [Table("users")]
     public class UserEntity
