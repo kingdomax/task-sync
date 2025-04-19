@@ -1,9 +1,9 @@
 export type KanbanItemData = {
     id: number;
     title: string;
-    assigneeId: number;
+    assigneeId: number | null;
     lastModified: Date;
     status: KanbanStatus;
 };
 
-export type KanbanStatus = 'backlog' | 'todo' | 'inprogress' | 'done';
+export type KanbanStatus = 'BACKLOG' | 'TODO' | 'INPROGRESS' | 'DONE';
