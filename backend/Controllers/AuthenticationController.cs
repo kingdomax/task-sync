@@ -1,10 +1,9 @@
 using System.Security.Claims;
-using TaskSync.Models.Request;
 using Microsoft.AspNetCore.Mvc;
 using TaskSync.Services.Interfaces;
 using TaskSync.ActionFilterAttributes;
 using Microsoft.AspNetCore.Authorization;
-using TaskSync.Models.Response;
+using TaskSync.Models.Dto;
 
 namespace TaskSync.Controllers
 {

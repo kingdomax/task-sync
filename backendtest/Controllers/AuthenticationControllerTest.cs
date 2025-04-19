@@ -1,9 +1,8 @@
 ﻿using Moq;
 using Microsoft.AspNetCore.Mvc;
 using TaskSync.Controllers;
-using TaskSync.Models.Request;
 using TaskSync.Services.Interfaces;
-using TaskSync.Models.Response;
+using TaskSync.Models.Dto;
 
 namespace TaskSyncTest.Controllers
 {

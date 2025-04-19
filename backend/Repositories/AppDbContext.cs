@@ -11,11 +11,5 @@ namespace TaskSync.Repositories
         {
             Console.WriteLine("DbContext created");
         }
-
-        //public override async ValueTask DisposeAsync()
-        //{
-        //    Console.WriteLine("DbContext disposed (async)");
-        //    await base.DisposeAsync();
-        //}
     }
 }

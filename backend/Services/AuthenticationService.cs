@@ -1,4 +1,4 @@
-﻿using TaskSync.Models.Request;
+﻿using TaskSync.Models.Dto;
 using TaskSync.Services.Interfaces;
 using IAuthenticationService = TaskSync.Services.Interfaces.IAuthenticationService;
 

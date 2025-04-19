@@ -1,4 +1,4 @@
-﻿namespace TaskSync.Models.Response
+﻿namespace TaskSync.Models.Dto
 {
     public class LoginResponse
     {
