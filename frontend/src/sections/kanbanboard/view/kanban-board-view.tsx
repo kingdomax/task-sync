@@ -42,7 +42,7 @@ export const KanbanBoardView = () => {
                             id: 1,
                             title: 'Implement authentication flow',
                             assigneeId: 1,
-                            status: 'backlog',
+                            status: 'BACKLOG',
                             lastModified: new Date(),
                         }}
                     />
@@ -51,7 +51,7 @@ export const KanbanBoardView = () => {
                             id: 1,
                             title: 'Implement authentication flow',
                             assigneeId: 1,
-                            status: 'backlog',
+                            status: 'BACKLOG',
                             lastModified: new Date(),
                         }}
                     />
@@ -60,7 +60,7 @@ export const KanbanBoardView = () => {
                             id: 1,
                             title: 'Implement authentication flow',
                             assigneeId: 1,
-                            status: 'backlog',
+                            status: 'BACKLOG',
                             lastModified: new Date(),
                         }}
                     />
@@ -69,7 +69,7 @@ export const KanbanBoardView = () => {
                             id: 1,
                             title: 'Implement authentication flow',
                             assigneeId: 1,
-                            status: 'backlog',
+                            status: 'BACKLOG',
                             lastModified: new Date(),
                         }}
                     />
@@ -84,7 +84,7 @@ export const KanbanBoardView = () => {
                             id: 1,
                             title: 'Implement authentication flow',
                             assigneeId: 1,
-                            status: 'backlog',
+                            status: 'TODO',
                             lastModified: new Date(),
                         }}
                     />
@@ -99,7 +99,7 @@ export const KanbanBoardView = () => {
                             id: 1,
                             title: 'Implement authentication flow',
                             assigneeId: 1,
-                            status: 'backlog',
+                            status: 'INPROGRESS',
                             lastModified: new Date(),
                         }}
                     />
@@ -114,7 +114,7 @@ export const KanbanBoardView = () => {
                             id: 1,
                             title: 'Implement authentication flow',
                             assigneeId: 1,
-                            status: 'backlog',
+                            status: 'DONE',
                             lastModified: new Date(),
                         }}
                     />
