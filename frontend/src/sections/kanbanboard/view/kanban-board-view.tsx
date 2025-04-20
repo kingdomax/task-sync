@@ -12,7 +12,6 @@ import { Iconify } from 'src/components/iconify';
 
 import { KanbanItem } from '../item-card';
 import { KanbanStatus } from '../type/kanban-item';
-import { AnalyticsWidgetSummary } from '../../overview/analytics-widget-summary';
 
 import type { KanbanItemData, KanbanItemResponse } from '../type/kanban-item';
 
@@ -35,7 +34,7 @@ export const KanbanBoardView = () => {
     useEffect(() => {
         const fetchTasks = async () => {
             try {
-                const response: Response = await fetch(`${getApiUrl()}/tasks/getTasks/1`);
+                const response: Response = await fetch(`${getApiUrl()}/task/getTasks/1`);
                 if (response.ok) {
                     const data: KanbanItemResponse = await response.json();
                     setKanbanItems(data.tasks ?? []);
@@ -48,7 +47,45 @@ export const KanbanBoardView = () => {
         fetchTasks();
     }, []);
 
-    // Memoizes the result of a computation, saving performance, only runs when kanbanItems change
+    const handleStatusChange = async (data: KanbanItemData, newStatus: KanbanStatus) => {
+        // Optimistically update UI
+        setKanbanItems((prev) =>
+            prev.map((item) =>
+                item.id === data.id
+                    ? { ...item, status: newStatus, lastModified: new Date() }
+                    : item
+            )
+        );
+
+        // Then send request to server
+        try {
+            const res = await fetch(`${getApiUrl()}/task/updateStatus/${data.id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ statusRaw: newStatus }),
+            });
+
+            if (!res.ok) {
+                throw new Error();
+            }
+
+            const updated = await res.json();
+            setKanbanItems((prev) => prev.map((item) => (item.id === updated.id ? updated : item)));
+        } catch (err) {
+            // Revert on failure
+            setKanbanItems((prev) =>
+                prev.map((item) =>
+                    item.id === data.id
+                        ? { ...item, status: data.status, lastModified: data.lastModified }
+                        : item
+                )
+            );
+            // Optional: toast / error message
+            console.log(err);
+        }
+    };
+
+    // Memoizes the result of a computation - saving performance
     const groupedItems = useMemo(() => {
         const map: Record<KanbanStatus, KanbanItemData[]> = {
             [KanbanStatus.BACKLOG]: [],
@@ -57,13 +94,17 @@ export const KanbanBoardView = () => {
             [KanbanStatus.DONE]: [],
         };
 
-        for (const item of kanbanItems) {
+        const sorted = [...kanbanItems].sort(
+            (a, b) => new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime()
+        );
+
+        for (const item of sorted) {
             const normalized = { ...item, lastModified: new Date(item.lastModified) };
             map[item.status].push(normalized);
         }
 
         return map;
-    }, [kanbanItems]);
+    }, [kanbanItems]); // only runs when kanbanItems change
 
     return (
         <DashboardContent maxWidth="xl">
@@ -96,6 +137,7 @@ export const KanbanBoardView = () => {
                                     key={`kanban-${status}-${item.id}`}
                                     color={statusColors[status]}
                                     data={item}
+                                    onStatusChange={handleStatusChange}
                                 />
                             ))}
                         </Grid>

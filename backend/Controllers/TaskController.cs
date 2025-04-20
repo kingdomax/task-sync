@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TaskSync.Filters;
 using TaskSync.Models.Dto;
 using TaskSync.Services.Interfaces;
 
@@ -6,7 +7,7 @@ namespace TaskSync.Controllers
 {
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/tasks")]
+    [Route("api/v{version:apiVersion}/task")]
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
@@ -22,6 +23,15 @@ namespace TaskSync.Controllers
             var tasks = await _taskService.GetTasksAsync(projectId);
 
             return Ok(new TaskResponse() { Tasks = tasks });
+        }
+
+        [ValidateRequest]
+        [HttpPatch("updateStatus/{taskId}")]
+        public async Task<IActionResult> UpdateStatus([FromRoute] int taskId, [FromBody] UpdateTaskRequest request)
+        {
+            var taskDto = await _taskService.UpdateTaskStatusAsync(taskId, request);
+
+            return taskDto != null ? Ok(taskDto) : BadRequest("Task not found");
         }
     }
 }

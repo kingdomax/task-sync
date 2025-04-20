@@ -4,7 +4,7 @@ using TaskSync.Repositories.Interfaces;
 
 namespace TaskSync.Repositories
 {
-    public class TaskRepository : IRepository<IList<TaskEntity>> // todo: need to have separate interface
+    public class TaskRepository : ITaskRepository
     {
         private readonly AppDbContext _dbContext;
         public TaskRepository(AppDbContext dbContext) => _dbContext = dbContext;
@@ -14,14 +14,17 @@ namespace TaskSync.Repositories
             return await _dbContext.Tasks.Where(x => x.ProjectId == projectId).ToListAsync();
         }
 
-        public Task<IList<TaskEntity>?> GetAsync()
+        public async Task<TaskEntity?> UpdateStatusAsync(int taskId, string newStatus)
         {
-            throw new NotImplementedException();
-        }
+            var task = await _dbContext.Tasks.FirstOrDefaultAsync(x => x.Id == taskId);
+            if (task == null) return null;
 
-        public Task<IList<TaskEntity>?> GetAsync(string param1)
-        {
-            throw new NotImplementedException();
+            task.StatusRaw = newStatus.ToLower();
+            task.LastModified = DateTime.UtcNow;
+
+            await _dbContext.SaveChangesAsync();
+
+            return task;
         }
     }
 }

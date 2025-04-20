@@ -18,7 +18,7 @@ namespace TaskSync.Configurations
 
             // Repositories
             services.AddScoped<IRepository<UserEntity>, UserRepository>();
-            services.AddScoped<IRepository<IList<TaskEntity>>, TaskRepository>();
+            services.AddScoped<ITaskRepository, TaskRepository>();
 
             // Services
             services.AddSingleton<IJwtService, JwtService>();

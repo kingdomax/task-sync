@@ -16,14 +16,17 @@ import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 
 import { Iconify } from 'src/components/iconify/iconify';
 
+import { KanbanStatus } from './type/kanban-item';
+
 import type { KanbanItemData } from './type/kanban-item';
 
 type Props = {
     color?: PaletteColorKey;
     data: KanbanItemData;
+    onStatusChange: (data: KanbanItemData, newStatus: KanbanStatus) => void;
 };
 
-export const KanbanItem = ({ color, data }: Props) => {
+export const KanbanItem = ({ color, data, onStatusChange }: Props) => {
     const theme = useTheme();
 
     const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
@@ -35,6 +38,14 @@ export const KanbanItem = ({ color, data }: Props) => {
     const handleClosePopover = useCallback(() => {
         setOpenPopover(null);
     }, []);
+
+    const handleStatusChange = useCallback(
+        (newStatus: KanbanStatus) => {
+            onStatusChange(data, newStatus);
+            setOpenPopover(null);
+        },
+        [data, onStatusChange]
+    );
 
     return (
         <>
@@ -95,23 +106,23 @@ export const KanbanItem = ({ color, data }: Props) => {
                         },
                     }}
                 >
-                    <MenuItem onClick={handleClosePopover}>
+                    <MenuItem onClick={() => handleStatusChange(KanbanStatus.BACKLOG)}>
                         <Iconify icon="material-symbols:pending-actions-rounded" />
-                        BACKLOG
+                        Backlog
                     </MenuItem>
-                    <MenuItem onClick={handleClosePopover}>
+                    <MenuItem onClick={() => handleStatusChange(KanbanStatus.TODO)}>
                         <Iconify icon="material-symbols:checklist-rounded" />
-                        TODO
+                        To Do
                     </MenuItem>
-                    <MenuItem onClick={handleClosePopover}>
+                    <MenuItem onClick={() => handleStatusChange(KanbanStatus.INPROGRESS)}>
                         <Iconify icon="material-symbols:sync-rounded" />
-                        IN PROGRESS
+                        In Progress
                     </MenuItem>
-                    <MenuItem onClick={handleClosePopover}>
+                    <MenuItem onClick={() => handleStatusChange(KanbanStatus.DONE)}>
                         <Iconify icon="material-symbols:check-circle-rounded" />
-                        DONE
+                        Done
                     </MenuItem>
-                    <MenuItem onClick={handleClosePopover} sx={{ color: 'error.main' }}>
+                    <MenuItem onClick={() => handleClosePopover()} sx={{ color: 'error.main' }}>
                         <Iconify icon="solar:trash-bin-trash-bold" />
                         Delete
                     </MenuItem>
