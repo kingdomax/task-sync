@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -16,6 +16,19 @@ import { AnalyticsWidgetSummary } from '../../overview/analytics-widget-summary'
 
 import type { KanbanItemData, KanbanItemResponse } from '../type/kanban-item';
 
+const statusLabels: Record<KanbanStatus, string> = {
+    [KanbanStatus.BACKLOG]: 'Backlog',
+    [KanbanStatus.TODO]: 'To Do',
+    [KanbanStatus.INPROGRESS]: 'In Progress',
+    [KanbanStatus.DONE]: 'Done',
+};
+
+const statusColors: Partial<Record<KanbanStatus, 'warning' | 'info' | 'success'>> = {
+    [KanbanStatus.TODO]: 'warning',
+    [KanbanStatus.INPROGRESS]: 'info',
+    [KanbanStatus.DONE]: 'success',
+};
+
 export const KanbanBoardView = () => {
     const [kanbanItems, setKanbanItems] = useState<KanbanItemData[]>([]);
 
@@ -23,7 +36,6 @@ export const KanbanBoardView = () => {
         const fetchTasks = async () => {
             try {
                 const response: Response = await fetch(`${getApiUrl()}/tasks/getTasks/1`);
-
                 if (response.ok) {
                     const data: KanbanItemResponse = await response.json();
                     setKanbanItems(data.tasks ?? []);
@@ -35,6 +47,23 @@ export const KanbanBoardView = () => {
 
         fetchTasks();
     }, []);
+
+    // Memoizes the result of a computation, saving performance, only runs when kanbanItems change
+    const groupedItems = useMemo(() => {
+        const map: Record<KanbanStatus, KanbanItemData[]> = {
+            [KanbanStatus.BACKLOG]: [],
+            [KanbanStatus.TODO]: [],
+            [KanbanStatus.INPROGRESS]: [],
+            [KanbanStatus.DONE]: [],
+        };
+
+        for (const item of kanbanItems) {
+            const normalized = { ...item, lastModified: new Date(item.lastModified) };
+            map[item.status].push(normalized);
+        }
+
+        return map;
+    }, [kanbanItems]);
 
     return (
         <DashboardContent maxWidth="xl">
@@ -55,76 +84,23 @@ export const KanbanBoardView = () => {
             </Box>
 
             <Grid container spacing={3}>
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                    <Box sx={{ ml: 1, mb: 2, typography: 'h6' }}>BACKLOG</Box>
-
-                    {kanbanItems.map(
-                        (x) =>
-                            x.status == KanbanStatus.BACKLOG && (
+                {Object.entries(groupedItems).map(([statusKey, items]) => {
+                    const status = statusKey as KanbanStatus;
+                    return (
+                        <Grid key={status} size={{ xs: 12, sm: 6, md: 3 }}>
+                            <Box sx={{ ml: 1, mb: 2, typography: 'h6' }}>
+                                {statusLabels[status]}
+                            </Box>
+                            {items.map((item) => (
                                 <KanbanItem
-                                    data={{
-                                        ...x,
-                                        lastModified: new Date(x.lastModified),
-                                    }}
-                                    key={`backlog-item-${x.id}`}
+                                    key={`kanban-${status}-${item.id}`}
+                                    color={statusColors[status]}
+                                    data={item}
                                 />
-                            )
-                    )}
-                </Grid>
-
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                    <Box sx={{ ml: 1, mb: 2, typography: 'h6' }}>TODO</Box>
-
-                    {kanbanItems.map(
-                        (x) =>
-                            x.status == KanbanStatus.TODO && (
-                                <KanbanItem
-                                    color="warning"
-                                    data={{
-                                        ...x,
-                                        lastModified: new Date(x.lastModified),
-                                    }}
-                                    key={`todo-item-${x.id}`}
-                                />
-                            )
-                    )}
-                </Grid>
-
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                    <Box sx={{ ml: 1, mb: 2, typography: 'h6' }}>IN PROGRESS</Box>
-
-                    {kanbanItems.map(
-                        (x) =>
-                            x.status == KanbanStatus.INPROGRESS && (
-                                <KanbanItem
-                                    color="info"
-                                    data={{
-                                        ...x,
-                                        lastModified: new Date(x.lastModified),
-                                    }}
-                                    key={`inprogress-item-${x.id}`}
-                                />
-                            )
-                    )}
-                </Grid>
-
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                    <Box sx={{ ml: 1, mb: 2, typography: 'h6' }}>DONE</Box>
-
-                    {kanbanItems.map(
-                        (x) =>
-                            x.status == KanbanStatus.DONE && (
-                                <KanbanItem
-                                    color="success"
-                                    data={{
-                                        ...x,
-                                        lastModified: new Date(x.lastModified),
-                                    }}
-                                    key={`done-item-${x.id}`}
-                                />
-                            )
-                    )}
-                </Grid>
+                            ))}
+                        </Grid>
+                    );
+                })}
             </Grid>
         </DashboardContent>
     );

@@ -10,8 +10,6 @@ export type KanbanItemData = {
     status: KanbanStatus;
 };
 
-//export type KanbanStatus = 'BACKLOG' | 'TODO' | 'INPROGRESS' | 'DONE';
-
 export enum KanbanStatus {
     BACKLOG = 'BACKLOG',
     TODO = 'TODO',
