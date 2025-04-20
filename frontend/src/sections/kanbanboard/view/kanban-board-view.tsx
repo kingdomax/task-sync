@@ -1,19 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
+
+import { getApiUrl } from 'src/utils/env';
 
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
 
 import { KanbanItem } from '../item-card';
-import { KanbanItemData } from '../type/kanban-item';
+import { KanbanStatus } from '../type/kanban-item';
 import { AnalyticsWidgetSummary } from '../../overview/analytics-widget-summary';
+
+import type { KanbanItemData, KanbanItemResponse } from '../type/kanban-item';
 
 export const KanbanBoardView = () => {
     const [kanbanItems, setKanbanItems] = useState<KanbanItemData[]>([]);
+
+    useEffect(() => {
+        const fetchTasks = async () => {
+            try {
+                const response: Response = await fetch(`${getApiUrl()}/tasks/getTasks/1`);
+
+                if (response.ok) {
+                    const data: KanbanItemResponse = await response.json();
+                    setKanbanItems(data.tasks ?? []);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchTasks();
+    }, []);
 
     return (
         <DashboardContent maxWidth="xl">
@@ -37,87 +58,72 @@ export const KanbanBoardView = () => {
                 <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Box sx={{ ml: 1, mb: 2, typography: 'h6' }}>BACKLOG</Box>
 
-                    <KanbanItem
-                        data={{
-                            id: 1,
-                            title: 'Implement authentication flow',
-                            assigneeId: 1,
-                            status: 'BACKLOG',
-                            lastModified: new Date(),
-                        }}
-                    />
-                    <KanbanItem
-                        data={{
-                            id: 1,
-                            title: 'Implement authentication flow',
-                            assigneeId: 1,
-                            status: 'BACKLOG',
-                            lastModified: new Date(),
-                        }}
-                    />
-                    <KanbanItem
-                        data={{
-                            id: 1,
-                            title: 'Implement authentication flow',
-                            assigneeId: 1,
-                            status: 'BACKLOG',
-                            lastModified: new Date(),
-                        }}
-                    />
-                    <KanbanItem
-                        data={{
-                            id: 1,
-                            title: 'Implement authentication flow',
-                            assigneeId: 1,
-                            status: 'BACKLOG',
-                            lastModified: new Date(),
-                        }}
-                    />
+                    {kanbanItems.map(
+                        (x) =>
+                            x.status == KanbanStatus.BACKLOG && (
+                                <KanbanItem
+                                    data={{
+                                        ...x,
+                                        lastModified: new Date(x.lastModified),
+                                    }}
+                                    key={`backlog-item-${x.id}`}
+                                />
+                            )
+                    )}
                 </Grid>
 
                 <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Box sx={{ ml: 1, mb: 2, typography: 'h6' }}>TODO</Box>
 
-                    <KanbanItem
-                        color="warning"
-                        data={{
-                            id: 1,
-                            title: 'Implement authentication flow',
-                            assigneeId: 1,
-                            status: 'TODO',
-                            lastModified: new Date(),
-                        }}
-                    />
+                    {kanbanItems.map(
+                        (x) =>
+                            x.status == KanbanStatus.TODO && (
+                                <KanbanItem
+                                    color="warning"
+                                    data={{
+                                        ...x,
+                                        lastModified: new Date(x.lastModified),
+                                    }}
+                                    key={`todo-item-${x.id}`}
+                                />
+                            )
+                    )}
                 </Grid>
 
                 <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Box sx={{ ml: 1, mb: 2, typography: 'h6' }}>IN PROGRESS</Box>
 
-                    <KanbanItem
-                        color="info"
-                        data={{
-                            id: 1,
-                            title: 'Implement authentication flow',
-                            assigneeId: 1,
-                            status: 'INPROGRESS',
-                            lastModified: new Date(),
-                        }}
-                    />
+                    {kanbanItems.map(
+                        (x) =>
+                            x.status == KanbanStatus.INPROGRESS && (
+                                <KanbanItem
+                                    color="info"
+                                    data={{
+                                        ...x,
+                                        lastModified: new Date(x.lastModified),
+                                    }}
+                                    key={`inprogress-item-${x.id}`}
+                                />
+                            )
+                    )}
                 </Grid>
 
                 <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Box sx={{ ml: 1, mb: 2, typography: 'h6' }}>DONE</Box>
 
-                    <KanbanItem
-                        color="success"
-                        data={{
-                            id: 1,
-                            title: 'Implement authentication flow',
-                            assigneeId: 1,
-                            status: 'DONE',
-                            lastModified: new Date(),
-                        }}
-                    />
+                    {kanbanItems.map(
+                        (x) =>
+                            x.status == KanbanStatus.DONE && (
+                                <KanbanItem
+                                    color="success"
+                                    data={{
+                                        ...x,
+                                        lastModified: new Date(x.lastModified),
+                                    }}
+                                    key={`done-item-${x.id}`}
+                                />
+                            )
+                    )}
                 </Grid>
             </Grid>
         </DashboardContent>

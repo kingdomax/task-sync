@@ -48,7 +48,15 @@ export const KanbanItem = ({ color, data }: Props) => {
                 }
             >
                 <CardHeader
-                    avatar={<Avatar />}
+                    avatar={
+                        <Avatar
+                            src={
+                                data.assigneeId
+                                    ? `/assets/images/avatar/avatar-${data.assigneeId}.webp`
+                                    : ''
+                            }
+                        />
+                    }
                     action={
                         <IconButton aria-label="settings" onClick={handleOpenPopover}>
                             <Iconify icon="eva:more-vertical-fill" />

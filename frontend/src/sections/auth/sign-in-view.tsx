@@ -29,7 +29,7 @@ export function SignInView() {
 
     const handleSignIn = async () => {
         try {
-            const response: Response = await fetch(`${getApiUrl()}/api/v1/auth/login`, {
+            const response: Response = await fetch(`${getApiUrl()}/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),

@@ -16,7 +16,7 @@ import {
 export const _myAccount = {
     displayName: 'Jaydon Frankie',
     email: 'demo@minimals.cc',
-    photoURL: '/assets/images/avatar/avatar-25.webp',
+    photoURL: '/assets/images/avatar/avatar-1.webp', // todo-moch: hardcode for now
 };
 
 // ----------------------------------------------------------------------
