@@ -1,4 +1,6 @@
-# TaskSync
+# TaskSync (in progress...)
+
+![image](https://github.com/user-attachments/assets/b76e2876-caf7-4a0c-be71-ce80fa988038)
 
 A collaborative task management platform designed to simplify project organization and enhance team productivity. It enables real-time collaboration and task management through intuitive task boards inspired by Jira, providing a responsive, modern user experience.
 
