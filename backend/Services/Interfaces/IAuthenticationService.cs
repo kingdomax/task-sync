@@ -1,4 +1,4 @@
-﻿using TaskSync.Models.Request;
+﻿using TaskSync.Models.Dto;
 
 namespace TaskSync.Services.Interfaces
 {

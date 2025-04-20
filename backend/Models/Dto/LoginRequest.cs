@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TaskSync.Models.Request
+namespace TaskSync.Models.Dto
 {
     public class LoginRequest
     {

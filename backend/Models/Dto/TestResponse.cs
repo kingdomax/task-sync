@@ -1,4 +1,4 @@
-﻿namespace TaskSync.Models
+﻿namespace TaskSync.Models.Dto
 {
     public class TestResponse
     {

@@ -4,6 +4,7 @@
     public interface IRepository<T>
     {
         public Task<T?> GetAsync();
-        public Task<T?> GetAsync(string param1);
+        public Task<T?> GetAsync(string param1); // todo
+        public Task<T?> GetAsync(int param1); // todo
     }
 }

@@ -1,10 +1,14 @@
-using TaskSync.Configurations;
+using System.Text.Json.Serialization;
 using TaskSync.MiddleWares;
+using TaskSync.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // -------------- Add services to the container  ----------------------------------
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.ConfigureCors();
@@ -27,3 +31,10 @@ app.UseMiddleware<RequestTimingMiddleware>();  // custom middle ware
 // -----------------------------------------------------------------------
 
 app.Run();
+
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
