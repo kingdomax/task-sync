@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using TaskSync;
 using TaskSync.MiddleWares;
 using TaskSync.Configurations;
 
@@ -15,6 +16,7 @@ builder.Services.ConfigureCors();
 builder.Services.ConfigureApiVersion();
 builder.Services.ConfigureJwt(builder.Configuration);
 builder.Services.RegisterDependecies(builder.Configuration);
+builder.Services.AddSignalR();
 // -------------------------------------------------------------------------------
 
 var app = builder.Build();
@@ -27,14 +29,8 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<TaskHub>("/taskHub");
 app.UseMiddleware<RequestTimingMiddleware>();  // custom middle ware
 // -----------------------------------------------------------------------
 
 app.Run();
-
-builder.Services
-    .AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
