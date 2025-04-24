@@ -4,14 +4,16 @@ using TaskSync.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using TaskSync.Repositories.Interfaces;
 using TaskSync.Repositories.Entities;
+using TaskSync.Infrastructure.Http.Interface;
+using TaskSync.Infrastructure.Http;
 
-namespace TaskSync.Configurations
+namespace TaskSync.Infrastructure.Configurations
 {
     public static class DiRegisterConfiguration
     {
         public static IServiceCollection RegisterDependecies(this IServiceCollection services, IConfiguration configuration)
         {
-            // DbContext
+            services.AddScoped<IHttpContextReader, HttpContextReader>();
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
             );

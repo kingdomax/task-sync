@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using TaskSync.Configurations.Settings;
+using TaskSync.Infrastructure.Settings;
 
-namespace TaskSync.Configurations
+namespace TaskSync.Infrastructure.Configurations
 {
     public static class JwtConfiguration
     {
@@ -14,7 +14,8 @@ namespace TaskSync.Configurations
             services.AddSingleton(jwtSection.Get<JwtSettings>());
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options => {
+                .AddJwtBearer(options =>
+                {
                     var jwtSettings = jwtSection.Get<JwtSettings>();
                     options.TokenValidationParameters = new TokenValidationParameters
                     {

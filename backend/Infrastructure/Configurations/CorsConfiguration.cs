@@ -1,4 +1,4 @@
-﻿namespace TaskSync.Configurations
+﻿namespace TaskSync.Infrastructure.Configurations
 {
     public static class CorsConfiguration
     {
@@ -13,7 +13,8 @@
                             "http://131.189.90.113:3039"    // Production
                     )
                     .AllowAnyHeader()
-                    .AllowAnyMethod();
+                    .AllowAnyMethod()
+                    .AllowCredentials();
                 });
             });
 
