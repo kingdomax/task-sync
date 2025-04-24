@@ -1,4 +1,4 @@
-﻿namespace TaskSync.Configurations.Settings
+﻿namespace TaskSync.Infrastructure.Settings
 {
     public class JwtSettings
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace TaskSync.Configurations
+namespace TaskSync.Infrastructure.Configurations
 {
     public static class ApiVersionConfiguration
     {

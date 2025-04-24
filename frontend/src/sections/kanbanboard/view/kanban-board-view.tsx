@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useState } from 'react';
+import type { HubConnection } from '@microsoft/signalr';
+
+import { HubConnectionBuilder } from '@microsoft/signalr';
+import { useRef, useMemo, useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 
-import { getApiUrl } from 'src/utils/env';
+import { getApiUrl, getSeverUrl } from 'src/utils/env';
 
 import { DashboardContent } from 'src/layouts/dashboard';
 
@@ -30,6 +33,8 @@ const statusColors: Partial<Record<KanbanStatus, 'warning' | 'info' | 'success'>
 
 export const KanbanBoardView = () => {
     const [kanbanItems, setKanbanItems] = useState<KanbanItemData[]>([]);
+    const connectionRef = useRef<HubConnection | null>(null); // Persistent data across render without trigger re-render
+    const connectionIdRef = useRef<string>('');
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -47,6 +52,35 @@ export const KanbanBoardView = () => {
         fetchTasks();
     }, []);
 
+    useEffect(() => {
+        const connectToHub = async () => {
+            const connection = new HubConnectionBuilder()
+                .withUrl(`${getSeverUrl()}/taskHub`, {
+                    withCredentials: true, // Required
+                })
+                .withAutomaticReconnect()
+                .build();
+
+            connectionRef.current = connection;
+
+            connection.on('TaskUpdated', (updated: KanbanItemData) => {
+                setKanbanItems((prev) =>
+                    prev.map((item) => (item.id === updated.id ? updated : item))
+                );
+            });
+
+            await connection.start();
+            const connectionId = await connection.invoke('GetConnectionId');
+            connectionIdRef.current = connectionId;
+        };
+
+        connectToHub();
+
+        return () => {
+            connectionRef.current?.stop();
+        };
+    }, []);
+
     const handleStatusChange = async (data: KanbanItemData, newStatus: KanbanStatus) => {
         // Optimistically update UI
         setKanbanItems((prev) =>
@@ -61,7 +95,10 @@ export const KanbanBoardView = () => {
         try {
             const res = await fetch(`${getApiUrl()}/task/updateStatus/${data.id}`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-connection-id': connectionIdRef.current,
+                },
                 body: JSON.stringify({ statusRaw: newStatus }),
             });
 

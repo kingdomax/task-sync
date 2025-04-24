@@ -10,7 +10,7 @@ namespace TaskSync.Repositories
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
         {
-            Console.WriteLine("DbContext created");
+            //Console.WriteLine("DbContext created");
         }
     }
 }
