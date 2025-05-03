@@ -14,12 +14,11 @@ namespace TaskSync.MiddleWares
         public async Task InvokeAsync(HttpContext context)
         {
             var sw = Stopwatch.StartNew();
-            //Console.WriteLine($"{context.Request.Method} {context.Request.Path}");
 
             await _next(context);
 
             sw.Stop();
-            //Console.WriteLine($"[Timing] Finished in {sw.ElapsedMilliseconds}ms");
+            Console.WriteLine($"[Timing Middleware] {context.Request.Method} {context.Request.Path} - {sw.ElapsedMilliseconds}ms");
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using TaskSync.Models.Dto;
 using TaskSync.Services.Interfaces;
+using TaskSync.Repositories.Entities;
 using TaskSync.Repositories.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using TaskSync.SignalR;
 using TaskSync.Infrastructure.Http.Interface;
+using TaskSync.Infrastructure.Caching.Interfaces;
 
 namespace TaskSync.Services
 {
@@ -12,19 +14,28 @@ namespace TaskSync.Services
         private readonly ITaskRepository _taskRepository;
         private readonly IHubContext<TaskHub> _taskHub;
         private readonly IHttpContextReader _httpContextReader;
+        private readonly IMemoryCacheService<IList<TaskEntity>> _taskEntityCache;
 
-        public TaskService(ITaskRepository taskRepository, IHubContext<TaskHub> taskHub, IHttpContextReader httpContextReader)
+        public TaskService(
+            ITaskRepository taskRepository,
+            IHubContext<TaskHub> taskHub,
+            IHttpContextReader httpContextReader,
+            IMemoryCacheService<IList<TaskEntity>> taskEntityCache)
         {
             _taskRepository = taskRepository;
             _taskHub = taskHub;
             _httpContextReader = httpContextReader;
+            _taskEntityCache = taskEntityCache;
         }
 
         public async Task<IList<TaskDto>?> GetTasksAsync(int projectId)
         {
-            var taskEntities = await _taskRepository.GetAsync(projectId);
+            var taskEntities = await _taskEntityCache.GetAsync(projectId, async () =>
+            {
+                return await _taskRepository.GetAsync(projectId);
+            });
 
-            var result = taskEntities?.Select(x => new TaskDto()
+            return taskEntities?.Select(x => new TaskDto
             {
                 Id = x.Id,
                 Title = x.Title,
@@ -32,31 +43,27 @@ namespace TaskSync.Services
                 Status = x.Status,
                 LastModified = x.LastModified
             }).ToList();
-
-            return result;
         }
 
         public async Task<TaskDto?> UpdateTaskStatusAsync(int taskId, UpdateTaskRequest request)
         {
             var updatedTask = await _taskRepository.UpdateStatusAsync(taskId, request.StatusRaw);
 
-            if (updatedTask != null)
+            if (updatedTask == null) { return null; }
+
+            var dto = new TaskDto
             {
-                var dto = new TaskDto
-                {
-                    Id = updatedTask.Id,
-                    Title = updatedTask.Title,
-                    AssigneeId = updatedTask.AssigneeId,
-                    Status = updatedTask.Status,
-                    LastModified = updatedTask.LastModified
-                };
+                Id = updatedTask.Id,
+                Title = updatedTask.Title,
+                AssigneeId = updatedTask.AssigneeId,
+                Status = updatedTask.Status,
+                LastModified = updatedTask.LastModified
+            };
 
-                await PushTaskDto(_httpContextReader.GetConnectionId(), dto);
+            _taskEntityCache.Remove(updatedTask.ProjectId);
+            await PushTaskDto(_httpContextReader.GetConnectionId(), dto);
 
-                return dto;
-            }
-
-            return null;
+            return dto;
         }
 
         private async Task PushTaskDto(string? connectionIdToExclude, TaskDto taskDto)
