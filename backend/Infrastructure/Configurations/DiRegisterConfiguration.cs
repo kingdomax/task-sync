@@ -6,6 +6,8 @@ using TaskSync.Repositories.Interfaces;
 using TaskSync.Repositories.Entities;
 using TaskSync.Infrastructure.Http.Interface;
 using TaskSync.Infrastructure.Http;
+using TaskSync.Infrastructure.Caching;
+using TaskSync.Infrastructure.Caching.Interfaces;
 
 namespace TaskSync.Infrastructure.Configurations
 {
@@ -13,17 +15,16 @@ namespace TaskSync.Infrastructure.Configurations
     {
         public static IServiceCollection RegisterDependecies(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IHttpContextReader, HttpContextReader>();
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
             );
 
-            // Repositories
+            services.AddSingleton<IJwtService, JwtService>();
+            services.AddSingleton<IMemoryCacheService<IList<TaskEntity>>, TaskEntityCache>();
+
+            services.AddScoped<IHttpContextReader, HttpContextReader>();
             services.AddScoped<IRepository<UserEntity>, UserRepository>();
             services.AddScoped<ITaskRepository, TaskRepository>();
-
-            // Services
-            services.AddSingleton<IJwtService, JwtService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<ITaskService, TaskService>();

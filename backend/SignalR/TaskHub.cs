@@ -4,6 +4,7 @@ namespace TaskSync.SignalR
 {
     public class TaskHub : Hub
     {
+        // Will be called from clientside
         public string GetConnectionId()
         {
             return Context.ConnectionId;
@@ -11,13 +12,13 @@ namespace TaskSync.SignalR
 
         public override Task OnConnectedAsync()
         {
-            Console.WriteLine($"Client connected: {Context.ConnectionId}");
+            Console.WriteLine($"[SignalR] Client connected: {Context.ConnectionId}");
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception? exception)
         {
-            Console.WriteLine($"Client disconnected: {Context.ConnectionId}");
+            Console.WriteLine($"[SignalR] Client disconnected: {Context.ConnectionId}");
             return base.OnDisconnectedAsync(exception);
         }
     }
