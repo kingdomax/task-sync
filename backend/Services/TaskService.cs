@@ -1,9 +1,8 @@
 ﻿using TaskSync.Models.Dto;
+using TaskSync.SignalR.Interfaces;
 using TaskSync.Services.Interfaces;
 using TaskSync.Repositories.Entities;
 using TaskSync.Repositories.Interfaces;
-using Microsoft.AspNetCore.SignalR;
-using TaskSync.SignalR;
 using TaskSync.Infrastructure.Http.Interface;
 using TaskSync.Infrastructure.Caching.Interfaces;
 
@@ -11,21 +10,21 @@ namespace TaskSync.Services
 {
     public class TaskService : ITaskService
     {
-        private readonly ITaskRepository _taskRepository;
-        private readonly IHubContext<TaskHub> _taskHub;
         private readonly IHttpContextReader _httpContextReader;
+        private readonly ITaskRepository _taskRepository;
         private readonly IMemoryCacheService<IList<TaskEntity>> _taskEntityCache;
+        private readonly ITaskNotificationService _taskNotificationService;
 
         public TaskService(
-            ITaskRepository taskRepository,
-            IHubContext<TaskHub> taskHub,
             IHttpContextReader httpContextReader,
-            IMemoryCacheService<IList<TaskEntity>> taskEntityCache)
+            ITaskRepository taskRepository,
+            IMemoryCacheService<IList<TaskEntity>> taskEntityCache,
+            ITaskNotificationService taskNotificationService)
         {
-            _taskRepository = taskRepository;
-            _taskHub = taskHub;
             _httpContextReader = httpContextReader;
+            _taskRepository = taskRepository;
             _taskEntityCache = taskEntityCache;
+            _taskNotificationService = taskNotificationService;
         }
 
         public async Task<IList<TaskDto>?> GetTasksAsync(int projectId)
@@ -59,23 +58,9 @@ namespace TaskSync.Services
                 Status = updatedTask.Status,
                 LastModified = updatedTask.LastModified
             };
-
             _taskEntityCache.Remove(updatedTask.ProjectId);
-            await PushTaskDto(_httpContextReader.GetConnectionId(), dto);
-
+            Task.Run(() => _taskNotificationService.NotifyTaskUpdateAsync(dto, _httpContextReader.GetConnectionId())); // fire and forget
             return dto;
-        }
-
-        private async Task PushTaskDto(string? connectionIdToExclude, TaskDto taskDto)
-        {
-            if (!string.IsNullOrWhiteSpace(connectionIdToExclude))
-            {
-                await _taskHub.Clients.AllExcept(connectionIdToExclude).SendAsync("TaskUpdated", taskDto);
-            }
-            else
-            {
-                await _taskHub.Clients.All.SendAsync("TaskUpdated", taskDto);
-            }
         }
     }
 }

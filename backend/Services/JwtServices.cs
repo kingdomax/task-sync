@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -12,9 +13,9 @@ namespace TaskSync.Services
     {
         private readonly JwtSettings _jwtSettings;
 
-        public JwtService(JwtSettings jwtSettings)
+        public JwtService(IOptions<JwtSettings> options)
         {
-            _jwtSettings = jwtSettings;
+            _jwtSettings = options.Value;
         }
 
         public string GenerateJwtToken(User user)

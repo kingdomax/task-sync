@@ -1,15 +1,14 @@
 ﻿using Microsoft.Extensions.Options;
-using System.Diagnostics;
 using TaskSync.Infrastructure.Settings;
 
 namespace TaskSync.MiddleWares
 {
-    public class RequestTimingMiddleware
+    public class LoggerMiddleware
     {
         private readonly RequestDelegate _next;
         private readonly List<PathString> _excludedPaths;
 
-        public RequestTimingMiddleware(RequestDelegate next, IOptions<MiddlewareSettings> options)
+        public LoggerMiddleware(RequestDelegate next, IOptions<MiddlewareSettings> options)
         {
             _next = next;
             _excludedPaths = options.Value.ExcludedPaths.Select(p => new PathString(p)).ToList();
@@ -23,12 +22,10 @@ namespace TaskSync.MiddleWares
                 return;
             }
 
-            var sw = Stopwatch.StartNew();
-
+            Console.WriteLine($"-------------------");
+            Console.WriteLine($"[LoggerMiddleware] {context.Request.Method} {context.Request.Path}");
             await _next(context);
-
-            sw.Stop();
-            Console.WriteLine($"[TimingMiddleware] {sw.ElapsedMilliseconds}ms");
+            Console.WriteLine($"-------------------");
         }
     }
 }

@@ -8,19 +8,22 @@ using TaskSync.Infrastructure.Http.Interface;
 using TaskSync.Infrastructure.Http;
 using TaskSync.Infrastructure.Caching;
 using TaskSync.Infrastructure.Caching.Interfaces;
+using TaskSync.SignalR.Interfaces;
+using TaskSync.SignalR;
 
 namespace TaskSync.Infrastructure.Configurations
 {
-    public static class DiRegisterConfiguration
+    public static class DependencyInjectionConfiguration
     {
-        public static IServiceCollection RegisterDependecies(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection RegisterDependencies(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
             );
 
             services.AddSingleton<IJwtService, JwtService>();
-            services.AddSingleton<IMemoryCacheService<IList<TaskEntity>>, TaskEntityCache>();
+            services.AddSingleton<ITaskNotificationService, TaskNotificationService>();
+            services.AddSingleton<IMemoryCacheService<IList<TaskEntity>>, TaskEntitiesCache>();
 
             services.AddScoped<IHttpContextReader, HttpContextReader>();
             services.AddScoped<IRepository<UserEntity>, UserRepository>();
