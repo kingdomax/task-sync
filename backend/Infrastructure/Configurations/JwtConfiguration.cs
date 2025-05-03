@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TaskSync.Infrastructure.Settings;
@@ -9,14 +10,12 @@ namespace TaskSync.Infrastructure.Configurations
     {
         public static IServiceCollection ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
         {
-            var jwtSection = configuration.GetSection("JwtSettings");
-            services.Configure<JwtSettings>(jwtSection);
-            services.AddSingleton(jwtSection.Get<JwtSettings>());
+            var provider = services.BuildServiceProvider();
+            var jwtSettings = provider.GetRequiredService<IOptions<JwtSettings>>().Value;
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    var jwtSettings = jwtSection.Get<JwtSettings>();
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = true,
@@ -28,6 +27,7 @@ namespace TaskSync.Infrastructure.Configurations
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
                     };
                 });
+
             services.AddAuthorization();
 
             return services;

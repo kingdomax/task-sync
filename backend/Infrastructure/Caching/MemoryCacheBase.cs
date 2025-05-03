@@ -7,22 +7,23 @@ namespace TaskSync.Infrastructure.Caching
     {
         protected readonly IMemoryCache _memoryCache;
         protected MemoryCacheBase(IMemoryCache memoryCache) => _memoryCache = memoryCache;
+        
         protected abstract string GetCacheKey(int cacheKey);
 
         public async Task<T?> GetAsync(int cacheKey, Func<Task<T?>> fallbackCall)
         {
             if (_memoryCache.TryGetValue(GetCacheKey(cacheKey), out T? cached))
             {
-                Console.WriteLine($"[MemoryCache] get {cached?.ToString()} from cache");
+                Console.WriteLine($"[MemoryCache] get '{GetCacheKey(cacheKey)}' from memory");
                 return cached;
             }
 
-            Console.WriteLine($"[MemoryCache] get {cached?.ToString()} from database");
             var data = await fallbackCall();
             if (data != null)
             {
                 Set(cacheKey, data);
             }
+            Console.WriteLine($"[MemoryCache] get '{GetCacheKey(cacheKey)}' from database");
 
             return data;
         }
@@ -43,6 +44,7 @@ namespace TaskSync.Infrastructure.Caching
         public void Remove(int cacheKey)
         {
             _memoryCache.Remove(GetCacheKey(cacheKey));
+            Console.WriteLine($"[MemoryCache] remove '{GetCacheKey(cacheKey)}' from memory");
         }
     }
 }
