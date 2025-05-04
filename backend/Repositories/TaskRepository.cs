@@ -17,7 +17,10 @@ namespace TaskSync.Repositories
         public async Task<TaskEntity?> UpdateStatusAsync(int taskId, string newStatus)
         {
             var task = await _dbContext.Tasks.FirstOrDefaultAsync(x => x.Id == taskId);
-            if (task == null) return null;
+            if (task == null)
+            {
+                return null;
+            }
 
             task.StatusRaw = newStatus.ToLower();
             task.LastModified = DateTime.UtcNow;

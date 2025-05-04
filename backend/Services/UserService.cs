@@ -1,7 +1,7 @@
-﻿using TaskSync.Services.Interfaces;
-using TaskSync.Models;
-using TaskSync.Repositories.Interfaces;
+﻿using TaskSync.Models;
 using TaskSync.Repositories.Entities;
+using TaskSync.Repositories.Interfaces;
+using TaskSync.Services.Interfaces;
 
 namespace TaskSync.Services
 {
@@ -9,7 +9,7 @@ namespace TaskSync.Services
     {
         private readonly IRepository<UserEntity> _userRepository;
 
-        public UserService(IRepository<UserEntity> userRepository) 
+        public UserService(IRepository<UserEntity> userRepository)
         {
             _userRepository = userRepository;
         }
@@ -18,7 +18,7 @@ namespace TaskSync.Services
         {
             var userEntity = await _userRepository.GetAsync();
 
-            return userEntity != null 
+            return userEntity != null
                     ? new User(userEntity.Id, userEntity.Username, userEntity.Firstname, userEntity.Lastname, userEntity.Email, userEntity.Password)
                     : null;
         }

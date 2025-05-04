@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TaskSync.Repositories.Interfaces;
 using TaskSync.Repositories.Entities;
+using TaskSync.Repositories.Interfaces;
 
 namespace TaskSync.Repositories
 {

@@ -8,7 +8,7 @@ namespace TaskSync.Repositories
         public DbSet<UserEntity> Users => Set<UserEntity>();
         public DbSet<TaskEntity> Tasks => Set<TaskEntity>();
 
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
             //Console.WriteLine("DbContext created");
         }

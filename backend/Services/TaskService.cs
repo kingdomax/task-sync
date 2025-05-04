@@ -1,10 +1,10 @@
-﻿using TaskSync.Models.Dto;
-using TaskSync.SignalR.Interfaces;
-using TaskSync.Services.Interfaces;
+﻿using TaskSync.Infrastructure.Caching.Interfaces;
+using TaskSync.Infrastructure.Http.Interface;
+using TaskSync.Models.Dto;
 using TaskSync.Repositories.Entities;
 using TaskSync.Repositories.Interfaces;
-using TaskSync.Infrastructure.Http.Interface;
-using TaskSync.Infrastructure.Caching.Interfaces;
+using TaskSync.Services.Interfaces;
+using TaskSync.SignalR.Interfaces;
 
 namespace TaskSync.Services
 {
@@ -48,7 +48,10 @@ namespace TaskSync.Services
         {
             var updatedTask = await _taskRepository.UpdateStatusAsync(taskId, request.StatusRaw);
 
-            if (updatedTask == null) { return null; }
+            if (updatedTask == null)
+            {
+                return null;
+            }
 
             var dto = new TaskDto
             {

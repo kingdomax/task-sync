@@ -1,15 +1,15 @@
-﻿using TaskSync.Services;
-using TaskSync.Repositories;
-using TaskSync.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using TaskSync.Repositories.Interfaces;
-using TaskSync.Repositories.Entities;
-using TaskSync.Infrastructure.Http.Interface;
-using TaskSync.Infrastructure.Http;
+﻿using Microsoft.EntityFrameworkCore;
 using TaskSync.Infrastructure.Caching;
 using TaskSync.Infrastructure.Caching.Interfaces;
-using TaskSync.SignalR.Interfaces;
+using TaskSync.Infrastructure.Http;
+using TaskSync.Infrastructure.Http.Interface;
+using TaskSync.Repositories;
+using TaskSync.Repositories.Entities;
+using TaskSync.Repositories.Interfaces;
+using TaskSync.Services;
+using TaskSync.Services.Interfaces;
 using TaskSync.SignalR;
+using TaskSync.SignalR.Interfaces;
 
 namespace TaskSync.Infrastructure.Configurations
 {
