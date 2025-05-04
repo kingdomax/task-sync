@@ -20,7 +20,7 @@ namespace TaskSync.Services
         {
             var user = await _userService.GetUserAsync(request.Email);
 
-            //string passwordHash = BCrypt.Net.BCrypt.HashPassword("mypassword");
+            // string passwordHash = BCrypt.Net.BCrypt.HashPassword("mypassword");
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
             {
                 return null;

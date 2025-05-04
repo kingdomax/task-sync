@@ -5,6 +5,6 @@
         BACKLOG,
         TODO,
         INPROGRESS,
-        DONE
+        DONE,
     }
 }

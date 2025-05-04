@@ -4,6 +4,8 @@ namespace TaskSync.Services
 {
     public class ProjectService : IProjectService
     {
-        public ProjectService() { }
+        public ProjectService()
+        {
+        }
     }
 }
