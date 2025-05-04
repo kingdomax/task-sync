@@ -1,8 +1,10 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+
 using TaskSync.Infrastructure.Settings;
 using TaskSync.Models;
 using TaskSync.Services.Interfaces;

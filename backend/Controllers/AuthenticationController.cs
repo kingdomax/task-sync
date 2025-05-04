@@ -1,6 +1,8 @@
 using System.Security.Claims;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 using TaskSync.Filters;
 using TaskSync.Models.Dto;
 using TaskSync.Services.Interfaces;
@@ -47,8 +49,7 @@ namespace TaskSync.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var email = User.FindFirstValue(ClaimTypes.Email);
 
-            return Ok(new
-            {
+            return Ok(new {
                 userId,
                 email
             });

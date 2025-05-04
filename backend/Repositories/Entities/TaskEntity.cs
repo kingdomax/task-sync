@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+
 using TaskSync.Enums;
 
 namespace TaskSync.Repositories.Entities

@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+
 using TaskSync.Infrastructure.Configurations;
 using TaskSync.MiddleWares;
 using TaskSync.SignalR;
