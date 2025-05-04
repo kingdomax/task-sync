@@ -49,9 +49,10 @@ namespace TaskSync.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var email = User.FindFirstValue(ClaimTypes.Email);
 
-            return Ok(new {
+            return Ok(new
+            {
                 userId,
-                email
+                email,
             });
         }
     }

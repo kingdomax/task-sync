@@ -29,16 +29,18 @@ namespace TaskSync.Services
 
         public async Task<IList<TaskDto>?> GetTasksAsync(int projectId)
         {
-            var taskEntities = await _taskEntityCache.GetAsync(projectId, async () => {
+            var taskEntities = await _taskEntityCache.GetAsync(projectId, async () =>
+            {
                 return await _taskRepository.GetAsync(projectId);
             });
 
-            return taskEntities?.Select(x => new TaskDto {
+            return taskEntities?.Select(x => new TaskDto
+            {
                 Id = x.Id,
                 Title = x.Title,
                 AssigneeId = x.AssigneeId,
                 Status = x.Status,
-                LastModified = x.LastModified
+                LastModified = x.LastModified,
             }).ToList();
         }
 
@@ -46,14 +48,18 @@ namespace TaskSync.Services
         {
             var updatedTask = await _taskRepository.UpdateStatusAsync(taskId, request.StatusRaw);
 
-            if (updatedTask == null) { return null; }
+            if (updatedTask == null)
+            {
+                return null;
+            }
 
-            var dto = new TaskDto {
+            var dto = new TaskDto
+            {
                 Id = updatedTask.Id,
                 Title = updatedTask.Title,
                 AssigneeId = updatedTask.AssigneeId,
                 Status = updatedTask.Status,
-                LastModified = updatedTask.LastModified
+                LastModified = updatedTask.LastModified,
             };
             _taskEntityCache.Remove(updatedTask.ProjectId);
             _ = _taskNotificationService.NotifyTaskUpdateAsync(dto, _httpContextReader.GetConnectionId()); // fire and forget
