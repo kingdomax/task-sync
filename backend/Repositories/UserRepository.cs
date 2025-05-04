@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+
 using TaskSync.Repositories.Entities;
 using TaskSync.Repositories.Interfaces;
 

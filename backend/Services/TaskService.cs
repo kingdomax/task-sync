@@ -29,13 +29,11 @@ namespace TaskSync.Services
 
         public async Task<IList<TaskDto>?> GetTasksAsync(int projectId)
         {
-            var taskEntities = await _taskEntityCache.GetAsync(projectId, async () =>
-            {
+            var taskEntities = await _taskEntityCache.GetAsync(projectId, async () => {
                 return await _taskRepository.GetAsync(projectId);
             });
 
-            return taskEntities?.Select(x => new TaskDto
-            {
+            return taskEntities?.Select(x => new TaskDto {
                 Id = x.Id,
                 Title = x.Title,
                 AssigneeId = x.AssigneeId,
@@ -53,8 +51,7 @@ namespace TaskSync.Services
                 return null;
             }
 
-            var dto = new TaskDto
-            {
+            var dto = new TaskDto {
                 Id = updatedTask.Id,
                 Title = updatedTask.Title,
                 AssigneeId = updatedTask.AssigneeId,

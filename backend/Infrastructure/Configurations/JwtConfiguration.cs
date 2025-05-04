@@ -1,7 +1,9 @@
 ﻿using System.Text;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+
 using TaskSync.Infrastructure.Settings;
 
 namespace TaskSync.Infrastructure.Configurations
@@ -14,10 +16,8 @@ namespace TaskSync.Infrastructure.Configurations
             var jwtSettings = provider.GetRequiredService<IOptions<JwtSettings>>().Value;
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(options =>
-                {
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
+                .AddJwtBearer(options => {
+                    options.TokenValidationParameters = new TokenValidationParameters {
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,

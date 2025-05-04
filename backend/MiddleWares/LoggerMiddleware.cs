@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+
 using TaskSync.Infrastructure.Settings;
 
 namespace TaskSync.MiddleWares

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+
 using TaskSync.Enums;
 
 public class UpdateTaskRequest : IValidatableObject
