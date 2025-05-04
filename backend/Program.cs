@@ -1,8 +1,7 @@
 using System.Text.Json.Serialization;
+using TaskSync.Infrastructure.Configurations;
 using TaskSync.MiddleWares;
 using TaskSync.SignalR;
-using TaskSync.Infrastructure.Configurations;
-using TaskSync.Infrastructure.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 

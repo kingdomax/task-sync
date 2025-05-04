@@ -1,0 +1,45 @@
+# top-most EditorConfig file
+root = true
+
+# C# files
+[*.cs]
+
+# Code style rules
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_property = false:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_event = false:suggestion
+
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
+
+csharp_prefer_braces = true:suggestion
+
+# Newline preferences
+csharp_new_line_before_open_brace = all:false:suggestion
+csharp_new_line_between_query_expression_clauses = true:suggestion
+
+# Keep property on single line
+csharp_style_allow_embedded_statements_on_same_line = true:silent
+csharp_style_allow_blank_lines_between_consecutive_braces = false:suggestion
+
+# Spacing rules
+csharp_space_before_colon_in_inheritance_clause = false
+csharp_space_after_colon_in_inheritance_clause = true
+csharp_space_before_open_square_brackets = false
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_between_method_call_parameter_list_parentheses = false
+csharp_space_after_cast = false
+csharp_space_around_binary_operators = before_and_after
+
+# Indentation
+indent_style = space
+indent_size = 4
+tab_width = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Organize usings
+dotnet_separate_import_directive_groups = true
+dotnet_sort_system_directives_first = true

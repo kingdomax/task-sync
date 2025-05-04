@@ -1,9 +1,9 @@
 using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
-using TaskSync.Services.Interfaces;
-using TaskSync.Filters;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using TaskSync.Filters;
 using TaskSync.Models.Dto;
+using TaskSync.Services.Interfaces;
 
 namespace TaskSync.Controllers
 {
@@ -45,7 +45,7 @@ namespace TaskSync.Controllers
         public IActionResult Me()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var email = User.FindFirstValue(ClaimTypes.Email); 
+            var email = User.FindFirstValue(ClaimTypes.Email);
 
             return Ok(new
             {

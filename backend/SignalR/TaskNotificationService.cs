@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using TaskSync.SignalR.Interfaces;
 using TaskSync.Models.Dto;
+using TaskSync.SignalR.Interfaces;
 
 namespace TaskSync.SignalR
 {
@@ -20,7 +20,7 @@ namespace TaskSync.SignalR
                 await _taskHubContext.Clients.AllExcept(excludeConnectionId).SendAsync("TaskUpdated", dto);
             }
             else
-            { 
+            {
                 await _taskHubContext.Clients.All.SendAsync("TaskUpdated", dto);
             }
         }

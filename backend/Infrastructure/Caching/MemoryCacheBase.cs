@@ -7,7 +7,7 @@ namespace TaskSync.Infrastructure.Caching
     {
         protected readonly IMemoryCache _memoryCache;
         protected MemoryCacheBase(IMemoryCache memoryCache) => _memoryCache = memoryCache;
-        
+
         protected abstract string GetCacheKey(int cacheKey);
 
         public async Task<T?> GetAsync(int cacheKey, Func<Task<T?>> fallbackCall)
