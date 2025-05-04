@@ -59,7 +59,7 @@ namespace TaskSync.Services
                 LastModified = updatedTask.LastModified
             };
             _taskEntityCache.Remove(updatedTask.ProjectId);
-            Task.Run(() => _taskNotificationService.NotifyTaskUpdateAsync(dto, _httpContextReader.GetConnectionId())); // fire and forget
+            _ = _taskNotificationService.NotifyTaskUpdateAsync(dto, _httpContextReader.GetConnectionId()); // fire and forget
             return dto;
         }
     }
