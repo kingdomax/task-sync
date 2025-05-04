@@ -46,10 +46,7 @@ namespace TaskSync.Services
         {
             var updatedTask = await _taskRepository.UpdateStatusAsync(taskId, request.StatusRaw);
 
-            if (updatedTask == null)
-            {
-                return null;
-            }
+            if (updatedTask == null) { return null; }
 
             var dto = new TaskDto {
                 Id = updatedTask.Id,
