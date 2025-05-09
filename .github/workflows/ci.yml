@@ -11,153 +11,153 @@ permissions: # Grant proper permissions
     contents: read
 
 jobs: # Define the jobs (units of work) to run in parallel or series
-    #test-backend:
-    #    name: ✅ Run Backend Tests
-    #    runs-on: ubuntu-latest
-    #    steps:
-    #        - name: 📥 Checkout code
-    #          uses: actions/checkout@v3
-    #
-    #        - name: 🧰 Setup .NET 8
-    #          uses: actions/setup-dotnet@v3
-    #          with:
-    #              dotnet-version: 8.0.x
-    #
-    #        - name: 🔧 Restore backend test dependencies
-    #          run: dotnet restore ./backendtest
-    #
-    #        - name: ✅ Run tests & generate report
-    #          run: dotnet test ./backendtest --logger "trx;LogFileName=tests.trx" --results-directory ./TestResults
-    #
-    #        - name: 📤 Upload Test Results
-    #          if: always()
-    #          uses: actions/upload-artifact@v4
-    #          with:
-    #              name: backend-test-results
-    #              path: ./TestResults
-    #
-    #        - name: 📈 Publish Test Report to GitHub UI
-    #          if: always()
-    #          uses: dorny/test-reporter@v1
-    #          with:
-    #              name: 📋 xUnit Test Report
-    #              path: ./TestResults/**/*.trx
-    #              reporter: dotnet-trx
-    #
-    #build-backend:
-    #    name: 🧪 Build Backend
-    #    runs-on: ubuntu-latest
-    #    needs: test-backend
-    #    steps:
-    #        - name: 📥 Checkout code
-    #          uses: actions/checkout@v3
-    #
-    #        - name: 🧰 Setup .NET 8
-    #          uses: actions/setup-dotnet@v3
-    #          with:
-    #              dotnet-version: 8.0.x
-    #
-    #        - name: 🔧 Restore backend dependencies
-    #          run: dotnet restore ./backend
-    #
-    #        - name: 🛠 Build backend
-    #          run: dotnet build ./backend --configuration Release
-    #
-    #test-frontend:
-    #    name: ✅ Run Frontend Tests
-    #    runs-on: ubuntu-latest
-    #    steps:
-    #        - name: 📥 Checkout code
-    #          uses: actions/checkout@v3
-    #
-    #        - name: 🧰 Setup Node.js
-    #          uses: actions/setup-node@v3
-    #          with:
-    #              node-version: 22.14.0
-    #
-    #        - name: 📦 Install dependencies
-    #          run: npm ci
-    #          working-directory: ./frontend
-    #
-    #        - name: ✅ Run unit tests
-    #          run: npm run test
-    #          working-directory: ./frontend
-    #
-    #        - name: 📤 Upload Jest Test Results
-    #          if: always() # Run even if tests fail
-    #          uses: actions/upload-artifact@v4
-    #          with:
-    #              name: jest-results
-    #              path: frontend/test-results/jest/results.xml
-    #
-    #        - name: 📈 Publish Test Results to GitHub UI
-    #          if: always()
-    #          uses: dorny/test-reporter@v1
-    #          with:
-    #              name: 📋 Jest Test Report
-    #              path: frontend/test-results/jest/results.xml
-    #              reporter: jest-junit
-    #
-    #build-frontend:
-    #    name: 🧪 Build Frontend
-    #    runs-on: ubuntu-latest
-    #    needs: test-frontend
-    #    steps:
-    #        - name: 📥 Checkout code
-    #          uses: actions/checkout@v3
-    #
-    #        - name: 🧰 Setup Node.js # Install Node.js 22.1.4
-    #          uses: actions/setup-node@v3
-    #          with:
-    #              node-version: 22.14.0
-    #
-    #        - name: 📦 Install dependencies
-    #          run: npm ci # (ci = clean install)
-    #          working-directory: ./frontend # Set working dir to your frontend folder
-    #
-    #        - name: 🛠 Build frontend
-    #          run: npm run build
-    #          working-directory: ./frontend
-    #
-    #docker-push:
-    #    name: 🐳 Docker Build & Push
-    #    runs-on: ubuntu-latest
-    #    needs: [build-backend, build-frontend] # Wait for both to pass
-    #    if: github.event_name == 'push' # Only pushing event
-    #    steps:
-    #        - name: 📥 Checkout code
-    #          uses: actions/checkout@v3
-    #
-    #        - name: 🔐 Docker login to Docker Hub
-    #          run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-    #
-    #        - name: 🐳 Build and tag backend image
-    #          run: |
-    #              docker build -t ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest . -f backend/Dockerfile
-    #              docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.sha }}
-    #              docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.ref_name }}
-    #
-    #        - name: 🚀 Push backend image
-    #          run: |
-    #              docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest
-    #              docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.sha }}
-    #              docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.ref_name }}
-    #
-    #        - name: 🐳 Build and tag frontend image
-    #          run: |
-    #              docker build -t ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest ./frontend
-    #              docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.sha }}
-    #              docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.ref_name }}
-    #
-    #        - name: 🚀 Push frontend image
-    #          run: |
-    #              docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest
-    #              docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.sha }}
-    #              docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.ref_name }}
+    test-backend:
+        name: ✅ Run Backend Tests
+        runs-on: ubuntu-latest
+        steps:
+            - name: 📥 Checkout code
+              uses: actions/checkout@v3
+
+            - name: 🧰 Setup .NET 8
+              uses: actions/setup-dotnet@v3
+              with:
+                  dotnet-version: 8.0.x
+
+            - name: 🔧 Restore backend test dependencies
+              run: dotnet restore ./backendtest
+
+            - name: ✅ Run tests & generate report
+              run: dotnet test ./backendtest --logger "trx;LogFileName=tests.trx" --results-directory ./TestResults
+
+            - name: 📤 Upload Test Results
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: backend-test-results
+                  path: ./TestResults
+
+            - name: 📈 Publish Test Report to GitHub UI
+              if: always()
+              uses: dorny/test-reporter@v1
+              with:
+                  name: 📋 xUnit Test Report
+                  path: ./TestResults/**/*.trx
+                  reporter: dotnet-trx
+
+    build-backend:
+        name: 🧪 Build Backend
+        runs-on: ubuntu-latest
+        needs: test-backend
+        steps:
+            - name: 📥 Checkout code
+              uses: actions/checkout@v3
+
+            - name: 🧰 Setup .NET 8
+              uses: actions/setup-dotnet@v3
+              with:
+                  dotnet-version: 8.0.x
+
+            - name: 🔧 Restore backend dependencies
+              run: dotnet restore ./backend
+
+            - name: 🛠 Build backend
+              run: dotnet build ./backend --configuration Release
+
+    test-frontend:
+        name: ✅ Run Frontend Tests
+        runs-on: ubuntu-latest
+        steps:
+            - name: 📥 Checkout code
+              uses: actions/checkout@v3
+
+            - name: 🧰 Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 22.14.0
+
+            - name: 📦 Install dependencies
+              run: npm ci
+              working-directory: ./frontend
+
+            - name: ✅ Run unit tests
+              run: npm run test
+              working-directory: ./frontend
+
+            - name: 📤 Upload Jest Test Results
+              if: always() # Run even if tests fail
+              uses: actions/upload-artifact@v4
+              with:
+                  name: jest-results
+                  path: frontend/test-results/jest/results.xml
+
+            - name: 📈 Publish Test Results to GitHub UI
+              if: always()
+              uses: dorny/test-reporter@v1
+              with:
+                  name: 📋 Jest Test Report
+                  path: frontend/test-results/jest/results.xml
+                  reporter: jest-junit
+
+    build-frontend:
+        name: 🧪 Build Frontend
+        runs-on: ubuntu-latest
+        needs: test-frontend
+        steps:
+            - name: 📥 Checkout code
+              uses: actions/checkout@v3
+
+            - name: 🧰 Setup Node.js # Install Node.js 22.1.4
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 22.14.0
+
+            - name: 📦 Install dependencies
+              run: npm ci # (ci = clean install)
+              working-directory: ./frontend # Set working dir to your frontend folder
+
+            - name: 🛠 Build frontend
+              run: npm run build
+              working-directory: ./frontend
+
+    docker-push:
+        name: 🐳 Docker Build & Push
+        runs-on: ubuntu-latest
+        needs: [build-backend, build-frontend] # Wait for both to pass
+        if: github.event_name == 'push' # Only pushing event
+        steps:
+            - name: 📥 Checkout code
+              uses: actions/checkout@v3
+
+            - name: 🔐 Docker login to Docker Hub
+              run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+            - name: 🐳 Build and tag backend image
+              run: |
+                  docker build -t ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest . -f backend/Dockerfile
+                  docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.sha }}
+                  docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.ref_name }}
+
+            - name: 🚀 Push backend image
+              run: |
+                  docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest
+                  docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.sha }}
+                  docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.ref_name }}
+
+            - name: 🐳 Build and tag frontend image
+              run: |
+                  docker build -t ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest ./frontend
+                  docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.sha }}
+                  docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.ref_name }}
+
+            - name: 🚀 Push frontend image
+              run: |
+                  docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest
+                  docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.sha }}
+                  docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.ref_name }}
     deploy-to-vm:
         name: 🚢 Deploy to Azure VM
         runs-on: ubuntu-latest
-        #needs: docker-push
+        needs: docker-push
         if: github.event_name == 'push'
 
         steps:
@@ -166,12 +166,9 @@ jobs: # Define the jobs (units of work) to run in parallel or series
                   mkdir -p ~/.ssh
                   echo "${{ secrets.AZURE_VM_SSH_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
                   chmod 600 ~/.ssh/id_rsa
-
                   ssh-keyscan -H ${{ secrets.AZURE_VM_HOST }} >> ~/.ssh/known_hosts
-
                   echo "✅ known_hosts content:"
                   cat ~/.ssh/known_hosts
-
                   echo -e "Host *\n  StrictHostKeyChecking no\n" >> ~/.ssh/config
 
             - name: 🧪 Debug SSH Connection
@@ -186,4 +183,8 @@ jobs: # Define the jobs (units of work) to run in parallel or series
                     docker compose -f docker-compose.prod.yml down
                     docker compose -f docker-compose.prod.yml pull
                     docker compose -f docker-compose.prod.yml up -d --remove-orphans
+                    echo "⏳ Waiting for Postgres to be ready..."
+                    sleep 5
+                    echo "🗄️ Restoring database..."
+                    docker exec -i tasksync-postgres psql -U postgres -d tasksync < database/tasksync_backup.sql
                   EOF
