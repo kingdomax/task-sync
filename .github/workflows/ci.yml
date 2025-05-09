@@ -154,3 +154,25 @@ jobs: # Define the jobs (units of work) to run in parallel or series
                   docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:latest
                   docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.sha }}
                   docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-frontend:${{ github.ref_name }}
+    deploy-to-vm:
+        name: 🚢 Deploy to Azure VM
+        runs-on: ubuntu-latest
+        needs: docker-push
+        if: github.event_name == 'push'
+
+        steps:
+            - name: 🧩 Set up SSH key
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.AZURE_VM_SSH_KEY }}" > ~/.ssh/id_rsa
+                  chmod 600 ~/.ssh/id_rsa
+                  ssh-keyscan -H ${{ secrets.AZURE_VM_HOST }} >> ~/.ssh/known_hosts
+
+            - name: 🔄 Pull & restart containers on VM
+              run: |
+                  ssh ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_HOST }} << 'EOF'
+                    cd ~/task-sync
+                    git pull origin main
+                    docker compose -f docker-compose.prod.yml pull
+                    docker compose -f docker-compose.prod.yml up -d --remove-orphans
+                  EOF
