@@ -164,15 +164,16 @@ jobs: # Define the jobs (units of work) to run in parallel or series
             - name: 🧩 Set up SSH key
               run: |
                   mkdir -p ~/.ssh
-                  echo "${{ secrets.AZURE_VM_SSH_KEY }}" > ~/.ssh/id_rsa
+                  echo "${{ secrets.AZURE_VM_SSH_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
                   chmod 600 ~/.ssh/id_rsa
-                  ssh-keyscan -H ${{ secrets.AZURE_VM_HOST }} >> ~/.ssh/known_hosts
+                  echo "Host *\n  StrictHostKeyChecking no\n" >> ~/.ssh/config
 
             - name: 🔄 Pull & restart containers on VM
               run: |
                   ssh ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_HOST }} << 'EOF'
                     cd ~/task-sync
                     git pull origin main
+                    docker compose -f docker-compose.prod.yml down
                     docker compose -f docker-compose.prod.yml pull
                     docker compose -f docker-compose.prod.yml up -d --remove-orphans
                   EOF
