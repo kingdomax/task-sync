@@ -5,15 +5,13 @@ import { useRef, useMemo, useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
 
 import { getApiUrl, getSeverUrl } from 'src/utils/env';
 
 import { DashboardContent } from 'src/layouts/dashboard';
 
-import { Iconify } from 'src/components/iconify';
-
 import { KanbanItem } from '../item-card';
+import { AddItemPanel } from '../add-item-panel';
 import { KanbanStatus } from '../type/kanban-item';
 
 import type { KanbanItemData, KanbanItemResponse } from '../type/kanban-item';
@@ -145,21 +143,7 @@ export const KanbanBoardView = () => {
 
     return (
         <DashboardContent maxWidth="xl">
-            <Box
-                sx={{
-                    mb: 5,
-                    display: 'flex',
-                    alignItems: 'center',
-                }}
-            >
-                <Button
-                    variant="contained"
-                    color="inherit"
-                    startIcon={<Iconify icon="mingcute:add-line" />}
-                >
-                    Add item
-                </Button>
-            </Box>
+            <AddItemPanel />
 
             <Grid container spacing={3}>
                 {Object.entries(groupedItems).map(([statusKey, items]) => {
