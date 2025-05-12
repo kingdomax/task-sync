@@ -14,7 +14,7 @@ import { KanbanItem } from '../item-card';
 import { AddItemPanel } from '../add-item-panel';
 import { KanbanStatus } from '../type/kanban-item';
 
-import type { KanbanItemData, KanbanItemResponse } from '../type/kanban-item';
+import type { AddItemRequest, KanbanItemData, KanbanItemResponse } from '../type/kanban-item';
 
 const statusLabels: Record<KanbanStatus, string> = {
     [KanbanStatus.BACKLOG]: 'Backlog',
@@ -120,6 +120,36 @@ export const KanbanBoardView = () => {
         }
     };
 
+    const handleAddItem = async (
+        newItem: AddItemRequest,
+        onSuccess: () => void,
+        onFailure: (msg: string) => void
+    ) => {
+        try {
+            const res = await fetch(`${getApiUrl()}/task/addTask`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newItem),
+            });
+
+            if (!res.ok) {
+                throw new Error(`${res.statusText}`);
+            }
+
+            const addedItem: KanbanItemData = await res.json();
+            onSuccess();
+            setKanbanItems((prev) => [...prev, addedItem]);
+        } catch (err: any) {
+            if (err instanceof Error) {
+                onFailure(err.message);
+            } else {
+                onFailure(`unknown error: ${err}`);
+            }
+        }
+    };
+
     // Memoizes the result of a computation - saving performance
     const groupedItems = useMemo(() => {
         const map: Record<KanbanStatus, KanbanItemData[]> = {
@@ -143,7 +173,7 @@ export const KanbanBoardView = () => {
 
     return (
         <DashboardContent maxWidth="xl">
-            <AddItemPanel />
+            <AddItemPanel onAddItem={handleAddItem} />
 
             <Grid container spacing={3}>
                 {Object.entries(groupedItems).map(([statusKey, items]) => {

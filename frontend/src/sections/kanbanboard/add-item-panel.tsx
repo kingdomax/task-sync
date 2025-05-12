@@ -1,4 +1,3 @@
-import type { SelectChangeEvent } from '@mui/material/Select';
 import type { TransitionProps } from '@mui/material/transitions';
 
 import { useState, forwardRef } from 'react';
@@ -20,14 +19,35 @@ import DialogContentText from '@mui/material/DialogContentText';
 
 import { Iconify } from 'src/components/iconify';
 
-export const AddItemPanel = () => {
+import type { AddItemRequest } from './type/kanban-item';
+
+type Props = {
+    onAddItem: (
+        newItem: AddItemRequest,
+        onSuccess: () => void,
+        onFailure: (msg: string) => void
+    ) => void;
+};
+
+export const AddItemPanel = ({ onAddItem }: Props) => {
     const [isDialogOpen, setDialogOpen] = useState(false);
-    const [assignee, setAssignee] = useState('');
+    const [isLoading, setLoading] = useState(false);
+    const [title, setTitle] = useState('');
+    const [assigneeId, setAssigneeId] = useState(0);
     const [fileName, setFilename] = useState('');
 
-    const handleOpenForm = () => setDialogOpen(true);
-    const handleCloseForm = () => setDialogOpen(false);
-    const handleAssignee = (event: SelectChangeEvent) => setAssignee(event.target.value);
+    const clearForm = () => {
+        setLoading(false);
+        setTitle('');
+        setAssigneeId(0);
+        setFilename('');
+        setDialogOpen(false);
+    };
+
+    const handleError = (msg: string) => {
+        setLoading(false);
+        alert(`Failed to add item: ${msg}`);
+    };
 
     return (
         <>
@@ -42,7 +62,7 @@ export const AddItemPanel = () => {
                     variant="contained"
                     color="inherit"
                     startIcon={<Iconify icon="mingcute:add-line" />}
-                    onClick={() => handleOpenForm()}
+                    onClick={() => setDialogOpen(true)}
                 >
                     Add item
                 </Button>
@@ -52,7 +72,7 @@ export const AddItemPanel = () => {
                 open={isDialogOpen}
                 onClose={(_, reason) => {
                     if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
-                        handleCloseForm();
+                        setDialogOpen(false);
                     }
                 }}
                 disableEscapeKeyDown
@@ -64,11 +84,16 @@ export const AddItemPanel = () => {
                         component: 'form',
                         onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
                             event.preventDefault();
-                            const formData = new FormData(event.currentTarget);
-                            const formJson = Object.fromEntries((formData as any).entries());
-                            const email = formJson.email;
-                            console.log(email);
-                            handleCloseForm();
+                            setLoading(true);
+
+                            const newItem: AddItemRequest = {
+                                title,
+                                assigneeId: assigneeId <= 0 ? null : assigneeId,
+                                lastModified: new Date(),
+                            };
+
+                            //onAddItem(newItem, clearForm, handleError);
+                            setTimeout(() => clearForm(), 5000);
                         },
                     },
                 }}
@@ -87,6 +112,8 @@ export const AddItemPanel = () => {
                         type="text"
                         fullWidth
                         variant="standard"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
                     />
                     <FormControl variant="standard" sx={{ minWidth: 200, mt: 1, mb: 0.5 }}>
                         <InputLabel required id="assignee-label">
@@ -96,14 +123,15 @@ export const AddItemPanel = () => {
                             required
                             labelId="assignee-label"
                             id="assignee-select"
-                            value={assignee}
-                            onChange={handleAssignee}
+                            value={assigneeId.toString()}
+                            onChange={(e) => setAssigneeId(Number(e.target.value))}
                             label="Age"
                         >
-                            <MenuItem value="">None</MenuItem>
-                            <MenuItem value="a">Mr. A</MenuItem>
-                            <MenuItem value="b">Mrs. B</MenuItem>
-                            <MenuItem value="c">Miss C</MenuItem>
+                            {/* todo-moch: fix hardcode later */}
+                            <MenuItem value="0">None</MenuItem>
+                            <MenuItem value="1">admin</MenuItem>
+                            <MenuItem value="2">kingdomax</MenuItem>
+                            <MenuItem value="3">jaydonk</MenuItem>
                         </Select>
                     </FormControl>
                     <Box sx={{ mt: 2.5, mb: 0.5 }}>
@@ -125,10 +153,14 @@ export const AddItemPanel = () => {
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button color="inherit" onClick={handleCloseForm}>
+                    <Button
+                        color="inherit"
+                        onClick={() => setDialogOpen(false)}
+                        disabled={isLoading}
+                    >
                         Cancel
                     </Button>
-                    <Button color="inherit" type="submit">
+                    <Button color="inherit" type="submit" loading={isLoading}>
                         Create
                     </Button>
                 </DialogActions>
