@@ -130,6 +130,7 @@ export const KanbanBoardView = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'x-connection-id': connectionIdRef.current,
                 },
                 body: JSON.stringify(newItem),
             });
