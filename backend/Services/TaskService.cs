@@ -14,17 +14,20 @@ namespace TaskSync.Services
         private readonly ITaskRepository _taskRepository;
         private readonly IMemoryCacheService<IList<TaskEntity>> _taskEntityCache;
         private readonly ITaskNotificationService _taskNotificationService;
+        private readonly ICacheBackgroundRefresher _cacheBackgroundRefresher;
 
         public TaskService(
             IHttpContextReader httpContextReader,
             ITaskRepository taskRepository,
             IMemoryCacheService<IList<TaskEntity>> taskEntityCache,
-            ITaskNotificationService taskNotificationService)
+            ITaskNotificationService taskNotificationService,
+            ICacheBackgroundRefresher cacheBackgroundRefresher)
         {
             _httpContextReader = httpContextReader;
             _taskRepository = taskRepository;
             _taskEntityCache = taskEntityCache;
             _taskNotificationService = taskNotificationService;
+            _cacheBackgroundRefresher = cacheBackgroundRefresher;
         }
 
         public async Task<IList<TaskDto>?> GetTasksAsync(int projectId)
@@ -47,11 +50,13 @@ namespace TaskSync.Services
         public async Task<TaskDto?> UpdateTaskStatusAsync(int taskId, UpdateTaskRequest request)
         {
             var updatedTask = await _taskRepository.UpdateStatusAsync(taskId, request.StatusRaw);
-
             if (updatedTask == null)
             {
                 return null;
             }
+
+            _taskEntityCache.Remove(updatedTask.ProjectId);
+            _cacheBackgroundRefresher.RefreshProjectTasks(updatedTask.ProjectId); // pre-warm cache in other thread pool (i.e. background task)
 
             var dto = new TaskDto
             {
@@ -61,8 +66,26 @@ namespace TaskSync.Services
                 Status = updatedTask.Status,
                 LastModified = updatedTask.LastModified,
             };
-            _taskEntityCache.Remove(updatedTask.ProjectId);
-            _ = _taskNotificationService.NotifyTaskUpdateAsync(dto, _httpContextReader.GetConnectionId()); // fire and forget
+            _ = _taskNotificationService.NotifyTaskUpdateAsync(dto, _httpContextReader.GetConnectionId()); // fire and forget, executes on the thread handling the request (non-thread-pooled).
+            return dto;
+        }
+
+        public async Task<TaskDto> AddTaskAsync(AddTaskRequest request)
+        {
+            var newTask = await _taskRepository.AddAsync(request.Title, request.AssigneeId, request.ProjectId);
+
+            _taskEntityCache.Remove(newTask.ProjectId);
+            _cacheBackgroundRefresher.RefreshProjectTasks(newTask.ProjectId);
+
+            var dto = new TaskDto
+            {
+                Id = newTask.Id,
+                Title = newTask.Title,
+                AssigneeId = newTask.AssigneeId,
+                Status = newTask.Status,
+                LastModified = newTask.LastModified,
+            };
+            _ = _taskNotificationService.NotifyTaskUpdateAsync(dto, _httpContextReader.GetConnectionId());
             return dto;
         }
     }

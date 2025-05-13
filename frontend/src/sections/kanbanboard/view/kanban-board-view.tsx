@@ -62,6 +62,8 @@ export const KanbanBoardView = () => {
             connectionRef.current = connection;
 
             connection.on('TaskUpdated', (updated: KanbanItemData) => {
+                // todo-moch: support add item as well
+
                 setKanbanItems((prev) =>
                     prev.map((item) => (item.id === updated.id ? updated : item))
                 );

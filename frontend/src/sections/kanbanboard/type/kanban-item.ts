@@ -17,4 +17,6 @@ export enum KanbanStatus {
     DONE = 'DONE',
 }
 
-export type AddItemRequest = Pick<KanbanItemData, 'title' | 'assigneeId' | 'lastModified'>;
+export type AddItemRequest = Pick<KanbanItemData, 'title' | 'assigneeId' | 'lastModified'> & {
+    projectId: number;
+};

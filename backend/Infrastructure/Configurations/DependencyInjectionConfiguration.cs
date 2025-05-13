@@ -25,6 +25,7 @@ namespace TaskSync.Infrastructure.Configurations
             services.AddSingleton<IJwtService, JwtService>();
             services.AddSingleton<ITaskNotificationService, TaskNotificationService>();
             services.AddSingleton<IMemoryCacheService<IList<TaskEntity>>, TaskEntitiesCache>();
+            services.AddSingleton<ICacheBackgroundRefresher, CacheBackgroundRefresher>();
 
             services.AddScoped<IHttpContextReader, HttpContextReader>();
             services.AddScoped<IRepository<UserEntity>, UserRepository>();

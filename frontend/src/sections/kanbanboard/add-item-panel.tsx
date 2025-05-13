@@ -36,7 +36,7 @@ export const AddItemPanel = ({ onAddItem }: Props) => {
     const [assigneeId, setAssigneeId] = useState(0);
     const [fileName, setFilename] = useState('');
 
-    const clearForm = () => {
+    const handleSuccess = () => {
         setLoading(false);
         setTitle('');
         setAssigneeId(0);
@@ -90,10 +90,11 @@ export const AddItemPanel = ({ onAddItem }: Props) => {
                                 title,
                                 assigneeId: assigneeId <= 0 ? null : assigneeId,
                                 lastModified: new Date(),
+                                projectId: 1, // todo-moch: hardcode for now
                             };
 
-                            //onAddItem(newItem, clearForm, handleError);
-                            setTimeout(() => clearForm(), 5000);
+                            onAddItem(newItem, handleSuccess, handleError);
+                            //setTimeout(() => clearForm(), 5000);
                         },
                     },
                 }}
