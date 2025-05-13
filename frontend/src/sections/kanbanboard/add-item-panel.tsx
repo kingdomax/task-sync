@@ -94,7 +94,6 @@ export const AddItemPanel = ({ onAddItem }: Props) => {
                             };
 
                             onAddItem(newItem, handleSuccess, handleError);
-                            //setTimeout(() => clearForm(), 5000);
                         },
                     },
                 }}

@@ -85,7 +85,7 @@ namespace TaskSync.Services
                 Status = newTask.Status,
                 LastModified = newTask.LastModified,
             };
-            _ = _taskNotificationService.NotifyTaskUpdateAsync(dto, _httpContextReader.GetConnectionId());
+            _ = _taskNotificationService.NotifyTaskCreateAsync(dto, _httpContextReader.GetConnectionId());
             return dto;
         }
     }

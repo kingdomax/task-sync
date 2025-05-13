@@ -23,7 +23,7 @@ namespace TaskSync.Controllers
         {
             var tasks = await _taskService.GetTasksAsync(projectId);
 
-            return Ok(new TaskResponse() { Tasks = tasks });
+            return Ok(new KanbanBoardVm() { Tasks = tasks });
         }
 
         [ValidateRequest]

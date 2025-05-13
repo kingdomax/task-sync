@@ -12,25 +12,25 @@ import { DashboardContent } from 'src/layouts/dashboard';
 
 import { KanbanItem } from '../item-card';
 import { AddItemPanel } from '../add-item-panel';
-import { KanbanStatus } from '../type/kanban-item';
+import { TASK_STATUS, NOTIFY_STATUS } from '../type/kanban-item';
 
-import type { AddItemRequest, KanbanItemData, KanbanItemResponse } from '../type/kanban-item';
+import type { TaskDto, NotifyTask, KanbanBoardVm, AddItemRequest } from '../type/kanban-item';
 
-const statusLabels: Record<KanbanStatus, string> = {
-    [KanbanStatus.BACKLOG]: 'Backlog',
-    [KanbanStatus.TODO]: 'To Do',
-    [KanbanStatus.INPROGRESS]: 'In Progress',
-    [KanbanStatus.DONE]: 'Done',
+const statusLabels: Record<TASK_STATUS, string> = {
+    [TASK_STATUS.BACKLOG]: 'Backlog',
+    [TASK_STATUS.TODO]: 'To Do',
+    [TASK_STATUS.INPROGRESS]: 'In Progress',
+    [TASK_STATUS.DONE]: 'Done',
 };
 
-const statusColors: Partial<Record<KanbanStatus, 'warning' | 'info' | 'success'>> = {
-    [KanbanStatus.TODO]: 'warning',
-    [KanbanStatus.INPROGRESS]: 'info',
-    [KanbanStatus.DONE]: 'success',
+const statusColors: Partial<Record<TASK_STATUS, 'warning' | 'info' | 'success'>> = {
+    [TASK_STATUS.TODO]: 'warning',
+    [TASK_STATUS.INPROGRESS]: 'info',
+    [TASK_STATUS.DONE]: 'success',
 };
 
 export const KanbanBoardView = () => {
-    const [kanbanItems, setKanbanItems] = useState<KanbanItemData[]>([]);
+    const [kanbanItems, setKanbanItems] = useState<TaskDto[]>([]);
     const connectionRef = useRef<HubConnection | null>(null); // Persistent data across render without trigger re-render
     const connectionIdRef = useRef<string>('');
 
@@ -39,7 +39,7 @@ export const KanbanBoardView = () => {
             try {
                 const response: Response = await fetch(`${getApiUrl()}/task/getTasks/1`);
                 if (response.ok) {
-                    const data: KanbanItemResponse = await response.json();
+                    const data: KanbanBoardVm = await response.json();
                     setKanbanItems(data.tasks ?? []);
                 }
             } catch (error) {
@@ -61,12 +61,14 @@ export const KanbanBoardView = () => {
 
             connectionRef.current = connection;
 
-            connection.on('TaskUpdated', (updated: KanbanItemData) => {
-                // todo-moch: support add item as well
-
-                setKanbanItems((prev) =>
-                    prev.map((item) => (item.id === updated.id ? updated : item))
-                );
+            connection.on('TaskUpdated', (response: NotifyTask) => {
+                if (response.status == NOTIFY_STATUS.CREATE) {
+                    setKanbanItems((prev) => [...prev, response.data]);
+                } else if (response.status == NOTIFY_STATUS.UPDATE) {
+                    setKanbanItems((prev) =>
+                        prev.map((item) => (item.id === response.data.id ? response.data : item))
+                    );
+                }
             });
 
             await connection.start();
@@ -81,7 +83,7 @@ export const KanbanBoardView = () => {
         };
     }, []);
 
-    const handleStatusChange = async (data: KanbanItemData, newStatus: KanbanStatus) => {
+    const handleStatusChange = async (data: TaskDto, newStatus: TASK_STATUS) => {
         // Optimistically update UI
         setKanbanItems((prev) =>
             prev.map((item) =>
@@ -141,7 +143,7 @@ export const KanbanBoardView = () => {
                 throw new Error(`${res.statusText}`);
             }
 
-            const addedItem: KanbanItemData = await res.json();
+            const addedItem: TaskDto = await res.json();
             onSuccess();
             setKanbanItems((prev) => [...prev, addedItem]);
         } catch (err: any) {
@@ -155,11 +157,11 @@ export const KanbanBoardView = () => {
 
     // Memoizes the result of a computation - saving performance
     const groupedItems = useMemo(() => {
-        const map: Record<KanbanStatus, KanbanItemData[]> = {
-            [KanbanStatus.BACKLOG]: [],
-            [KanbanStatus.TODO]: [],
-            [KanbanStatus.INPROGRESS]: [],
-            [KanbanStatus.DONE]: [],
+        const map: Record<TASK_STATUS, TaskDto[]> = {
+            [TASK_STATUS.BACKLOG]: [],
+            [TASK_STATUS.TODO]: [],
+            [TASK_STATUS.INPROGRESS]: [],
+            [TASK_STATUS.DONE]: [],
         };
 
         const sorted = [...kanbanItems].sort(
@@ -180,7 +182,7 @@ export const KanbanBoardView = () => {
 
             <Grid container spacing={3}>
                 {Object.entries(groupedItems).map(([statusKey, items]) => {
-                    const status = statusKey as KanbanStatus;
+                    const status = statusKey as TASK_STATUS;
                     return (
                         <Grid key={status} size={{ xs: 12, sm: 6, md: 3 }}>
                             <Box sx={{ ml: 1, mb: 2, typography: 'h6' }}>
