@@ -30,5 +30,22 @@ namespace TaskSync.Repositories
 
             return task;
         }
+
+        public async Task<TaskEntity> AddAsync(string title, int? assigneeId, int projectId)
+        {
+            var newTask = new TaskEntity()
+            {
+                Title = title,
+                AssigneeId = assigneeId,
+                StatusRaw = "backlog",
+                ProjectId = projectId,
+                LastModified = DateTime.UtcNow,
+            };
+
+            var entry = await _dbContext.Tasks.AddAsync(newTask);
+            await _dbContext.SaveChangesAsync();
+
+            return entry.Entity;
+        }
     }
 }

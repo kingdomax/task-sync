@@ -1,12 +1,11 @@
-﻿using TaskSync.Services;
-using TaskSync.Repositories.Entities;
-using Moq;
-using TaskSync.Infrastructure.Http.Interface;
+﻿using Moq;
 using TaskSync.Infrastructure.Caching.Interfaces;
-using TaskSync.Repositories.Interfaces;
-using TaskSync.SignalR.Interfaces;
+using TaskSync.Infrastructure.Http.Interface;
 using TaskSync.Models.Dto;
-using TaskSync.Enums;
+using TaskSync.Repositories.Entities;
+using TaskSync.Repositories.Interfaces;
+using TaskSync.Services;
+using TaskSync.SignalR.Interfaces;
 
 
 namespace TaskSyncTest.Services
@@ -17,32 +16,35 @@ namespace TaskSyncTest.Services
         private TaskService CreateTaskService(
             TaskEntity? returnEntity,
             out Mock<ITaskNotificationService> notificationMock,
-            out Mock<IMemoryCacheService<IList<TaskEntity>>> cacheMock)
+            out Mock<IMemoryCacheService<IList<TaskEntity>>> cacheMock,
+            out Mock<ICacheBackgroundRefresher> cacheBgRefresherMock)
         {
             var http = new Mock<IHttpContextReader>();
             var repo = new Mock<ITaskRepository>();
             var taskHub = new Mock<ITaskNotificationService>();
             var cache = new Mock<IMemoryCacheService<IList<TaskEntity>>>();
+            var cacheBgRefresher = new Mock<ICacheBackgroundRefresher>();
 
             repo.Setup(x => x.UpdateStatusAsync(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(returnEntity);
             cacheMock = cache;
             notificationMock = taskHub;
+            cacheBgRefresherMock = cacheBgRefresher;
 
-            return new TaskService(http.Object, repo.Object, cache.Object, taskHub.Object);
+            return new TaskService(http.Object, repo.Object, cache.Object, taskHub.Object, cacheBgRefresher.Object);
         }
 
         [Fact]
         public async Task UpdateTaskStatusAsync_ShouldReturnNull_WhenUpdateFails()
         {
-            var service = CreateTaskService(null, out var notificationMock, out var cacheMock);
+            var service = CreateTaskService(null, out var notificationMock, out var cacheMock, out var cacheBgRefresherMock);
 
             var result = await service.UpdateTaskStatusAsync(1, new UpdateTaskRequest() { StatusRaw = "BACKLOG" });
-        
+
             Assert.Null(result);
         }
 
         [Fact]
-        public async Task  UpdateTaskStatusAsync_ShouldReturnDto_WhenUpdateSucceeds()
+        public async Task UpdateTaskStatusAsync_ShouldReturnDto_WhenUpdateSucceeds()
         {
             var mockTaskEntity = new TaskEntity()
             {
@@ -52,7 +54,7 @@ namespace TaskSyncTest.Services
                 StatusRaw = "TODO",
                 LastModified = new DateTime(2025, 2, 2)
             };
-            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var cacheMock);
+            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var cacheMock, out var cacheBgRefresherMock);
 
             var result = await service.UpdateTaskStatusAsync(2, new UpdateTaskRequest() { StatusRaw = "TODO" });
 
@@ -75,9 +77,9 @@ namespace TaskSyncTest.Services
                 LastModified = new DateTime(2025, 3, 3),
                 ProjectId = 3, // make sure it evict correct cache key
             };
-            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var cacheMock);
+            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var cacheMock, out var cacheBgRefresherMock);
 
-            var result = await service.UpdateTaskStatusAsync(2, new UpdateTaskRequest() { StatusRaw = "INPROGRESS" });
+            var result = await service.UpdateTaskStatusAsync(3, new UpdateTaskRequest() { StatusRaw = "INPROGRESS" });
 
             cacheMock.Verify(x => x.Remove(mockTaskEntity.ProjectId), Times.Once);
         }
@@ -93,11 +95,30 @@ namespace TaskSyncTest.Services
                 StatusRaw = "DONE",
                 LastModified = new DateTime(2025, 4, 4),
             };
-            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var cacheMock);
+            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var cacheMock, out var cacheBgRefresherMock);
 
-            var result = await service.UpdateTaskStatusAsync(2, new UpdateTaskRequest() { StatusRaw = "INPROGRESS" });
+            var result = await service.UpdateTaskStatusAsync(4, new UpdateTaskRequest() { StatusRaw = "INPROGRESS" });
 
             notificationMock.Verify(x => x.NotifyTaskUpdateAsync(It.IsAny<TaskDto>(), It.IsAny<string?>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateTaskStatusAsync_ShouldPreWarmCacheInBackground_WhenTaskUpdated()
+        {
+            var mockTaskEntity = new TaskEntity()
+            {
+                Id = 5,
+                Title = "Award points for task completion and other contributions",
+                AssigneeId = 5,
+                StatusRaw = "DONE",
+                LastModified = new DateTime(2025, 5, 5),
+                ProjectId = 5,
+            };
+            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var cacheMock, out var cacheBgRefresherMock);
+
+            var result = await service.UpdateTaskStatusAsync(5, new UpdateTaskRequest() { StatusRaw = "DONE" });
+
+            cacheBgRefresherMock.Verify(x => x.RefreshProjectTasks(mockTaskEntity.ProjectId), Times.Once);
         }
     }
 }

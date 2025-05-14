@@ -4,7 +4,8 @@ namespace TaskSync.Services.Interfaces
 {
     public interface ITaskService
     {
-        public Task<IList<TaskDto>?> GetTasksAsync(int projectId);
-        public Task<TaskDto?> UpdateTaskStatusAsync(int taskId, UpdateTaskRequest request);
+        Task<IList<TaskDto>?> GetTasksAsync(int projectId);
+        Task<TaskDto?> UpdateTaskStatusAsync(int taskId, UpdateTaskRequest request);
+        Task<TaskDto> AddTaskAsync(AddTaskRequest request);
     }
 }

@@ -1,6 +1,6 @@
 import type { PaletteColorKey } from 'src/theme/core';
 
-import { useCallback, useState } from 'react';
+import { useState, useCallback } from 'react';
 import { varAlpha } from 'minimal-shared/utils';
 
 import Card from '@mui/material/Card';
@@ -16,14 +16,14 @@ import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 
 import { Iconify } from 'src/components/iconify/iconify';
 
-import { KanbanStatus } from './type/kanban-item';
+import { TASK_STATUS } from './type/kanban-item';
 
-import type { KanbanItemData } from './type/kanban-item';
+import type { TaskDto } from './type/kanban-item';
 
 type Props = {
     color?: PaletteColorKey;
-    data: KanbanItemData;
-    onStatusChange: (data: KanbanItemData, newStatus: KanbanStatus) => void;
+    data: TaskDto;
+    onStatusChange: (data: TaskDto, newStatus: TASK_STATUS) => void;
 };
 
 export const KanbanItem = ({ color, data, onStatusChange }: Props) => {
@@ -40,7 +40,7 @@ export const KanbanItem = ({ color, data, onStatusChange }: Props) => {
     }, []);
 
     const handleStatusChange = useCallback(
-        (newStatus: KanbanStatus) => {
+        (newStatus: TASK_STATUS) => {
             onStatusChange(data, newStatus);
             setOpenPopover(null);
         },
@@ -106,19 +106,19 @@ export const KanbanItem = ({ color, data, onStatusChange }: Props) => {
                         },
                     }}
                 >
-                    <MenuItem onClick={() => handleStatusChange(KanbanStatus.BACKLOG)}>
+                    <MenuItem onClick={() => handleStatusChange(TASK_STATUS.BACKLOG)}>
                         <Iconify icon="material-symbols:pending-actions-rounded" />
                         Backlog
                     </MenuItem>
-                    <MenuItem onClick={() => handleStatusChange(KanbanStatus.TODO)}>
+                    <MenuItem onClick={() => handleStatusChange(TASK_STATUS.TODO)}>
                         <Iconify icon="material-symbols:checklist-rounded" />
                         To Do
                     </MenuItem>
-                    <MenuItem onClick={() => handleStatusChange(KanbanStatus.INPROGRESS)}>
+                    <MenuItem onClick={() => handleStatusChange(TASK_STATUS.INPROGRESS)}>
                         <Iconify icon="material-symbols:sync-rounded" />
                         In Progress
                     </MenuItem>
-                    <MenuItem onClick={() => handleStatusChange(KanbanStatus.DONE)}>
+                    <MenuItem onClick={() => handleStatusChange(TASK_STATUS.DONE)}>
                         <Iconify icon="material-symbols:check-circle-rounded" />
                         Done
                     </MenuItem>

@@ -1,6 +1,6 @@
 ﻿namespace TaskSync.Models.Dto
 {
-    public class TaskResponse
+    public class KanbanBoardVm
     {
         public IList<TaskDto>? Tasks { get; set; }
     }

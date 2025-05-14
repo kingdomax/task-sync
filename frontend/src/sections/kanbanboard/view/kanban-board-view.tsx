@@ -5,34 +5,32 @@ import { useRef, useMemo, useState, useEffect } from 'react';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
 
 import { getApiUrl, getSeverUrl } from 'src/utils/env';
 
 import { DashboardContent } from 'src/layouts/dashboard';
 
-import { Iconify } from 'src/components/iconify';
-
 import { KanbanItem } from '../item-card';
-import { KanbanStatus } from '../type/kanban-item';
+import { AddItemPanel } from '../add-item-panel';
+import { TASK_STATUS, NOTIFY_STATUS } from '../type/kanban-item';
 
-import type { KanbanItemData, KanbanItemResponse } from '../type/kanban-item';
+import type { TaskDto, NotifyTask, KanbanBoardVm, AddItemRequest } from '../type/kanban-item';
 
-const statusLabels: Record<KanbanStatus, string> = {
-    [KanbanStatus.BACKLOG]: 'Backlog',
-    [KanbanStatus.TODO]: 'To Do',
-    [KanbanStatus.INPROGRESS]: 'In Progress',
-    [KanbanStatus.DONE]: 'Done',
+const statusLabels: Record<TASK_STATUS, string> = {
+    [TASK_STATUS.BACKLOG]: 'Backlog',
+    [TASK_STATUS.TODO]: 'To Do',
+    [TASK_STATUS.INPROGRESS]: 'In Progress',
+    [TASK_STATUS.DONE]: 'Done',
 };
 
-const statusColors: Partial<Record<KanbanStatus, 'warning' | 'info' | 'success'>> = {
-    [KanbanStatus.TODO]: 'warning',
-    [KanbanStatus.INPROGRESS]: 'info',
-    [KanbanStatus.DONE]: 'success',
+const statusColors: Partial<Record<TASK_STATUS, 'warning' | 'info' | 'success'>> = {
+    [TASK_STATUS.TODO]: 'warning',
+    [TASK_STATUS.INPROGRESS]: 'info',
+    [TASK_STATUS.DONE]: 'success',
 };
 
 export const KanbanBoardView = () => {
-    const [kanbanItems, setKanbanItems] = useState<KanbanItemData[]>([]);
+    const [kanbanItems, setKanbanItems] = useState<TaskDto[]>([]);
     const connectionRef = useRef<HubConnection | null>(null); // Persistent data across render without trigger re-render
     const connectionIdRef = useRef<string>('');
 
@@ -41,7 +39,7 @@ export const KanbanBoardView = () => {
             try {
                 const response: Response = await fetch(`${getApiUrl()}/task/getTasks/1`);
                 if (response.ok) {
-                    const data: KanbanItemResponse = await response.json();
+                    const data: KanbanBoardVm = await response.json();
                     setKanbanItems(data.tasks ?? []);
                 }
             } catch (error) {
@@ -63,10 +61,14 @@ export const KanbanBoardView = () => {
 
             connectionRef.current = connection;
 
-            connection.on('TaskUpdated', (updated: KanbanItemData) => {
-                setKanbanItems((prev) =>
-                    prev.map((item) => (item.id === updated.id ? updated : item))
-                );
+            connection.on('TaskUpdated', (response: NotifyTask) => {
+                if (response.status == NOTIFY_STATUS.CREATE) {
+                    setKanbanItems((prev) => [...prev, response.data]);
+                } else if (response.status == NOTIFY_STATUS.UPDATE) {
+                    setKanbanItems((prev) =>
+                        prev.map((item) => (item.id === response.data.id ? response.data : item))
+                    );
+                }
             });
 
             await connection.start();
@@ -81,7 +83,7 @@ export const KanbanBoardView = () => {
         };
     }, []);
 
-    const handleStatusChange = async (data: KanbanItemData, newStatus: KanbanStatus) => {
+    const handleStatusChange = async (data: TaskDto, newStatus: TASK_STATUS) => {
         // Optimistically update UI
         setKanbanItems((prev) =>
             prev.map((item) =>
@@ -122,13 +124,44 @@ export const KanbanBoardView = () => {
         }
     };
 
+    const handleAddItem = async (
+        newItem: AddItemRequest,
+        onSuccess: () => void,
+        onFailure: (msg: string) => void
+    ) => {
+        try {
+            const res = await fetch(`${getApiUrl()}/task/addTask`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-connection-id': connectionIdRef.current,
+                },
+                body: JSON.stringify(newItem),
+            });
+
+            if (!res.ok) {
+                throw new Error(`${res.statusText}`);
+            }
+
+            const addedItem: TaskDto = await res.json();
+            onSuccess();
+            setKanbanItems((prev) => [...prev, addedItem]);
+        } catch (err: any) {
+            if (err instanceof Error) {
+                onFailure(err.message);
+            } else {
+                onFailure(`unknown error: ${err}`);
+            }
+        }
+    };
+
     // Memoizes the result of a computation - saving performance
     const groupedItems = useMemo(() => {
-        const map: Record<KanbanStatus, KanbanItemData[]> = {
-            [KanbanStatus.BACKLOG]: [],
-            [KanbanStatus.TODO]: [],
-            [KanbanStatus.INPROGRESS]: [],
-            [KanbanStatus.DONE]: [],
+        const map: Record<TASK_STATUS, TaskDto[]> = {
+            [TASK_STATUS.BACKLOG]: [],
+            [TASK_STATUS.TODO]: [],
+            [TASK_STATUS.INPROGRESS]: [],
+            [TASK_STATUS.DONE]: [],
         };
 
         const sorted = [...kanbanItems].sort(
@@ -145,25 +178,11 @@ export const KanbanBoardView = () => {
 
     return (
         <DashboardContent maxWidth="xl">
-            <Box
-                sx={{
-                    mb: 5,
-                    display: 'flex',
-                    alignItems: 'center',
-                }}
-            >
-                <Button
-                    variant="contained"
-                    color="inherit"
-                    startIcon={<Iconify icon="mingcute:add-line" />}
-                >
-                    Add item
-                </Button>
-            </Box>
+            <AddItemPanel onAddItem={handleAddItem} />
 
             <Grid container spacing={3}>
                 {Object.entries(groupedItems).map(([statusKey, items]) => {
-                    const status = statusKey as KanbanStatus;
+                    const status = statusKey as TASK_STATUS;
                     return (
                         <Grid key={status} size={{ xs: 12, sm: 6, md: 3 }}>
                             <Box sx={{ ml: 1, mb: 2, typography: 'h6' }}>

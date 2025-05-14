@@ -23,7 +23,7 @@ namespace TaskSync.Controllers
         {
             var tasks = await _taskService.GetTasksAsync(projectId);
 
-            return Ok(new TaskResponse() { Tasks = tasks });
+            return Ok(new KanbanBoardVm() { Tasks = tasks });
         }
 
         [ValidateRequest]
@@ -33,6 +33,14 @@ namespace TaskSync.Controllers
             var taskDto = await _taskService.UpdateTaskStatusAsync(taskId, request);
 
             return taskDto != null ? Ok(taskDto) : BadRequest("Task not found");
+        }
+
+        [ValidateRequest]
+        [HttpPost("addTask")]
+        public async Task<IActionResult> AddTask([FromBody] AddTaskRequest request)
+        {
+            var taskDto = await _taskService.AddTaskAsync(request);
+            return Ok(taskDto);
         }
     }
 }
