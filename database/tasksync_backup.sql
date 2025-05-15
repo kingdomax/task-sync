@@ -151,15 +151,15 @@ COPY public.projects (id, name) FROM stdin;
 --
 
 COPY public.tasks (id, title, assignee_id, project_id, status, last_modified) FROM stdin;
-7	Notification system for task updates, assignments, and comments	\N	1	backlog	2025-04-19 19:57:24.306741
 8	Award points for task completion and other contributions	\N	1	backlog	2025-04-19 19:58:08.910517
-9	Display a leaderboard to encourage friendly competition\n	\N	1	backlog	2025-04-19 19:58:20.035538
+9	Display a leaderboard to encourage friendly competition\n	\N	1	backlog	2025-05-15 19:28:43.248342
 4	File attachment support on task	2	1	todo	2025-04-19 19:56:06.749707
-2	CRUD operation for project & task management	1	1	inprogress	2025-04-19 19:54:40.074561
+6	Use SignalR to enable real-time updates across team boards	1	1	done	2025-05-15 19:30:35.887529
+2	CRUD operation for project & task management	1	1	done	2025-05-15 19:30:41.708354
 5	Comments support on tasks	\N	1	backlog	2025-04-19 19:56:54.102033
-3	Drag-and-drop functionality for moving tasks between columns	3	1	todo	2025-04-19 19:55:42.379431
+3	Drag-and-drop functionality for moving tasks between columns	3	1	inprogress	2025-05-15 19:30:46.751233
+7	Notification system for task updates, assignments, and comments	\N	1	todo	2025-05-15 19:31:20.166063
 1	Implement authentication flow with JWT	2	1	done	2025-04-20 21:17:01.678761
-6	Use SignalR to enable real-time updates across team boards	1	1	todo	2025-05-09 18:38:13.009063
 \.
 
 
@@ -195,7 +195,7 @@ SELECT pg_catalog.setval('public.projects_id_seq', 1, false);
 -- Name: tasks_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.tasks_id_seq', 9, true);
+SELECT pg_catalog.setval('public.tasks_id_seq', 28, true);
 
 
 --
