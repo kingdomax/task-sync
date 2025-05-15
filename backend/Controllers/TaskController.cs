@@ -27,6 +27,14 @@ namespace TaskSync.Controllers
         }
 
         [ValidateRequest]
+        [HttpPost("addTask")]
+        public async Task<IActionResult> AddTask([FromBody] AddTaskRequest request)
+        {
+            var taskDto = await _taskService.AddTaskAsync(request);
+            return Ok(taskDto);
+        }
+
+        [ValidateRequest]
         [HttpPatch("updateStatus/{taskId}")]
         public async Task<IActionResult> UpdateStatus([FromRoute] int taskId, [FromBody] UpdateTaskRequest request)
         {
@@ -36,11 +44,11 @@ namespace TaskSync.Controllers
         }
 
         [ValidateRequest]
-        [HttpPost("addTask")]
-        public async Task<IActionResult> AddTask([FromBody] AddTaskRequest request)
+        [HttpDelete("deleteTask/{taskId}")]
+        public async Task<IActionResult> AddTask([FromRoute] int taskId)
         {
-            var taskDto = await _taskService.AddTaskAsync(request);
-            return Ok(taskDto);
+            var isSucess = await _taskService.DeleteTaskAsync(taskId);
+            return isSucess ? NoContent() : NotFound("Task not found");
         }
     }
 }

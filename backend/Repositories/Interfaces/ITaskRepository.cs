@@ -7,5 +7,6 @@ namespace TaskSync.Repositories.Interfaces
         Task<IList<TaskEntity>?> GetAsync(int projectId);
         Task<TaskEntity?> UpdateStatusAsync(int taskId, string newStatus);
         Task<TaskEntity> AddAsync(string title, int? assigneeId, int projectId);
+        Task<TaskEntity?> DeleteAsync(int taskId);
     }
 }

@@ -24,9 +24,10 @@ type Props = {
     color?: PaletteColorKey;
     data: TaskDto;
     onStatusChange: (data: TaskDto, newStatus: TASK_STATUS) => void;
+    onDelete: (deleteItem: TaskDto) => void;
 };
 
-export const KanbanItem = ({ color, data, onStatusChange }: Props) => {
+export const KanbanItem = ({ color, data, onStatusChange, onDelete }: Props) => {
     const theme = useTheme();
 
     const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
@@ -46,6 +47,11 @@ export const KanbanItem = ({ color, data, onStatusChange }: Props) => {
         },
         [data, onStatusChange]
     );
+
+    const handleDeleteItem = useCallback(() => {
+        onDelete(data);
+        setOpenPopover(null);
+    }, [data, onDelete]);
 
     return (
         <>
@@ -122,7 +128,7 @@ export const KanbanItem = ({ color, data, onStatusChange }: Props) => {
                         <Iconify icon="material-symbols:check-circle-rounded" />
                         Done
                     </MenuItem>
-                    <MenuItem onClick={() => handleClosePopover()} sx={{ color: 'error.main' }}>
+                    <MenuItem onClick={() => handleDeleteItem()} sx={{ color: 'error.main' }}>
                         <Iconify icon="solar:trash-bin-trash-bold" />
                         Delete
                     </MenuItem>
