@@ -161,7 +161,7 @@ export const KanbanBoardView = () => {
         setKanbanItems((prev) => prev.filter((item) => item.id !== deleteItem.id));
 
         try {
-            const res = await fetch(`${getApiUrl()}/task/deleteTasks/${deleteItem.id}`, {
+            const res = await fetch(`${getApiUrl()}/task/deleteTask/${deleteItem.id}`, {
                 method: 'DELETE',
                 headers: { 'x-connection-id': connectionIdRef.current },
             });

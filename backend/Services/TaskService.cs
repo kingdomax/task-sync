@@ -47,6 +47,25 @@ namespace TaskSync.Services
             }).ToList();
         }
 
+        public async Task<TaskDto> AddTaskAsync(AddTaskRequest request)
+        {
+            var newTask = await _taskRepository.AddAsync(request.Title, request.AssigneeId, request.ProjectId);
+
+            _taskEntityCache.Remove(newTask.ProjectId);
+            _cacheBackgroundRefresher.RefreshProjectTasks(newTask.ProjectId);
+
+            var dto = new TaskDto
+            {
+                Id = newTask.Id,
+                Title = newTask.Title,
+                AssigneeId = newTask.AssigneeId,
+                Status = newTask.Status,
+                LastModified = newTask.LastModified,
+            };
+            _ = _taskNotificationService.NotifyTaskCreateAsync(dto, _httpContextReader.GetConnectionId());
+            return dto;
+        }
+
         public async Task<TaskDto?> UpdateTaskStatusAsync(int taskId, UpdateTaskRequest request)
         {
             var updatedTask = await _taskRepository.UpdateStatusAsync(taskId, request.StatusRaw);
@@ -70,23 +89,18 @@ namespace TaskSync.Services
             return dto;
         }
 
-        public async Task<TaskDto> AddTaskAsync(AddTaskRequest request)
+        public async Task<bool> DeleteTaskAsync(int taskId)
         {
-            var newTask = await _taskRepository.AddAsync(request.Title, request.AssigneeId, request.ProjectId);
-
-            _taskEntityCache.Remove(newTask.ProjectId);
-            _cacheBackgroundRefresher.RefreshProjectTasks(newTask.ProjectId);
-
-            var dto = new TaskDto
+            var deletedTask = await _taskRepository.DeleteAsync(taskId);
+            if (deletedTask == null)
             {
-                Id = newTask.Id,
-                Title = newTask.Title,
-                AssigneeId = newTask.AssigneeId,
-                Status = newTask.Status,
-                LastModified = newTask.LastModified,
-            };
-            _ = _taskNotificationService.NotifyTaskCreateAsync(dto, _httpContextReader.GetConnectionId());
-            return dto;
+                return false;
+            }
+
+            _taskEntityCache.Remove(deletedTask.ProjectId);
+            _cacheBackgroundRefresher.RefreshProjectTasks(deletedTask.ProjectId);
+            _ = _taskNotificationService.NotifyTaskDeleteAsync(taskId, _httpContextReader.GetConnectionId());
+            return true;
         }
     }
 }
