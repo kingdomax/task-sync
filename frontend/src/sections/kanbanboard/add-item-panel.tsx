@@ -1,6 +1,6 @@
 import type { TransitionProps } from '@mui/material/transitions';
 
-import { useState, forwardRef } from 'react';
+import { useReducer, forwardRef } from 'react';
 
 import Box from '@mui/material/Box';
 import Slide from '@mui/material/Slide';
@@ -29,66 +29,96 @@ type Props = {
     ) => void;
 };
 
+type FormState = {
+    isDialogOpen: boolean;
+    isLoading: boolean;
+    title: string;
+    assigneeId: number;
+    fileName: string;
+};
+
+type Action =
+    | { type: 'openDialog' }
+    | { type: 'closeDialog' }
+    | { type: 'startSubmit' }
+    | { type: 'submitSuccess' }
+    | { type: 'submitError' }
+    | { type: 'setTitle'; payload: string }
+    | { type: 'setAssignee'; payload: number }
+    | { type: 'setFilename'; payload: string };
+
+const initialState: FormState = {
+    isDialogOpen: false,
+    isLoading: false,
+    title: '',
+    assigneeId: 0,
+    fileName: '',
+};
+
+function reducer(state: FormState, action: Action): FormState {
+    switch (action.type) {
+        case 'openDialog':
+            return { ...state, isDialogOpen: true };
+        case 'closeDialog':
+            return { ...initialState };
+        case 'startSubmit':
+            return { ...state, isLoading: true };
+        case 'submitSuccess':
+            return { ...initialState };
+        case 'submitError':
+            return { ...state, isLoading: false };
+        case 'setTitle':
+            return { ...state, title: action.payload };
+        case 'setAssignee':
+            return { ...state, assigneeId: action.payload };
+        case 'setFilename':
+            return { ...state, fileName: action.payload };
+        default:
+            return state;
+    }
+}
+
 export const AddItemPanel = ({ onAddItem }: Props) => {
-    const [isDialogOpen, setDialogOpen] = useState(false);
-    const [isLoading, setLoading] = useState(false);
-    const [title, setTitle] = useState('');
-    const [assigneeId, setAssigneeId] = useState(0);
-    const [fileName, setFilename] = useState('');
+    const [state, dispatch] = useReducer(reducer, initialState);
 
-    const handleSuccess = () => {
-        setLoading(false);
-        setTitle('');
-        setAssigneeId(0);
-        setFilename('');
-        setDialogOpen(false);
-    };
-
+    const handleSuccess = () => dispatch({ type: 'submitSuccess' });
     const handleError = (msg: string) => {
-        setLoading(false);
+        dispatch({ type: 'submitError' });
         alert(`Failed to add item: ${msg}`);
     };
 
     return (
         <>
-            <Box
-                sx={{
-                    mb: 5,
-                    display: 'flex',
-                    alignItems: 'center',
-                }}
-            >
+            <Box sx={{ mb: 5, display: 'flex', alignItems: 'center' }}>
                 <Button
                     variant="contained"
                     color="inherit"
                     startIcon={<Iconify icon="mingcute:add-line" />}
-                    onClick={() => setDialogOpen(true)}
+                    onClick={() => dispatch({ type: 'openDialog' })}
                 >
                     Add item
                 </Button>
             </Box>
 
             <Dialog
-                open={isDialogOpen}
+                open={state.isDialogOpen}
                 onClose={(_, reason) => {
                     if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') {
-                        setDialogOpen(false);
+                        dispatch({ type: 'closeDialog' });
                     }
                 }}
                 disableEscapeKeyDown
-                slots={{
-                    transition: Transition,
-                }}
+                slots={{ transition: Transition }}
                 slotProps={{
                     paper: {
                         component: 'form',
                         onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
                             event.preventDefault();
-                            setLoading(true);
+                            dispatch({ type: 'startSubmit' });
 
                             const newItem: AddItemRequest = {
-                                title,
-                                assigneeId: assigneeId <= 0 ? null : assigneeId,
+                                title: state.title,
+                                assigneeId: state.assigneeId <= 0 ? null : state.assigneeId,
                                 lastModified: new Date(),
                                 projectId: 1, // todo-moch: hardcode for now
                             };
@@ -112,8 +142,8 @@ export const AddItemPanel = ({ onAddItem }: Props) => {
                         type="text"
                         fullWidth
                         variant="standard"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        value={state.title}
+                        onChange={(e) => dispatch({ type: 'setTitle', payload: e.target.value })}
                     />
                     <FormControl variant="standard" sx={{ minWidth: 200, mt: 1, mb: 0.5 }}>
                         <InputLabel required id="assignee-label">
@@ -123,11 +153,12 @@ export const AddItemPanel = ({ onAddItem }: Props) => {
                             required
                             labelId="assignee-label"
                             id="assignee-select"
-                            value={assigneeId.toString()}
-                            onChange={(e) => setAssigneeId(Number(e.target.value))}
+                            value={state.assigneeId.toString()}
+                            onChange={(e) =>
+                                dispatch({ type: 'setAssignee', payload: Number(e.target.value) })
+                            }
                             label="Age"
                         >
-                            {/* todo-moch: fix hardcode later */}
                             <MenuItem value="0">None</MenuItem>
                             <MenuItem value="1">admin</MenuItem>
                             <MenuItem value="2">kingdomax</MenuItem>
@@ -143,10 +174,15 @@ export const AddItemPanel = ({ onAddItem }: Props) => {
                             tabIndex={-1}
                             startIcon={<Iconify icon="material-symbols:upload" />}
                         >
-                            {fileName || 'Upload files'}
+                            {state.fileName || 'Upload files'}
                             <VisuallyHiddenInput
                                 type="file"
-                                onChange={(event) => console.log(event.target.files)}
+                                onChange={(event) => {
+                                    const file = event.target.files?.[0];
+                                    if (file) {
+                                        dispatch({ type: 'setFilename', payload: file.name });
+                                    }
+                                }}
                                 multiple
                             />
                         </Button>
@@ -155,12 +191,12 @@ export const AddItemPanel = ({ onAddItem }: Props) => {
                 <DialogActions>
                     <Button
                         color="inherit"
-                        onClick={() => setDialogOpen(false)}
-                        disabled={isLoading}
+                        onClick={() => dispatch({ type: 'closeDialog' })}
+                        disabled={state.isLoading}
                     >
                         Cancel
                     </Button>
-                    <Button color="inherit" type="submit" loading={isLoading}>
+                    <Button color="inherit" type="submit" disabled={state.isLoading}>
                         Create
                     </Button>
                 </DialogActions>
@@ -170,9 +206,7 @@ export const AddItemPanel = ({ onAddItem }: Props) => {
 };
 
 const Transition = forwardRef(function Transition(
-    props: TransitionProps & {
-        children: React.ReactElement<any, any>;
-    },
+    props: TransitionProps & { children: React.ReactElement<any, any> },
     ref: React.Ref<unknown>
 ) {
     return <Slide direction="up" ref={ref} {...props} />;
