@@ -10,7 +10,7 @@ import { getApiUrl, getSeverUrl } from 'src/utils/env';
 
 import { DashboardContent } from 'src/layouts/dashboard';
 
-import { KanbanItem } from '../item-card';
+import { KanbanItem } from '../kanban-item';
 import { AddItemPanel } from '../add-item-panel';
 import { TASK_STATUS, NOTIFY_STATUS } from '../type/kanban-item';
 

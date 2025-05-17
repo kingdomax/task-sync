@@ -1,8 +1,8 @@
 import {
+    TOKEN_KEY,
     setAuthToken,
     getAuthToken,
     clearAuthToken,
-    TOKEN_KEY,
     EXPIRATION_KEY,
 } from './auth-token';
 
