@@ -105,8 +105,8 @@ export const KanbanBoardView = () => {
             }
 
             const addedItem: TaskDto = await res.json();
-            onSuccess();
             setKanbanItems((prev) => [...prev, addedItem]);
+            onSuccess();
         } catch (err: any) {
             if (err instanceof Error) {
                 onFailure(err.message);
