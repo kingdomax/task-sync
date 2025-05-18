@@ -31,7 +31,7 @@ namespace TaskSync.Controllers
         public async Task<IActionResult> AddTask([FromBody] AddTaskRequest request)
         {
             var taskDto = await _taskService.AddTaskAsync(request);
-            return Ok(taskDto);
+            return StatusCode(StatusCodes.Status201Created, taskDto);
         }
 
         [ValidateRequest]
