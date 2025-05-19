@@ -25,9 +25,10 @@ type Props = {
     data: TaskDto;
     onStatusChange: (data: TaskDto, newStatus: TASK_STATUS) => void;
     onDelete: (deleteItem: TaskDto) => void;
+    dragHandleProps?: React.HTMLAttributes<HTMLElement>;
 };
 
-export const KanbanItem = ({ color, data, onStatusChange, onDelete }: Props) => {
+export const KanbanItem = ({ color, data, onStatusChange, onDelete, dragHandleProps }: Props) => {
     const theme = useTheme();
 
     const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
@@ -82,7 +83,7 @@ export const KanbanItem = ({ color, data, onStatusChange, onDelete }: Props) => 
                     //subheader="#1"
                     //title="Shrimp and Chorizo Paella"
                 />
-                <CardContent sx={{ pl: 3, pr: 3 }}>
+                <CardContent {...dragHandleProps} sx={{ pl: 3, pr: 3 }}>
                     <Typography variant="caption" color="primary.darker">
                         #{data.id}
                     </Typography>

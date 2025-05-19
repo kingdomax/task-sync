@@ -236,12 +236,13 @@ export const KanbanBoardView = () => {
         };
 
         return (
-            <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
+            <div ref={setNodeRef} style={style}>
                 <KanbanItem
                     data={item}
                     color={color}
                     onStatusChange={onStatusChange}
                     onDelete={onDelete}
+                    dragHandleProps={{ ...listeners, ...attributes }}
                 />
             </div>
         );
