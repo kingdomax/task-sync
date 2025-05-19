@@ -232,6 +232,7 @@ export const KanbanBoardView = () => {
         });
         const style = {
             transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined,
+            touchAction: 'none',
         };
 
         return (
