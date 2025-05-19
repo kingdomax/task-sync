@@ -2,6 +2,7 @@ import type { HubConnection } from '@microsoft/signalr';
 
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { useRef, useMemo, useState, useEffect } from 'react';
+import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -195,6 +196,22 @@ export const KanbanBoardView = () => {
 
         return map;
     }, [kanbanItems]); // only runs when kanbanItems change
+
+    const handleDragEnd = (event: DragEndEvent) => {
+        const { active, over } = event;
+
+        console.log('active' + active);
+        console.log('over' + over);
+
+        if (!over || active.id === over.id) return;
+
+        const draggedItem = kanbanItems.find((item) => item.id === active.id);
+        const newStatus = over.id as TASK_STATUS;
+
+        //if (draggedItem && draggedItem.status !== newStatus) {
+        //    handleStatusChange(draggedItem, newStatus);
+        //}
+    };
 
     return (
         <DashboardContent maxWidth="xl">
