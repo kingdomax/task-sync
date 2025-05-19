@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 
 import { SignInView } from './sign-in-view';
 
@@ -21,7 +21,7 @@ jest.mock('src/components/iconify', () => ({
     Iconify: () => <span data-testid="icon-placeholder" />,
 }));
 
-const mockPush = jest.requireMock('src/routes/hooks').useRouter().push;
+// const mockPush = jest.requireMock('src/routes/hooks').useRouter().push;
 const mockSetAuthToken = jest.requireMock('src/utils/auth-token').setAuthToken;
 
 describe('<SignInView />', () => {

@@ -21,13 +21,22 @@ import { TASK_STATUS } from './type/kanban-item';
 import type { TaskDto } from './type/kanban-item';
 
 type Props = {
-    color?: PaletteColorKey;
     data: TaskDto;
     onStatusChange: (data: TaskDto, newStatus: TASK_STATUS) => void;
     onDelete: (deleteItem: TaskDto) => void;
+    color?: PaletteColorKey;
+    isDragging?: boolean;
+    dragHandleProps?: React.HTMLAttributes<HTMLElement>;
 };
 
-export const KanbanItem = ({ color, data, onStatusChange, onDelete }: Props) => {
+export const KanbanItem = ({
+    color,
+    data,
+    onStatusChange,
+    onDelete,
+    isDragging,
+    dragHandleProps,
+}: Props) => {
     const theme = useTheme();
 
     const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
@@ -56,22 +65,31 @@ export const KanbanItem = ({ color, data, onStatusChange, onDelete }: Props) => 
     return (
         <>
             <Card
-                sx={
-                    color && {
+                sx={{
+                    opacity: isDragging ? 0.5 : 1,
+                    transition: 'opacity 0.2s',
+                    ...(color && {
                         color: `${color}.darker`,
                         backgroundColor: 'common.white',
                         backgroundImage: `linear-gradient(135deg, ${varAlpha(theme.vars.palette[color].lighterChannel, 0.48)}, ${varAlpha(theme.vars.palette[color].lightChannel, 0.48)})`,
-                    }
-                }
+                    }),
+                }}
             >
                 <CardHeader
                     avatar={
                         <Avatar
+                            {...dragHandleProps}
                             src={
                                 data.assigneeId
                                     ? `/assets/images/avatar/avatar-${data.assigneeId}.webp`
                                     : ''
                             }
+                            sx={{
+                                cursor: 'grab', // Adds grab cursor on hover
+                                '&:active': {
+                                    cursor: 'grabbing', // When actually dragging
+                                },
+                            }}
                         />
                     }
                     action={
@@ -82,7 +100,17 @@ export const KanbanItem = ({ color, data, onStatusChange, onDelete }: Props) => 
                     //subheader="#1"
                     //title="Shrimp and Chorizo Paella"
                 />
-                <CardContent sx={{ pl: 3, pr: 3 }}>
+                <CardContent
+                    {...dragHandleProps}
+                    sx={{
+                        pl: 3,
+                        pr: 3,
+                        cursor: 'grab',
+                        '&:active': {
+                            cursor: 'grabbing',
+                        },
+                    }}
+                >
                     <Typography variant="caption" color="primary.darker">
                         #{data.id}
                     </Typography>
