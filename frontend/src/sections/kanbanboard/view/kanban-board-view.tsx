@@ -227,7 +227,7 @@ export const KanbanBoardView = () => {
     };
 
     const DraggableKanbanItem = ({ item, color, onStatusChange, onDelete }: any) => {
-        const { attributes, listeners, setNodeRef, transform } = useDraggable({
+        const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
             id: item.id,
         });
         const style = {
@@ -243,6 +243,7 @@ export const KanbanBoardView = () => {
                     onStatusChange={onStatusChange}
                     onDelete={onDelete}
                     dragHandleProps={{ ...listeners, ...attributes }}
+                    isDragging={isDragging}
                 />
             </div>
         );
