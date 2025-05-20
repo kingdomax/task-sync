@@ -7,14 +7,18 @@ A collaborative task management platform designed to simplify project organizati
 ## Key Features
 
 - Project & Task Management: Manage tasks and projects using intuitive drag-and-drop boards with detailed task cards, comments, file attachments, due dates, assignees, and priorities.
-- Real-Time Collaboration: Instant synchronization of task updates, assignments, and comments across users using SignalR.
+- Real-Time Collaboration: Instantly synchronize task updates, assignments, and comments across users using SignalR.
+- Real-Time Chat: Communicate with your team instantly via an integrated chat system, enabling seamless discussion alongside your tasks and projects.
 - User Management: Secure authentication, signup, and profile management.
 - Team Management: Easily create and manage teams, and monitor active projects with team dashboards.
-- Gamification System: Encourage productivity by awarding points.
+- Gamification System: Encourage productivity by awarding points and displaying a dynamic leaderboard
 
 ## Tech Stack
 
-- **Frontend:** React, TypeScript, Material UI
-- **Backend:** ASP.NET, SignalR, PostgreSQL
+- **Frontend:** React, TypeScript, Material UI, Vite
+- **Core API:** ASP.NET, SignalR, JWT, RESTful APIs
+- **Gamification API:** NestJS, GraphQL
+- **Chat API:** to be determined....
+- **Database:** PostgreSQL
 - **CI/CD:** Docker, Azure, GitHub Actions
-- **Testing:** Jest, xUnit
+- **Testing:** Jest, xUnit, Playwright
