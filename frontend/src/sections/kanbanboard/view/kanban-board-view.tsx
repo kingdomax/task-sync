@@ -31,6 +31,7 @@ const statusColors: Partial<Record<TASK_STATUS, 'warning' | 'info' | 'success'>>
     [TASK_STATUS.DONE]: 'success',
 };
 
+// todo-moch: this component need to refactor, separating of concenrn: hook logic and presentation
 export const KanbanBoardView = () => {
     const [kanbanItems, setKanbanItems] = useState<TaskDto[]>([]);
     const connectionRef = useRef<HubConnection | null>(null); // Persistent data across render without trigger re-render
