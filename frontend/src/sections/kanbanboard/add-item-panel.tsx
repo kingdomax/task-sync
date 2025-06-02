@@ -135,15 +135,15 @@ export const AddItemPanel = ({ onAddItem }: Props) => {
                     </DialogContentText>
                     <TextField
                         required
+                        type="text"
+                        value={state.title}
+                        onChange={(e) => dispatch({ type: 'setTitle', payload: e.target.value })}
                         margin="dense"
                         id="title"
                         name="title"
                         label="Title"
-                        type="text"
                         fullWidth
                         variant="standard"
-                        value={state.title}
-                        onChange={(e) => dispatch({ type: 'setTitle', payload: e.target.value })}
                     />
                     <FormControl variant="standard" sx={{ minWidth: 200, mt: 1, mb: 0.5 }}>
                         <InputLabel required id="assignee-label">
@@ -151,12 +151,12 @@ export const AddItemPanel = ({ onAddItem }: Props) => {
                         </InputLabel>
                         <Select
                             required
-                            labelId="assignee-label"
-                            id="assignee-select"
                             value={state.assigneeId.toString()}
                             onChange={(e) =>
                                 dispatch({ type: 'setAssignee', payload: Number(e.target.value) })
                             }
+                            labelId="assignee-label"
+                            id="assignee-select"
                             label="Age"
                         >
                             <MenuItem value="0">None</MenuItem>
