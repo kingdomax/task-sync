@@ -211,6 +211,7 @@ export const KanbanBoardView = () => {
         return map;
     }, [kanbanItems]); // only runs when kanbanItems change
 
+    // todo-moch: move to separate component
     const DroppableColumn = ({
         status,
         children,
@@ -227,6 +228,7 @@ export const KanbanBoardView = () => {
         );
     };
 
+    // todo-moch: move to separate component
     const DraggableKanbanItem = ({ item, color, onStatusChange, onDelete }: any) => {
         const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
             id: item.id,
