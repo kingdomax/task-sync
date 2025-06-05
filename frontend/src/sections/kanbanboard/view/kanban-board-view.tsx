@@ -1,27 +1,25 @@
 import type { DragEndEvent } from '@dnd-kit/core';
-import type { HubConnection } from '@microsoft/signalr';
 
 import { DndContext } from '@dnd-kit/core';
-import { HubConnectionBuilder } from '@microsoft/signalr';
-import { useRef, useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 
 import Grid from '@mui/material/Grid';
 
-import { getApiUrl, getSeverUrl } from 'src/utils/env';
+import { getApiUrl } from 'src/utils/env';
 
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { AddItemPanel } from '../add-item-panel';
+import { TASK_STATUS } from '../type/kanban-item';
 import { DroppableColumn } from '../droppable-column';
 import { DraggableKanbanItem } from '../draggable-kanban-item';
-import { TASK_STATUS, NOTIFY_STATUS } from '../type/kanban-item';
+import { useSignalRTaskHub } from '../hooks/useSignalRTaskHub';
 
-import type { TaskDto, NotifyTask, KanbanBoardVm, AddItemRequest } from '../type/kanban-item';
+import type { TaskDto, KanbanBoardVm, AddItemRequest } from '../type/kanban-item';
 
 export const KanbanBoardView = () => {
     const [kanbanItems, setKanbanItems] = useState<TaskDto[]>([]);
-    const connectionRef = useRef<HubConnection | null>(null); // Persistent data across render without trigger re-render
-    const connectionIdRef = useRef<string>('');
+    const { connectionIdRef } = useSignalRTaskHub(setKanbanItems);
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -37,41 +35,6 @@ export const KanbanBoardView = () => {
         };
 
         fetchTasks();
-    }, []);
-
-    useEffect(() => {
-        const connectToHub = async () => {
-            const connection = new HubConnectionBuilder()
-                .withUrl(`${getSeverUrl()}/taskHub`, {
-                    withCredentials: true, // Required
-                })
-                .withAutomaticReconnect()
-                .build();
-
-            connectionRef.current = connection;
-
-            connection.on('TaskUpdated', (response: NotifyTask) => {
-                if (response.status == NOTIFY_STATUS.CREATE) {
-                    setKanbanItems((prev) => [...prev, response.data]);
-                } else if (response.status == NOTIFY_STATUS.UPDATE) {
-                    setKanbanItems((prev) =>
-                        prev.map((item) => (item.id === response.data.id ? response.data : item))
-                    );
-                } else if (response.status == NOTIFY_STATUS.DELETE) {
-                    setKanbanItems((prev) => prev.filter((item) => item.id !== response.data.id));
-                }
-            });
-
-            await connection.start();
-            const connectionId = await connection.invoke('GetConnectionId');
-            connectionIdRef.current = connectionId;
-        };
-
-        connectToHub();
-
-        return () => {
-            connectionRef.current?.stop();
-        };
     }, []);
 
     const handleAddItem = async (
