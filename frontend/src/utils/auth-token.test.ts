@@ -8,7 +8,7 @@ import {
 
 describe('auth-token.ts', () => {
     beforeEach(() => {
-        localStorage.clear();
+        sessionStorage.clear();
         jest.useFakeTimers(); // to control time
     });
 
@@ -19,10 +19,10 @@ describe('auth-token.ts', () => {
     test('setAuthToken should store token and expiration', () => {
         setAuthToken('dummy-token-1');
 
-        const token = localStorage.getItem(TOKEN_KEY);
+        const token = sessionStorage.getItem(TOKEN_KEY);
         expect(token).toBe('dummy-token-1');
 
-        const expiry = Number(localStorage.getItem(EXPIRATION_KEY));
+        const expiry = Number(sessionStorage.getItem(EXPIRATION_KEY));
         expect(typeof expiry).toBe('number');
         expect(expiry).toBeGreaterThan(Date.now());
     });
@@ -38,15 +38,15 @@ describe('auth-token.ts', () => {
         jest.advanceTimersByTime(4 * 60 * 60 * 1000);
 
         expect(getAuthToken()).toBeNull();
-        expect(localStorage.getItem(TOKEN_KEY)).toBeNull();
-        expect(localStorage.getItem(EXPIRATION_KEY)).toBeNull();
+        expect(sessionStorage.getItem(TOKEN_KEY)).toBeNull();
+        expect(sessionStorage.getItem(EXPIRATION_KEY)).toBeNull();
     });
 
     test('clearAuthToken should remove token and expiration in storage', () => {
         setAuthToken('dummy-token-4');
         clearAuthToken();
 
-        expect(localStorage.getItem(TOKEN_KEY)).toBeNull();
-        expect(localStorage.getItem(EXPIRATION_KEY)).toBeNull();
+        expect(sessionStorage.getItem(TOKEN_KEY)).toBeNull();
+        expect(sessionStorage.getItem(EXPIRATION_KEY)).toBeNull();
     });
 });

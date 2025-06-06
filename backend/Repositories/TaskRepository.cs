@@ -48,16 +48,6 @@ namespace TaskSync.Repositories
             return task;
         }
 
-        //public async Task<TaskEntity?> DeleteAsync(int taskId)
-        //{
-        //    var deleted = await _dbContext.Tasks
-        //        .FromSqlInterpolated($"DELETE FROM tasks WHERE id = {taskId} RETURNING *") // delete and return in 1 query support by postgres
-        //        .AsNoTracking()
-        //        .FirstOrDefaultAsync();
-        //
-        //    return deleted;
-        //}
-
         public async Task<TaskEntity?> DeleteAsync(int taskId)
         {
             await using var conn = _dbContext.Database.GetDbConnection();

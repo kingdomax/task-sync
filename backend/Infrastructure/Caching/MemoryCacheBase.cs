@@ -7,8 +7,12 @@ namespace TaskSync.Infrastructure.Caching
     public abstract class MemoryCacheBase<T> : IMemoryCacheService<T>
     {
         protected readonly IMemoryCache _memoryCache;
+        protected MemoryCacheBase(IMemoryCache memoryCache)
+        {
+            _memoryCache = memoryCache;
+        }
 
-        protected MemoryCacheBase(IMemoryCache memoryCache) => _memoryCache = memoryCache;
+        protected abstract string GetCacheKey(int cacheKey);
 
         public async Task<T?> GetAsync(int cacheKey, Func<Task<T?>> fallbackCall)
         {
@@ -45,7 +49,5 @@ namespace TaskSync.Infrastructure.Caching
             _memoryCache.Remove(GetCacheKey(cacheKey));
             Console.WriteLine($"[MemoryCache] remove '{GetCacheKey(cacheKey)}' from memory");
         }
-
-        protected abstract string GetCacheKey(int cacheKey);
     }
 }

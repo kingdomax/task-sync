@@ -15,12 +15,12 @@ namespace TaskSync.Infrastructure.Caching
 
         public void RefreshProjectTasks(int projectId)
         {
-            // Explicitly runs in the thread pool.
+            // Explicitly queue in the thread pool.
             Task.Run(async () =>
             {
                 using var scope = _sp.CreateScope();
-                var cache = scope.ServiceProvider.GetRequiredService<IMemoryCacheService<IList<TaskEntity>>>();
                 var repo = scope.ServiceProvider.GetRequiredService<ITaskRepository>();
+                var cache = _sp.GetRequiredService<IMemoryCacheService<IList<TaskEntity>>>();
 
                 var tasks = await repo.GetAsync(projectId);
                 if (tasks != null)

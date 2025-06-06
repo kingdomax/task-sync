@@ -23,7 +23,7 @@ namespace TaskSync.Controllers
             _authenticationService = authenticationService;
         }
 
-        [ValidateRequest]
+        [ValidateRequestFilter]
         [HttpPost("test")]
         public async Task<IActionResult> Test([FromBody] TestRequest request)
         {
@@ -34,7 +34,7 @@ namespace TaskSync.Controllers
             return Ok(result);
         }
 
-        [ValidateRequest]
+        [ValidateRequestFilter]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {

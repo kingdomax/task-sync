@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace TaskSync.Filters
 {
-    public class ValidateRequestAttribute : ActionFilterAttribute
+    // todo-moch: 1) add some custom logic
+    public class ValidateRequestFilter : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {

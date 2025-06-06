@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using TaskSync.Filters;
+using TaskSync.Controllers.TempDto;
 using TaskSync.Models.Dto;
 using TaskSync.Services.Interfaces;
 
@@ -26,7 +26,6 @@ namespace TaskSync.Controllers
             return Ok(new KanbanBoardVm() { Tasks = tasks });
         }
 
-        [ValidateRequest]
         [HttpPost("addTask")]
         public async Task<IActionResult> AddTask([FromBody] AddTaskRequest request)
         {
@@ -34,21 +33,25 @@ namespace TaskSync.Controllers
             return StatusCode(StatusCodes.Status201Created, taskDto);
         }
 
-        [ValidateRequest]
         [HttpPatch("updateStatus/{taskId}")]
-        public async Task<IActionResult> UpdateStatus([FromRoute] int taskId, [FromBody] UpdateTaskRequest request)
+        public async Task<IActionResult> UpdateStatus([FromRoute] int taskId, [FromBody] UpdateTaskRequest request) // [FromRoute], [FromBody] are called ModelBining
         {
             var taskDto = await _taskService.UpdateTaskStatusAsync(taskId, request);
 
             return taskDto != null ? Ok(taskDto) : BadRequest("Task not found");
         }
 
-        [ValidateRequest]
         [HttpDelete("deleteTask/{taskId}")]
         public async Task<IActionResult> AddTask([FromRoute] int taskId)
         {
             var isSucess = await _taskService.DeleteTaskAsync(taskId);
             return isSucess ? NoContent() : NotFound("Task not found");
+        }
+
+        [HttpPost("testSomething/{param1}")]
+        public IActionResult Test([FromRoute] int param1, [FromQuery] QueryStringDto queryStringDto)
+        {
+            return Ok("success");
         }
     }
 }
