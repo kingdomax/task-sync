@@ -8,6 +8,7 @@ export const useKanbanCrud = (
     setKanbanItems: React.Dispatch<React.SetStateAction<TaskDto[]>>,
     connectionIdRef: React.RefObject<string>
 ) => {
+    // keep in mind useEffect() run after DOM painted
     useEffect(() => {
         const fetchTasks = async () => {
             try {

@@ -1,6 +1,6 @@
 import type { HubConnection } from '@microsoft/signalr';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useLayoutEffect } from 'react';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 
 import { getSeverUrl } from 'src/utils/env';
@@ -15,8 +15,8 @@ export const useSignalRTaskHub = (
     const connectionRef = useRef<HubConnection | null>(null); // Persistent data across render without trigger re-render
     const connectionIdRef = useRef<string>('');
 
-    // keep in mind useEffect run after DOM render
-    useEffect(() => {
+    // run after DOM mutation, but before paint
+    useLayoutEffect(() => {
         const connectToHub = async () => {
             const connection = new HubConnectionBuilder()
                 .withUrl(`${getSeverUrl()}/taskHub`, {
