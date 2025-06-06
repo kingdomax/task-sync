@@ -21,13 +21,13 @@ namespace TaskSync.MiddleWares
         {
             if (_excludedPaths.Any(p => context.Request.Path.StartsWithSegments(p)))
             {
-                await _next(context);
+                await _next.Invoke(context);
                 return;
             }
 
             var sw = Stopwatch.StartNew();
 
-            await _next(context);
+            await _next.Invoke(context);
 
             sw.Stop();
             Console.WriteLine($"[TimingMiddleware] {sw.ElapsedMilliseconds}ms");

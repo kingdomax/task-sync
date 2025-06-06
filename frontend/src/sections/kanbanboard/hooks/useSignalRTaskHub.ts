@@ -15,6 +15,7 @@ export const useSignalRTaskHub = (
     const connectionRef = useRef<HubConnection | null>(null); // Persistent data across render without trigger re-render
     const connectionIdRef = useRef<string>('');
 
+    // keep in mind useEffect run after DOM render
     useEffect(() => {
         const connectToHub = async () => {
             const connection = new HubConnectionBuilder()

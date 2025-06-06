@@ -19,13 +19,13 @@ namespace TaskSync.MiddleWares
         {
             if (_excludedPaths.Any(p => context.Request.Path.StartsWithSegments(p)))
             {
-                await _next(context);
+                await _next.Invoke(context);
                 return;
             }
 
             Console.WriteLine($"-------------------");
             Console.WriteLine($"[LoggerMiddleware] {context.Request.Method} {context.Request.Path}");
-            await _next(context);
+            await _next.Invoke(context);
             Console.WriteLine($"-------------------");
         }
     }
