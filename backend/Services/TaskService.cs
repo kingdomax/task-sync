@@ -51,8 +51,10 @@ namespace TaskSync.Services
         {
             var newTask = await _taskRepository.AddAsync(request.Title, request.AssigneeId, request.ProjectId);
 
-            _taskEntityCache.Remove(newTask.ProjectId);
-            _cacheBackgroundRefresher.RefreshProjectTasks(newTask.ProjectId);
+            _taskEntityCache.Remove(newTask.ProjectId); // todo-moch: do we need to remove cache before add or maybe no need
+            _cacheBackgroundRefresher.RefreshProjectTasks(newTask.ProjectId);  // todo-moch: do we need to remove cache before add or maybe no need
+
+            // todo-moch: call gamificationapi
 
             var dto = new TaskDto
             {

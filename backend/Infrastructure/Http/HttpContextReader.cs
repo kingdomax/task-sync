@@ -7,11 +7,7 @@ namespace TaskSync.Infrastructure.Http
     public class HttpContextReader : IHttpContextReader
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public HttpContextReader(IHttpContextAccessor httpContextAccessor)
-        {
-            _httpContextAccessor = httpContextAccessor;
-        }
+        public HttpContextReader(IHttpContextAccessor httpContextAccessor) => _httpContextAccessor = httpContextAccessor;
 
         public string? GetConnectionId()
         {

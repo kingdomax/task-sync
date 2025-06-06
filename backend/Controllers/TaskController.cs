@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 using TaskSync.Controllers.TempDto;
 using TaskSync.Models.Dto;
@@ -26,6 +27,7 @@ namespace TaskSync.Controllers
             return Ok(new KanbanBoardVm() { Tasks = tasks });
         }
 
+        [Authorize]
         [HttpPost("addTask")]
         public async Task<IActionResult> AddTask([FromBody] AddTaskRequest request)
         {
@@ -33,6 +35,7 @@ namespace TaskSync.Controllers
             return StatusCode(StatusCodes.Status201Created, taskDto);
         }
 
+        [Authorize]
         [HttpPatch("updateStatus/{taskId}")]
         public async Task<IActionResult> UpdateStatus([FromRoute] int taskId, [FromBody] UpdateTaskRequest request) // [FromRoute], [FromBody] are called ModelBining
         {
@@ -41,6 +44,7 @@ namespace TaskSync.Controllers
             return taskDto != null ? Ok(taskDto) : BadRequest("Task not found");
         }
 
+        [Authorize]
         [HttpDelete("deleteTask/{taskId}")]
         public async Task<IActionResult> AddTask([FromRoute] int taskId)
         {

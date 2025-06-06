@@ -3,7 +3,6 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using TaskSync.Filters;
 using TaskSync.Models.Dto;
 using TaskSync.Services.Interfaces;
 
@@ -23,18 +22,6 @@ namespace TaskSync.Controllers
             _authenticationService = authenticationService;
         }
 
-        [ValidateRequestFilter]
-        [HttpPost("test")]
-        public async Task<IActionResult> Test([FromBody] TestRequest request)
-        {
-            Console.WriteLine("In 'auth/test' controller");
-
-            var result = await _userService.GetUserAsync();
-
-            return Ok(result);
-        }
-
-        [ValidateRequestFilter]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
