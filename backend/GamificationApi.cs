@@ -2,14 +2,14 @@
 
 namespace TaskSync
 {
-    public class PointDto // todo-moch: move to new file and create folder
+    public class PointDto // todo-moch: move to new file under Model/Dto
     {
         public int TaskId { get; set; }
         public int ActionId { get; set; } // todo-moch: this sohould probably be enum for consistency betwween all api
         public string? UserId { get; set; }
     }
 
-    public interface IGamificationApi // todo-moch: move to new file and create folder
+    public interface IGamificationApi // todo-moch: move to interface folder
     {
         Task UpdatePoint(int taskId, int actionId);
     }

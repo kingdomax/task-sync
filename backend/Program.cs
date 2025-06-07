@@ -33,8 +33,9 @@ app.UseAuthorization();
 app.UseRateLimiter();
 app.MapControllers();
 app.MapHub<TaskHub>("/taskHub");
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<LoggerMiddleware>();
-app.UseMiddleware<RequestTimingMiddleware>();  // custom middle ware
+app.UseMiddleware<RequestTimingMiddleware>();  // custom middleware
 // -----------------------------------------------------------------------
 
 app.Run();

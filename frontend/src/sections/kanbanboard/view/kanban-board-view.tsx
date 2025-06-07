@@ -65,22 +65,21 @@ export const KanbanBoardView = () => {
 
             <DndContext onDragEnd={handleDragEnd}>
                 <Grid container spacing={3}>
-                    {Object.entries(groupedItems).map(([statusKey, items]) => {
-                        const status = statusKey as TASK_STATUS;
-
-                        return (
-                            <DroppableColumn key={`column-${status}`} status={status}>
-                                {items.map((item) => (
-                                    <DraggableKanbanItem
-                                        key={item.id}
-                                        item={item}
-                                        onStatusChange={handleStatusChange}
-                                        onDelete={handleDeleteItem}
-                                    />
-                                ))}
-                            </DroppableColumn>
-                        );
-                    })}
+                    {Object.entries(groupedItems).map(([statusKey, items]) => (
+                        <DroppableColumn
+                            key={`column-${statusKey}`}
+                            status={statusKey as TASK_STATUS}
+                        >
+                            {items.map((item) => (
+                                <DraggableKanbanItem
+                                    key={item.id}
+                                    item={item}
+                                    onStatusChange={handleStatusChange}
+                                    onDelete={handleDeleteItem}
+                                />
+                            ))}
+                        </DroppableColumn>
+                    ))}
                 </Grid>
             </DndContext>
         </DashboardContent>
