@@ -1,4 +1,6 @@
-﻿using TaskSync.Infrastructure.Caching.Interfaces;
+﻿using TaskSync.Enums;
+using TaskSync.ExternalApi.Interfaces;
+using TaskSync.Infrastructure.Caching.Interfaces;
 using TaskSync.Infrastructure.Http.Interface;
 using TaskSync.Models.Dto;
 using TaskSync.Repositories.Entities;
@@ -15,19 +17,22 @@ namespace TaskSync.Services
         private readonly IMemoryCacheService<IList<TaskEntity>> _taskEntityCache;
         private readonly ITaskNotificationService _taskNotificationService;
         private readonly ICacheBackgroundRefresher _cacheBackgroundRefresher;
+        private readonly IGamificationApi _gamificationApi;
 
         public TaskService(
             IHttpContextReader httpContextReader,
             ITaskRepository taskRepository,
             IMemoryCacheService<IList<TaskEntity>> taskEntityCache,
             ITaskNotificationService taskNotificationService,
-            ICacheBackgroundRefresher cacheBackgroundRefresher)
+            ICacheBackgroundRefresher cacheBackgroundRefresher,
+            IGamificationApi gamificationApi)
         {
             _httpContextReader = httpContextReader;
             _taskRepository = taskRepository;
             _taskEntityCache = taskEntityCache;
             _taskNotificationService = taskNotificationService;
             _cacheBackgroundRefresher = cacheBackgroundRefresher;
+            _gamificationApi = gamificationApi;
         }
 
         public async Task<IList<TaskDto>?> GetTasksAsync(int projectId)
@@ -55,6 +60,7 @@ namespace TaskSync.Services
             _cacheBackgroundRefresher.RefreshProjectTasks(newTask.ProjectId);  // todo-moch: do we need to remove cache before add or maybe no need
 
             // todo-moch: call gamificationapi
+            _ = _gamificationApi.UpdatePoint(newTask.Id, TASK_STATUS.CREATE);
 
             TaskDto dto = new TaskDto
             {

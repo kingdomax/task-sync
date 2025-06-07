@@ -15,6 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.ConfigureApiVersion();
 builder.Services.ConfigureCors();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
 builder.Services.AddRateLimiter();
 builder.Services.ConfigureJwt(builder.Configuration);
 builder.Services.AddMemoryCache(options => options.SizeLimit = 100);

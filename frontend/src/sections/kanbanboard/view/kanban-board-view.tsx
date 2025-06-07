@@ -45,6 +45,8 @@ export const KanbanBoardView = () => {
             [TASK_STATUS.TODO]: [],
             [TASK_STATUS.INPROGRESS]: [],
             [TASK_STATUS.DONE]: [],
+            [TASK_STATUS.CREATE]: [],
+            [TASK_STATUS.DELETE]: [],
         };
 
         const sorted = [...kanbanItems].sort(

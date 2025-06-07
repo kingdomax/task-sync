@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
+using TaskSync.ExternalApi;
+using TaskSync.ExternalApi.Interfaces;
 using TaskSync.Infrastructure.Caching;
 using TaskSync.Infrastructure.Caching.Interfaces;
 using TaskSync.Infrastructure.Http;
@@ -33,6 +35,8 @@ namespace TaskSync.Infrastructure.Configurations
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<ITaskService, TaskService>();
+
+            services.AddScoped<IGamificationApi, GamificationApi>();
 
             return services;
         }

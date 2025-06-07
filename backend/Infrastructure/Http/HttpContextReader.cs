@@ -14,9 +14,9 @@ namespace TaskSync.Infrastructure.Http
             return _httpContextAccessor.HttpContext?.Request.Headers["x-connection-id"].FirstOrDefault();
         }
 
-        public string? GetUserId()
+        public string GetUserId()
         {
-            return _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
         }
     }
 }

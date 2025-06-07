@@ -3,6 +3,6 @@
     public interface IHttpContextReader
     {
         string? GetConnectionId();
-        string? GetUserId();
+        string GetUserId();
     }
 }

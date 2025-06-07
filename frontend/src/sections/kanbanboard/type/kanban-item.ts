@@ -3,6 +3,8 @@ export enum TASK_STATUS { // todo-moch: change to int increase performance since
     TODO = 'TODO',
     INPROGRESS = 'INPROGRESS',
     DONE = 'DONE',
+    CREATE = 'CREATE',
+    DELETE = 'DELETE',
 }
 
 export type KanbanBoardVm = {
