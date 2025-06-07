@@ -9,7 +9,7 @@ namespace TaskSync.Controllers
 {
     [ApiController]
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/task")]
+    [Route("api/v{version:apiVersion}")]
     public class TaskController : ControllerBase
     {
         private readonly ITaskService _taskService;
@@ -19,7 +19,7 @@ namespace TaskSync.Controllers
             _taskService = taskService;
         }
 
-        [HttpGet("getTasks/{projectId}")]
+        [HttpGet("projects/{projectId}/tasks")]
         public async Task<IActionResult> GetTasks([FromRoute] int projectId)
         {
             var tasks = await _taskService.GetTasksAsync(projectId);
@@ -28,15 +28,15 @@ namespace TaskSync.Controllers
         }
 
         [Authorize]
-        [HttpPost("addTask")]
-        public async Task<IActionResult> AddTask([FromBody] AddTaskRequest request)
+        [HttpPost("projects/{projectId}/tasks")]
+        public async Task<IActionResult> AddTask([FromRoute] int projectId, [FromBody] AddTaskRequest request)
         {
-            var taskDto = await _taskService.AddTaskAsync(request);
+            var taskDto = await _taskService.AddTaskAsync(projectId, request);
             return StatusCode(StatusCodes.Status201Created, taskDto);
         }
 
         [Authorize]
-        [HttpPatch("updateStatus/{taskId}")]
+        [HttpPatch("tasks/{taskId}")]
         public async Task<IActionResult> UpdateStatus([FromRoute] int taskId, [FromBody] UpdateTaskRequest request) // [FromRoute], [FromBody] are called ModelBining
         {
             var taskDto = await _taskService.UpdateTaskStatusAsync(taskId, request);
@@ -45,8 +45,8 @@ namespace TaskSync.Controllers
         }
 
         [Authorize]
-        [HttpDelete("deleteTask/{taskId}")]
-        public async Task<IActionResult> AddTask([FromRoute] int taskId)
+        [HttpDelete("tasks/{taskId}")]
+        public async Task<IActionResult> DeleteTask([FromRoute] int taskId)
         {
             var isSucess = await _taskService.DeleteTaskAsync(taskId);
             return isSucess ? NoContent() : NotFound("Task not found");

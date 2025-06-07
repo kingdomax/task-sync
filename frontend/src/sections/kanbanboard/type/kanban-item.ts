@@ -17,9 +17,7 @@ export type TaskDto = {
     status: TASK_STATUS;
 };
 
-export type AddItemRequest = Pick<TaskDto, 'title' | 'assigneeId' | 'lastModified'> & {
-    projectId: number;
-};
+export type AddItemRequest = Pick<TaskDto, 'title' | 'assigneeId' | 'lastModified'>;
 
 export enum NOTIFY_STATUS {
     CREATE = 'CREATE',

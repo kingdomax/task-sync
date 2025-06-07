@@ -47,16 +47,16 @@ namespace TaskSync.Services
             }).ToList();
         }
 
-        public async Task<TaskDto> AddTaskAsync(AddTaskRequest request)
+        public async Task<TaskDto> AddTaskAsync(int projectId, AddTaskRequest request)
         {
-            var newTask = await _taskRepository.AddAsync(request.Title, request.AssigneeId, request.ProjectId);
+            TaskEntity newTask = await _taskRepository.AddAsync(request.Title, request.AssigneeId, projectId);
 
             _taskEntityCache.Remove(newTask.ProjectId); // todo-moch: do we need to remove cache before add or maybe no need
             _cacheBackgroundRefresher.RefreshProjectTasks(newTask.ProjectId);  // todo-moch: do we need to remove cache before add or maybe no need
 
             // todo-moch: call gamificationapi
 
-            var dto = new TaskDto
+            TaskDto dto = new TaskDto
             {
                 Id = newTask.Id,
                 Title = newTask.Title,
@@ -70,7 +70,7 @@ namespace TaskSync.Services
 
         public async Task<TaskDto?> UpdateTaskStatusAsync(int taskId, UpdateTaskRequest request)
         {
-            var updatedTask = await _taskRepository.UpdateStatusAsync(taskId, request.StatusRaw);
+            TaskEntity? updatedTask = await _taskRepository.UpdateStatusAsync(taskId, request.StatusRaw);
             if (updatedTask == null)
             {
                 return null;
@@ -79,7 +79,7 @@ namespace TaskSync.Services
             _taskEntityCache.Remove(updatedTask.ProjectId);
             _cacheBackgroundRefresher.RefreshProjectTasks(updatedTask.ProjectId); // pre-warm cache in other thread pool (i.e. background task)
 
-            var dto = new TaskDto
+            TaskDto dto = new TaskDto
             {
                 Id = updatedTask.Id,
                 Title = updatedTask.Title,
@@ -93,7 +93,7 @@ namespace TaskSync.Services
 
         public async Task<bool> DeleteTaskAsync(int taskId)
         {
-            var deletedTask = await _taskRepository.DeleteAsync(taskId);
+            TaskEntity? deletedTask = await _taskRepository.DeleteAsync(taskId);
             if (deletedTask == null)
             {
                 return false;
