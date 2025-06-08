@@ -56,12 +56,6 @@ namespace TaskSync.Services
         {
             TaskEntity newTask = await _taskRepository.AddAsync(request.Title, request.AssigneeId, projectId);
 
-            _taskEntityCache.Remove(newTask.ProjectId); // todo-moch: do we need to remove cache before add or maybe no need
-            _cacheBackgroundRefresher.RefreshProjectTasks(newTask.ProjectId);  // todo-moch: do we need to remove cache before add or maybe no need
-
-            // todo-moch: call gamificationapi
-            _ = _gamificationApi.UpdatePoint(newTask.Id, TASK_STATUS.CREATE);
-
             TaskDto dto = new TaskDto
             {
                 Id = newTask.Id,
@@ -70,6 +64,9 @@ namespace TaskSync.Services
                 Status = newTask.Status,
                 LastModified = newTask.LastModified,
             };
+
+            _cacheBackgroundRefresher.RefreshProjectTasks(projectId); // pre-warm cache in other thread pool (i.e. background task)
+            _ = _gamificationApi.UpdatePoint(dto.Id, TASK_STATUS.CREATE); // fire and forget, executes on the thread handling the request (non-thread-pooled).
             _ = _taskNotificationService.NotifyTaskCreateAsync(dto, _httpContextReader.GetConnectionId());
             return dto;
         }
@@ -82,9 +79,6 @@ namespace TaskSync.Services
                 return null;
             }
 
-            _taskEntityCache.Remove(updatedTask.ProjectId);
-            _cacheBackgroundRefresher.RefreshProjectTasks(updatedTask.ProjectId); // pre-warm cache in other thread pool (i.e. background task)
-
             TaskDto dto = new TaskDto
             {
                 Id = updatedTask.Id,
@@ -93,7 +87,10 @@ namespace TaskSync.Services
                 Status = updatedTask.Status,
                 LastModified = updatedTask.LastModified,
             };
-            _ = _taskNotificationService.NotifyTaskUpdateAsync(dto, _httpContextReader.GetConnectionId()); // fire and forget, executes on the thread handling the request (non-thread-pooled).
+
+            _cacheBackgroundRefresher.RefreshProjectTasks(updatedTask.ProjectId);
+            _ = _gamificationApi.UpdatePoint(dto.Id, dto.Status);
+            _ = _taskNotificationService.NotifyTaskUpdateAsync(dto, _httpContextReader.GetConnectionId());
             return dto;
         }
 
@@ -105,8 +102,8 @@ namespace TaskSync.Services
                 return false;
             }
 
-            _taskEntityCache.Remove(deletedTask.ProjectId);
             _cacheBackgroundRefresher.RefreshProjectTasks(deletedTask.ProjectId);
+            _ = _gamificationApi.UpdatePoint(taskId, TASK_STATUS.DELETE);
             _ = _taskNotificationService.NotifyTaskDeleteAsync(taskId, _httpContextReader.GetConnectionId());
             return true;
         }
