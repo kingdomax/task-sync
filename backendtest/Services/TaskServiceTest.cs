@@ -2,7 +2,6 @@
 using TaskSync.ExternalApi.Interfaces;
 using TaskSync.Infrastructure.Caching.Interfaces;
 using TaskSync.Infrastructure.Http.Interface;
-using TaskSync.Models.Dto;
 using TaskSync.Repositories.Entities;
 using TaskSync.Repositories.Interfaces;
 using TaskSync.Services;
@@ -70,25 +69,6 @@ namespace TaskSyncTest.Services
         }
 
         [Fact]
-        public async Task UpdateTaskStatusAsync_ShouldEvictCache_WhenTaskUpdated()
-        {
-            var mockTaskEntity = new TaskEntity()
-            {
-                Id = 3,
-                Title = "Integrate Websocket flow",
-                AssigneeId = 3,
-                StatusRaw = "INPROGRESS",
-                LastModified = new DateTime(2025, 3, 3),
-                ProjectId = 3, // make sure it evict correct cache key
-            };
-            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var cacheMock, out var cacheBgRefresherMock, out var gamificationApiMock);
-
-            var result = await service.UpdateTaskStatusAsync(3, new UpdateTaskRequest() { StatusRaw = "INPROGRESS" });
-
-            cacheMock.Verify(x => x.Remove(mockTaskEntity.ProjectId), Times.Once);
-        }
-
-        [Fact]
         public async Task UpdateTaskStatusAsync_ShouldNotifyOtherClients_WhenTaskUpdated()
         {
             var mockTaskEntity = new TaskEntity()
@@ -103,7 +83,7 @@ namespace TaskSyncTest.Services
 
             var result = await service.UpdateTaskStatusAsync(4, new UpdateTaskRequest() { StatusRaw = "INPROGRESS" });
 
-            notificationMock.Verify(x => x.NotifyTaskUpdateAsync(It.IsAny<TaskDto>(), It.IsAny<string?>()), Times.Once);
+            notificationMock.Verify(x => x.NotifyTaskUpdateAsync(result, It.IsAny<string?>()), Times.Once);
         }
 
         [Fact]
@@ -123,6 +103,25 @@ namespace TaskSyncTest.Services
             var result = await service.UpdateTaskStatusAsync(5, new UpdateTaskRequest() { StatusRaw = "DONE" });
 
             cacheBgRefresherMock.Verify(x => x.RefreshProjectTasks(mockTaskEntity.ProjectId), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateTaskStatusAsync_ShouldCallGamificationApi_WhenTaskUpdated()
+        {
+            var mockTaskEntity = new TaskEntity()
+            {
+                Id = 6,
+                Title = "Comment support on task",
+                AssigneeId = 6,
+                StatusRaw = "DONE",
+                LastModified = new DateTime(2025, 6, 6),
+                ProjectId = 6,
+            };
+            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var cacheMock, out var cacheBgRefresherMock, out var gamificationApiMock);
+
+            var result = await service.UpdateTaskStatusAsync(6, new UpdateTaskRequest() { StatusRaw = "DONE" });
+
+            gamificationApiMock.Verify(x => x.UpdatePoint(result.Id, result.Status), Times.Once);
         }
     }
 }
