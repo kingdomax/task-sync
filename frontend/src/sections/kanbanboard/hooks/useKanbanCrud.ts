@@ -34,12 +34,8 @@ export const useKanbanCrud = (
         try {
             const res = await fetch(`${getApiUrl()}/projects/1/tasks`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-connection-id': connectionIdRef.current,
-                    Authorization: `Bearer ${getAuthToken()}`,
-                },
                 body: JSON.stringify(newItem),
+                headers: createHeader(connectionIdRef.current),
             });
 
             if (!res.ok) {
@@ -72,12 +68,8 @@ export const useKanbanCrud = (
         try {
             const res = await fetch(`${getApiUrl()}/tasks/${data.id}`, {
                 method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-connection-id': connectionIdRef.current,
-                    Authorization: `Bearer ${getAuthToken()}`,
-                },
                 body: JSON.stringify({ statusRaw: newStatus }),
+                headers: createHeader(connectionIdRef.current),
             });
 
             if (!res.ok) {
@@ -106,10 +98,7 @@ export const useKanbanCrud = (
         try {
             const res = await fetch(`${getApiUrl()}/tasks/${deleteItem.id}`, {
                 method: 'DELETE',
-                headers: {
-                    'x-connection-id': connectionIdRef.current,
-                    Authorization: `Bearer ${getAuthToken()}`,
-                },
+                headers: createHeader(connectionIdRef.current),
             });
 
             if (!res.ok) {
@@ -123,3 +112,9 @@ export const useKanbanCrud = (
 
     return { handleAddItem, handleStatusChange, handleDeleteItem };
 };
+
+const createHeader = (connectionId: string): Record<string, string> => ({
+    'Content-Type': 'application/json',
+    'x-connection-id': connectionId,
+    Authorization: `Bearer ${getAuthToken()}`,
+});
