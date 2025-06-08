@@ -18,7 +18,7 @@ namespace TaskSync.Infrastructure.Configurations
 {
     public static class DependencyInjectionConfiguration
     {
-        public static IServiceCollection RegisterDependencies(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureDependencyInjection(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
