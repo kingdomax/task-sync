@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TaskSync.Controllers.TempDto
+namespace TaskSync.Models
 {
     public class QueryStringDto
     {

@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // -------------- Add services to the container  ----------------------------------
 builder.Services.AddSignalR().AddJsonProtocol(options => options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpContextAccessor();
@@ -29,16 +30,16 @@ var app = builder.Build();
 app.UseCors();
 app.UseSwagger();
 app.UseSwaggerUI();
-// app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
+app.UseStaticFiles(); // Required for serving CSS, JS, etc.
 app.UseResponseCompression();
-app.MapControllers();
+app.MapControllers(); // or MapControllerRoute
 app.MapHub<TaskHub>("/taskHub");
-app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>(); // custom middlewares
 app.UseMiddleware<LoggerMiddleware>();
-app.UseMiddleware<RequestTimingMiddleware>();  // custom middleware
+app.UseMiddleware<RequestTimingMiddleware>();
 // -----------------------------------------------------------------------
 
 app.Run();

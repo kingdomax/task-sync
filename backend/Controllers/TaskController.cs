@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using TaskSync.Controllers.TempDto;
+using TaskSync.Models;
 using TaskSync.Models.Dto;
 using TaskSync.Services.Interfaces;
 
