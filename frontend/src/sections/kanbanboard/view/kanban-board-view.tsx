@@ -40,13 +40,11 @@ export const KanbanBoardView = () => {
 
     // Memoizes the result of a computation - saving performance
     const groupedItems = useMemo(() => {
-        const map: Record<TASK_STATUS, TaskDto[]> = {
+        const map: Partial<Record<TASK_STATUS, TaskDto[]>> = {
             [TASK_STATUS.BACKLOG]: [],
             [TASK_STATUS.TODO]: [],
             [TASK_STATUS.INPROGRESS]: [],
             [TASK_STATUS.DONE]: [],
-            [TASK_STATUS.CREATE]: [],
-            [TASK_STATUS.DELETE]: [],
         };
 
         const sorted = [...kanbanItems].sort(
@@ -55,7 +53,7 @@ export const KanbanBoardView = () => {
 
         for (const item of sorted) {
             const normalized = { ...item, lastModified: new Date(item.lastModified) };
-            map[item.status].push(normalized);
+            map[item.status]?.push(normalized);
         }
 
         return map;
