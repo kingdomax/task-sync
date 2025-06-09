@@ -14,12 +14,14 @@ namespace TaskSync.ExternalApi
         private readonly GamificationApiSettings _gamApiSettings;
         private readonly IHttpContextReader _httpContextReader;
         private readonly HttpClient _httpClient;
+        private readonly ILogger<GamificationApi> _logger;
 
-        public GamificationApi(IOptions<GamificationApiSettings> options, IHttpContextReader httpContextReader, IHttpClientFactory httpClientFactory)
+        public GamificationApi(IOptions<GamificationApiSettings> options, IHttpContextReader httpContextReader, IHttpClientFactory httpClientFactory, ILogger<GamificationApi> logger)
         {
             _gamApiSettings = options.Value;
             _httpContextReader = httpContextReader;
             _httpClient = httpClientFactory.CreateClient();
+            _logger = logger;
         }
 
         public async Task UpdatePoint(int taskId, TaskStatus status)
@@ -41,7 +43,7 @@ namespace TaskSync.ExternalApi
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                _logger.LogError(ex, ex.Message);
             }
         }
     }

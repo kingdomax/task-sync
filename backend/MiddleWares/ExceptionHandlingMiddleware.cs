@@ -5,10 +5,12 @@ namespace TaskSync.MiddleWares
     public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
-        public ExceptionHandlingMiddleware(RequestDelegate next)
+        public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -19,12 +21,12 @@ namespace TaskSync.MiddleWares
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-                await HandleExceptionAsync(context, ex);
+                await HandleExceptionResponseAsync(context, ex);
+                _logger.LogError(ex, ex.Message);
             }
         }
 
-        private Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private Task HandleExceptionResponseAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
@@ -32,6 +34,7 @@ namespace TaskSync.MiddleWares
             var result = JsonSerializer.Serialize(new
             {
                 error = exception.Message,
+                stacktrace = exception.StackTrace,
                 detail = "An internal server error occurred. Please contact support.",
             });
 

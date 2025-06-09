@@ -18,9 +18,7 @@ import type { TaskDto } from '../type/kanban-item';
 
 export const KanbanBoardView = () => {
     const [kanbanItems, setKanbanItems] = useState<TaskDto[]>([]);
-
     const { connectionIdRef } = useSignalRTaskHub(setKanbanItems);
-
     const { handleAddItem, handleStatusChange, handleDeleteItem } = useKanbanCrud(
         setKanbanItems,
         connectionIdRef

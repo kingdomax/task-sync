@@ -35,7 +35,7 @@ app.UseAuthorization();
 app.UseRateLimiter();
 app.UseStaticFiles(); // Required for serving CSS, JS, etc.
 app.UseResponseCompression();
-app.MapControllers(); // or MapControllerRoute
+app.MapControllers(); // or MapControllerRoute, inside it call UseRouting()
 app.MapHub<TaskHub>("/taskHub");
 app.UseMiddleware<ExceptionHandlingMiddleware>(); // custom middlewares
 app.UseMiddleware<LoggerMiddleware>();

@@ -23,7 +23,6 @@ namespace TaskSync.Controllers
         public async Task<IActionResult> GetTasks([FromRoute] int projectId)
         {
             var tasks = await _taskService.GetTasksAsync(projectId);
-
             return Ok(new KanbanBoardVm() { Tasks = tasks });
         }
 
