@@ -12,13 +12,13 @@ namespace TaskSync.SignalR
 
         public override Task OnConnectedAsync()
         {
-            Console.WriteLine($"[SignalR] Client connected: {Context.ConnectionId}");
+            Console.WriteLine($"[TaskHub] Client connected: {Context.ConnectionId}");
             return base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception? exception)
         {
-            Console.WriteLine($"[SignalR] Client disconnected: {Context.ConnectionId}");
+            Console.WriteLine($"[TaskHub] Client disconnected: {Context.ConnectionId}");
             return base.OnDisconnectedAsync(exception);
         }
     }

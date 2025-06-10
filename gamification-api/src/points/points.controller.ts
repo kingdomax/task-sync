@@ -8,6 +8,10 @@ export class PointsController {
 
     @Post()
     create(@Body() dto: CreatePointDto) {
-        return this.pointsService.create(dto);
+        const data = this.pointsService.create(dto);
+
+        console.log(
+            `userId: ${dto.userId} - taskid: ${dto.taskId}, status: ${dto.taskStatus}`
+        );
     }
 }

@@ -15,9 +15,7 @@ export class TimingInterceptor implements NestInterceptor {
             tap(() => {
                 const duration = Date.now() - start;
                 const req: Request = context.switchToHttp().getRequest();
-                console.log(
-                    `Handled ${req.method} ${req.originalUrl} in ${duration}ms`
-                );
+                console.log(`[TimingInterceptor] ${duration}ms`);
             })
         );
     }

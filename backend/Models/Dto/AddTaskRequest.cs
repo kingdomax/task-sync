@@ -7,6 +7,5 @@ namespace TaskSync.Models.Dto
         [Required]
         public required string Title { get; set; }
         public int? AssigneeId { get; set; }
-        public int ProjectId { get; set; }
     }
 }

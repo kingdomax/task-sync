@@ -10,9 +10,11 @@ import { Request } from 'express';
 export class AuthGuard implements CanActivate {
     canActivate(context: ExecutionContext): boolean {
         const request: Request = context.switchToHttp().getRequest();
-        const isAuthorized = request.headers['x-fake-auth'] === 'yes';
+        const isAuthorized = request.headers['x-gamapi-auth'] === 'true';
         if (!isAuthorized) {
-            throw new UnauthorizedException('Missing x-fake-auth header');
+            throw new UnauthorizedException(
+                '[AuthGuard] Missing x-gamapi-auth header'
+            );
         }
         return true;
     }

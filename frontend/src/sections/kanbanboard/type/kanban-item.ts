@@ -3,6 +3,8 @@ export enum TASK_STATUS { // todo-moch: change to int increase performance since
     TODO = 'TODO',
     INPROGRESS = 'INPROGRESS',
     DONE = 'DONE',
+    CREATE = 'CREATE',
+    DELETE = 'DELETE',
 }
 
 export type KanbanBoardVm = {
@@ -17,9 +19,7 @@ export type TaskDto = {
     status: TASK_STATUS;
 };
 
-export type AddItemRequest = Pick<TaskDto, 'title' | 'assigneeId' | 'lastModified'> & {
-    projectId: number;
-};
+export type AddItemRequest = Pick<TaskDto, 'title' | 'assigneeId' | 'lastModified'>;
 
 export enum NOTIFY_STATUS {
     CREATE = 'CREATE',
