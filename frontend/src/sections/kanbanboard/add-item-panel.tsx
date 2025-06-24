@@ -120,7 +120,6 @@ export const AddItemPanel = ({ onAddItem }: Props) => {
                                 title: state.title,
                                 assigneeId: state.assigneeId <= 0 ? null : state.assigneeId,
                                 lastModified: new Date(),
-                                projectId: 1, // todo-moch: hardcode for now
                             };
 
                             onAddItem(newItem, handleSuccess, handleError);

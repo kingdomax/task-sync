@@ -3,6 +3,7 @@
     public interface IHttpContextReader
     {
         string? GetConnectionId();
-        string? GetUserId();
+        string GetUserId();
+        string? GetCookie(string cookieKey);
     }
 }

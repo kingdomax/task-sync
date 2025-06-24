@@ -18,9 +18,7 @@ import type { TaskDto } from '../type/kanban-item';
 
 export const KanbanBoardView = () => {
     const [kanbanItems, setKanbanItems] = useState<TaskDto[]>([]);
-
     const { connectionIdRef } = useSignalRTaskHub(setKanbanItems);
-
     const { handleAddItem, handleStatusChange, handleDeleteItem } = useKanbanCrud(
         setKanbanItems,
         connectionIdRef
@@ -40,7 +38,7 @@ export const KanbanBoardView = () => {
 
     // Memoizes the result of a computation - saving performance
     const groupedItems = useMemo(() => {
-        const map: Record<TASK_STATUS, TaskDto[]> = {
+        const map: Partial<Record<TASK_STATUS, TaskDto[]>> = {
             [TASK_STATUS.BACKLOG]: [],
             [TASK_STATUS.TODO]: [],
             [TASK_STATUS.INPROGRESS]: [],
@@ -53,7 +51,7 @@ export const KanbanBoardView = () => {
 
         for (const item of sorted) {
             const normalized = { ...item, lastModified: new Date(item.lastModified) };
-            map[item.status].push(normalized);
+            map[item.status]?.push(normalized);
         }
 
         return map;
@@ -65,22 +63,21 @@ export const KanbanBoardView = () => {
 
             <DndContext onDragEnd={handleDragEnd}>
                 <Grid container spacing={3}>
-                    {Object.entries(groupedItems).map(([statusKey, items]) => {
-                        const status = statusKey as TASK_STATUS;
-
-                        return (
-                            <DroppableColumn key={`column-${status}`} status={status}>
-                                {items.map((item) => (
-                                    <DraggableKanbanItem
-                                        key={item.id}
-                                        item={item}
-                                        onStatusChange={handleStatusChange}
-                                        onDelete={handleDeleteItem}
-                                    />
-                                ))}
-                            </DroppableColumn>
-                        );
-                    })}
+                    {Object.entries(groupedItems).map(([statusKey, items]) => (
+                        <DroppableColumn
+                            key={`column-${statusKey}`}
+                            status={statusKey as TASK_STATUS}
+                        >
+                            {items.map((item) => (
+                                <DraggableKanbanItem
+                                    key={item.id}
+                                    item={item}
+                                    onStatusChange={handleStatusChange}
+                                    onDelete={handleDeleteItem}
+                                />
+                            ))}
+                        </DroppableColumn>
+                    ))}
                 </Grid>
             </DndContext>
         </DashboardContent>

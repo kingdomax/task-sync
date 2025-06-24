@@ -1,10 +1,14 @@
-import { IsInt, Min } from 'class-validator';
+import { IsInt, IsString, Min, Max } from 'class-validator';
 
 export class CreatePointDto {
-    @IsInt()
-    userId: number;
+    @IsString()
+    userId: string;
 
     @IsInt()
-    @Min(1)
-    points: number;
+    taskId: number;
+
+    @IsInt()
+    @Min(0)
+    @Max(5)
+    taskStatus: number;
 }

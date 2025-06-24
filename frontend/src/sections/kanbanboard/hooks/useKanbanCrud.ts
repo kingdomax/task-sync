@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 import { getApiUrl } from 'src/utils/env';
+import { getAuthToken } from 'src/utils/auth-token';
 
 import type { TaskDto, TASK_STATUS, KanbanBoardVm, AddItemRequest } from '../type/kanban-item';
 
@@ -12,7 +13,7 @@ export const useKanbanCrud = (
     useEffect(() => {
         const fetchTasks = async () => {
             try {
-                const response: Response = await fetch(`${getApiUrl()}/task/getTasks/1`);
+                const response: Response = await fetch(`${getApiUrl()}/projects/1/tasks`); // todo-moch: hardcode for now
                 if (response.ok) {
                     const data: KanbanBoardVm = await response.json();
                     setKanbanItems(data.tasks ?? []);
@@ -31,13 +32,10 @@ export const useKanbanCrud = (
         onFailure: (msg: string) => void
     ) => {
         try {
-            const res = await fetch(`${getApiUrl()}/task/addTask`, {
+            const res = await fetch(`${getApiUrl()}/projects/1/tasks`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-connection-id': connectionIdRef.current,
-                },
                 body: JSON.stringify(newItem),
+                headers: createHeader(connectionIdRef.current),
             });
 
             if (!res.ok) {
@@ -68,13 +66,10 @@ export const useKanbanCrud = (
 
         // Then send request to server
         try {
-            const res = await fetch(`${getApiUrl()}/task/updateStatus/${data.id}`, {
+            const res = await fetch(`${getApiUrl()}/tasks/${data.id}`, {
                 method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-connection-id': connectionIdRef.current,
-                },
                 body: JSON.stringify({ statusRaw: newStatus }),
+                headers: createHeader(connectionIdRef.current),
             });
 
             if (!res.ok) {
@@ -101,9 +96,9 @@ export const useKanbanCrud = (
         setKanbanItems((prev) => prev.filter((item) => item.id !== deleteItem.id));
 
         try {
-            const res = await fetch(`${getApiUrl()}/task/deleteTask/${deleteItem.id}`, {
+            const res = await fetch(`${getApiUrl()}/tasks/${deleteItem.id}`, {
                 method: 'DELETE',
-                headers: { 'x-connection-id': connectionIdRef.current },
+                headers: createHeader(connectionIdRef.current),
             });
 
             if (!res.ok) {
@@ -117,3 +112,9 @@ export const useKanbanCrud = (
 
     return { handleAddItem, handleStatusChange, handleDeleteItem };
 };
+
+const createHeader = (connectionId: string): Record<string, string> => ({
+    'Content-Type': 'application/json',
+    'x-connection-id': connectionId,
+    Authorization: `Bearer ${getAuthToken()}`,
+});

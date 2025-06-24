@@ -6,5 +6,7 @@
         TODO,
         INPROGRESS,
         DONE,
+        CREATE,
+        DELETE,
     }
 }

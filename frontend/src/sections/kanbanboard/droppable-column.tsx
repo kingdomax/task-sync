@@ -10,7 +10,7 @@ type Props = {
     children: React.ReactNode;
 };
 
-const statusLabels: Record<TASK_STATUS, string> = {
+const statusLabels: Partial<Record<TASK_STATUS, string>> = {
     [TASK_STATUS.BACKLOG]: 'Backlog',
     [TASK_STATUS.TODO]: 'To Do',
     [TASK_STATUS.INPROGRESS]: 'In Progress',
