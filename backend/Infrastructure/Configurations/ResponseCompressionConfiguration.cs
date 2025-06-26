@@ -6,7 +6,6 @@ namespace TaskSync.Infrastructure.Configurations
 {
     public static class ResponseCompressionConfiguration
     {
-
         public static IServiceCollection ConfigureResponseCompression(this IServiceCollection services)
         {
             services.AddResponseCompression(options =>

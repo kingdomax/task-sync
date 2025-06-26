@@ -18,10 +18,10 @@ namespace TaskSync.Services
         public HomeViewModel Build()
         {
             var vm = new HomeViewModel();
-            
+
             vm.AppName = _appInfo.AppName;
             vm.Environment = _appInfo.Environment;
-            
+
             return vm;
         }
     }
