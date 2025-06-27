@@ -1,4 +1,13 @@
-import { IsInt, IsString, Min, Max } from 'class-validator';
+import { IsInt, IsString, IsEnum } from 'class-validator';
+
+export enum TASK_STATUS {
+    BACKLOG,
+    TODO,
+    INPROGRESS,
+    DONE,
+    CREATE,
+    DELETE,
+}
 
 export class CreatePointDto {
     @IsString()
@@ -7,8 +16,6 @@ export class CreatePointDto {
     @IsInt()
     taskId: number;
 
-    @IsInt()
-    @Min(0)
-    @Max(5)
-    taskStatus: number;
+    @IsEnum(TASK_STATUS)
+    taskStatus: TASK_STATUS;
 }

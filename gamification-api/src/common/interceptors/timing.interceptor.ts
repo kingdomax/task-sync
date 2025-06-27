@@ -16,6 +16,7 @@ export class TimingInterceptor implements NestInterceptor {
                 const duration = Date.now() - start;
                 const req: Request = context.switchToHttp().getRequest();
                 console.log(`[TimingInterceptor] ${duration}ms`);
+                console.log(`-------------------`);
             })
         );
     }

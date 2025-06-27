@@ -1,21 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePointDto } from './dto/create-point.dto';
+import { CreatePointDto, TASK_STATUS } from './dto/create-point.dto';
 
 @Injectable()
 export class PointsService {
-    private records: CreatePointDto[] = []; // For demo. Use DB later!
-
     create(dto: CreatePointDto) {
-        const record = {
-            ...dto,
-            id: this.records.length + 1,
-            createdAt: new Date(),
-        };
-        this.records.push(dto);
-        return record;
-    }
-
-    findAll() {
-        return this.records;
+        console.log(
+            `[PointsService] userId:${dto.userId}, taskid:${dto.taskId}, status:${TASK_STATUS[dto.taskStatus]}`
+        );
     }
 }

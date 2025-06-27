@@ -6,12 +6,8 @@ import { CreatePointDto } from './dto/create-point.dto';
 export class PointsController {
     constructor(private readonly pointsService: PointsService) {}
 
-    @Post()
+    @Post() // auto return 201
     create(@Body() dto: CreatePointDto) {
-        const data = this.pointsService.create(dto);
-
-        console.log(
-            `userId: ${dto.userId} - taskid: ${dto.taskId}, status: ${dto.taskStatus}`
-        );
+        this.pointsService.create(dto);
     }
 }
