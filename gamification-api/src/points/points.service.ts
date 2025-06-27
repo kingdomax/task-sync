@@ -1,7 +1,10 @@
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
+import { UserEntity } from './entity/user.entity';
 import { PointsLogEntity } from './entity/points-log.entity';
+
 import { CreatePointDto, TASK_STATUS } from './dto/create-point.dto';
 
 @Injectable()
@@ -17,14 +20,29 @@ export class PointsService {
         );
 
         if (awardedPoint > 0) {
-            const record = this.pointsRepo.create({
-                user_id: Number(dto.userId),
-                task_id: dto.taskId,
-                points_awarded: awardedPoint,
-                reason: awardedReason,
-            });
+            await this.pointsRepo.manager.transaction(
+                async (transactionalEntityManager) => {
+                    // Insert log
+                    const log = transactionalEntityManager.create(
+                        PointsLogEntity,
+                        {
+                            user_id: Number(dto.userId),
+                            task_id: dto.taskId,
+                            points_awarded: awardedPoint,
+                            reason: awardedReason,
+                        }
+                    );
+                    await transactionalEntityManager.save(log);
 
-            await this.pointsRepo.save(record);
+                    // Update user's point balance
+                    await transactionalEntityManager.increment(
+                        UserEntity,
+                        { id: Number(dto.userId) },
+                        'points',
+                        awardedPoint
+                    );
+                }
+            );
 
             console.log(
                 `[PointsService] Award Point = points_awarded:${awardedPoint}, reason:${awardedReason}`
