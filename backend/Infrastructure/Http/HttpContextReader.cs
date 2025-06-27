@@ -29,7 +29,7 @@ namespace TaskSync.Infrastructure.Http
             //     SameSite = SameSiteMode.Strict,
             //     Expires = DateTimeOffset.UtcNow.AddDays(7)
             // });
-            // 
+            //
             // Response.Cookies.Delete("MyCookieKey"); // delete
         }
     }
