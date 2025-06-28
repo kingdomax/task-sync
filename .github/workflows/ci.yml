@@ -49,6 +49,26 @@ jobs: # Define the jobs (units of work) to run in parallel or series
             - name: 🛠 Build backend
               run: dotnet build ./backend --configuration Release
 
+    build-gamification:
+        name: 🧪 Build Gamification API
+        runs-on: ubuntu-latest
+        steps:
+            - name: 📥 Checkout code
+              uses: actions/checkout@v3
+
+            - name: 🧰 Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 22.14.0
+
+            - name: 📦 Install dependencies
+              run: npm ci
+              working-directory: ./gamification-api
+
+            - name: 🛠 Build
+              run: npm run build
+              working-directory: ./gamification-api
+
     test-frontend:
         name: ✅ Run Frontend Tests
         runs-on: ubuntu-latest
@@ -82,6 +102,41 @@ jobs: # Define the jobs (units of work) to run in parallel or series
               with:
                   name: 📋 Jest Test Report
                   path: frontend/test-results/jest/results.xml
+                  reporter: jest-junit
+
+    test-gamification:
+        name: ✅ Test Gamification API
+        runs-on: ubuntu-latest
+        steps:
+            - name: 📥 Checkout code
+              uses: actions/checkout@v3
+
+            - name: 🧰 Setup Node.js
+              uses: actions/setup-node@v3
+              with:
+                  node-version: 22.14.0
+
+            - name: 📦 Install dependencies
+              run: npm ci
+              working-directory: ./gamification-api
+
+            - name: ✅ Run tests
+              run: npm run test
+              working-directory: ./gamification-api
+
+            - name: 📤 Upload Test Results
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: gamification-test-results
+                  path: gamification-api/test-results/jest/results.xml
+
+            - name: 📈 Publish Test Report to GitHub UI
+              if: always()
+              uses: dorny/test-reporter@v1
+              with:
+                  name: 📋 Gamification Test Report
+                  path: gamification-api/test-results/jest/results.xml
                   reporter: jest-junit
 
     test-backend:
@@ -120,7 +175,14 @@ jobs: # Define the jobs (units of work) to run in parallel or series
     docker-push:
         name: 🐳 Docker Build & Push
         runs-on: ubuntu-latest
-        needs: [build-backend, build-frontend, test-backend, test-frontend] # Wait for both to pass
+        needs: [
+                build-backend,
+                build-frontend,
+                test-backend,
+                test-frontend,
+                build-gamification,
+                test-gamification,
+            ] # Wait for everything to pass
         if: github.event_name == 'push' # Only pushing event
         steps:
             - name: 📥 Checkout code
@@ -140,6 +202,18 @@ jobs: # Define the jobs (units of work) to run in parallel or series
                   docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:latest
                   docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.sha }}
                   docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-backend:${{ github.ref_name }}
+
+            - name: 🐳 Build and tag gamification-api image
+              run: |
+                  docker build -t ${{ secrets.DOCKER_USERNAME }}/tasksync-gamapi:latest ./gamification-api
+                  docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-gamapi:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-gamapi:${{ github.sha }}
+                  docker tag ${{ secrets.DOCKER_USERNAME }}/tasksync-gamapi:latest ${{ secrets.DOCKER_USERNAME }}/tasksync-gamapi:${{ github.ref_name }}
+
+            - name: 🚀 Push gamification-api image
+              run: |
+                  docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-gamapi:latest
+                  docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-gamapi:${{ github.sha }}
+                  docker push ${{ secrets.DOCKER_USERNAME }}/tasksync-gamapi:${{ github.ref_name }}
 
             - name: 🐳 Build and tag frontend image
               run: |
