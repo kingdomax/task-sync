@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 
@@ -17,6 +20,7 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
     app.useGlobalFilters(new HttpExceptionFilter());
 
-    await app.listen(process.env.PORT ?? 3000);
+    await app.listen(process.env.APP_PORT ?? 3000);
 }
+
 bootstrap();

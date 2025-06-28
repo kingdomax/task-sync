@@ -1,13 +1,9 @@
-import * as dotenv from 'dotenv';
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
 import { PointsModule } from './points/points.module';
-
-dotenv.config();
 
 @Module({
     imports: [
