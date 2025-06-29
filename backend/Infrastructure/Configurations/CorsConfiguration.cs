@@ -13,7 +13,8 @@
                             "http://131.189.90.113:3039") // Production
                     .AllowAnyHeader()
                     .AllowAnyMethod()
-                    .AllowCredentials();
+                    .AllowCredentials()
+                    .SetPreflightMaxAge(TimeSpan.FromMinutes(10)); // Cache preflight 10 min
                 });
             });
 
