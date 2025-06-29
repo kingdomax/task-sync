@@ -24,7 +24,7 @@ export const useKanbanCrud = (
         };
 
         fetchTasks();
-    }, []);
+    }, [setKanbanItems]);
 
     const handleAddItem = async (
         newItem: AddItemRequest,

@@ -1,4 +1,4 @@
-import { CONFIG } from 'src/config-global';
+// import { CONFIG } from 'src/config-global';
 
 import { KanbanBoardView } from 'src/sections/kanbanboard/view';
 

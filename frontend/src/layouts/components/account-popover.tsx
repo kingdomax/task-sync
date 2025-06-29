@@ -55,7 +55,7 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
     const handleClickLogout = useCallback(() => {
         clearAuthToken();
         router.push('/sign-in');
-    }, []);
+    }, [router]);
 
     return (
         <>

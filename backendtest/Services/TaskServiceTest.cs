@@ -83,7 +83,14 @@ namespace TaskSyncTest.Services
 
             var result = await service.UpdateTaskStatusAsync(4, new UpdateTaskRequest() { StatusRaw = "INPROGRESS" });
 
-            notificationMock.Verify(x => x.NotifyTaskUpdateAsync(result, It.IsAny<string?>()), Times.Once);
+            if (result != null)
+            {
+                notificationMock.Verify(x => x.NotifyTaskUpdateAsync(result, It.IsAny<string?>()), Times.Once);
+            }
+            else
+            {
+                Assert.Fail("Result should not be null when task update is successful.");
+            }
         }
 
         [Fact]
@@ -121,7 +128,14 @@ namespace TaskSyncTest.Services
 
             var result = await service.UpdateTaskStatusAsync(6, new UpdateTaskRequest() { StatusRaw = "DONE" });
 
-            gamificationApiMock.Verify(x => x.UpdatePoint(result.Id, result.Status), Times.Once);
+            if (result != null)
+            {
+                gamificationApiMock.Verify(x => x.UpdatePoint(result.Id, result.Status), Times.Once);
+            }
+            else
+            {
+                Assert.Fail("Result should not be null when task update is successful.");
+            }
         }
     }
 }

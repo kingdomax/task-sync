@@ -49,7 +49,7 @@ export const useSignalRTaskHub = (
         return () => {
             connectionRef.current?.stop();
         };
-    }, []);
+    }, [setKanbanItems]);
 
     return { connectionIdRef };
 };

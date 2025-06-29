@@ -16,7 +16,7 @@ export const navData = [
     {
         title: 'Board',
         path: '/',
-        icon: icon('ic-lock'),
+        icon: icon('ic-analytics'),
         info: (
             <Label color="error" variant="inverted">
                 +3
@@ -24,33 +24,33 @@ export const navData = [
         ),
     },
     {
-        title: 'Analytic',
-        path: '/dashboard',
-        icon: icon('ic-analytics'),
+        title: 'Not found',
+        path: '/404',
+        icon: icon('ic-disabled'),
     },
     {
-        title: 'User',
-        path: '/user',
-        icon: icon('ic-user'),
-    },
-    {
-        title: 'Product',
-        path: '/products',
-        icon: icon('ic-cart'),
-    },
-    {
-        title: 'Blog',
-        path: '/blog',
-        icon: icon('ic-blog'),
-    },
-    /*{
         title: 'Sign in',
         path: '/sign-in',
         icon: icon('ic-lock'),
     },
     {
-        title: 'Not found',
-        path: '/404',
-        icon: icon('ic-disabled'),
-    },*/
+        title: '[TODO] User',
+        path: '/user',
+        icon: icon('ic-user'),
+    },
+    {
+        title: '[TODO] Product',
+        path: '/products',
+        icon: icon('ic-cart'),
+    },
+    {
+        title: '[TODO] Blog',
+        path: '/blog',
+        icon: icon('ic-blog'),
+    },
+    {
+        title: '[TODO] Analytic',
+        path: '/dashboard',
+        icon: icon(''),
+    },
 ];
