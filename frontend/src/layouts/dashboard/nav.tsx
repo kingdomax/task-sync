@@ -15,7 +15,7 @@ import { RouterLink } from 'src/routes/components';
 import { Logo } from 'src/components/logo';
 import { Scrollbar } from 'src/components/scrollbar';
 
-import { NavUpgrade } from '../components/nav-upgrade';
+// import { NavUpgrade } from '../components/nav-upgrade';
 import { WorkspacesPopover } from '../components/workspaces-popover';
 
 import type { NavItem } from '../nav-config-dashboard';
@@ -194,7 +194,7 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
 
             {slots?.bottomArea}
 
-            {/*<NavUpgrade />*/}
+            {/*<NavUpgrade /> It is advertisement at bottom left of screen */}
         </>
     );
 }
