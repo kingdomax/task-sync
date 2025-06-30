@@ -71,19 +71,51 @@ export const DetailItemPanel = ({ item, onSelect }: Props) => {
                         </Label>
                     </Stack>
                     <Stack spacing={1}>
-                        <Typography variant="subtitle2">[icon] Assignee</Typography>
+                        <Typography variant="subtitle2">
+                            <Iconify
+                                height={16}
+                                width={16}
+                                icon="material-icon-outlined:account-circle"
+                                sx={{ mr: 0.5 }}
+                            />
+                            Assignee
+                        </Typography>
                         <Box>avatar / button to customize</Box>
                     </Stack>
                     <Stack spacing={1}>
-                        <Typography variant="subtitle2">[icon] Description</Typography>
+                        <Typography variant="subtitle2">
+                            <Iconify
+                                height={16}
+                                width={16}
+                                icon="material-icon-outlined:description"
+                                sx={{ mr: 0.5 }}
+                            />
+                            Description
+                        </Typography>
                         <Box>description</Box>
                     </Stack>
                     <Stack spacing={1}>
-                        <Typography variant="subtitle2">[icon] Attachment</Typography>
+                        <Typography variant="subtitle2">
+                            <Iconify
+                                height={16}
+                                width={16}
+                                icon="material-icon-outlined:attach-file"
+                                sx={{ mr: 0.5 }}
+                            />
+                            Attachment
+                        </Typography>
                         <Box>link to download or none</Box>
                     </Stack>
                     <Stack spacing={1}>
-                        <Typography variant="subtitle2">[icon] Comments and activity</Typography>
+                        <Typography variant="subtitle2">
+                            <Iconify
+                                height={16}
+                                width={16}
+                                icon="solar:chat-round-dots-bold"
+                                sx={{ mr: 0.5 }}
+                            />
+                            Comments and activity
+                        </Typography>
                         <Box>
                             we can split vertical column to 2 like Trello or stick comment section
                             at the bottom with Scrollbar component

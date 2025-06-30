@@ -17,11 +17,6 @@ export const navData = [
         title: 'Board',
         path: '/',
         icon: icon('ic-analytics'),
-        info: (
-            <Label color="error" variant="inverted">
-                +3
-            </Label>
-        ),
     },
     {
         title: 'Not found',
@@ -52,5 +47,10 @@ export const navData = [
         title: '[TODO] Analytic',
         path: '/dashboard',
         icon: icon(''),
+        info: (
+            <Label color="error" variant="inverted">
+                +3
+            </Label>
+        ),
     },
 ];

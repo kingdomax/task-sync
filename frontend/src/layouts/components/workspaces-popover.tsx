@@ -89,7 +89,7 @@ export function WorkspacesPopover({ data = [], sx, ...other }: WorkspacesPopover
                     }}
                 >
                     {workspace?.name}
-                    {renderLabel(workspace?.plan)}
+                    {/*renderLabel(workspace?.plan)*/}
                 </Box>
 
                 <Iconify width={16} icon="carbon:chevron-sort" sx={{ color: 'text.disabled' }} />
@@ -127,7 +127,7 @@ export function WorkspacesPopover({ data = [], sx, ...other }: WorkspacesPopover
                                 {option.name}
                             </Box>
 
-                            {renderLabel(option.plan)}
+                            {/*renderLabel(option.plan)*/}
                         </MenuItem>
                     ))}
                 </MenuList>
