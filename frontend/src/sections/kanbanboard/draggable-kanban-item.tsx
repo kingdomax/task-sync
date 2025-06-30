@@ -1,21 +1,15 @@
 import { useDraggable } from '@dnd-kit/core';
 
 import { KanbanItem } from './kanban-item';
-import { TASK_STATUS } from './type/kanban-item';
+import { statusColors } from './viewdata/board-data';
 
-import type { TaskDto, Nullable } from './type/kanban-item';
+import type { TaskDto, Nullable, TASK_STATUS } from './type/kanban-item';
 
 type Props = {
     item: TaskDto;
     onSelect: (item: Nullable<TaskDto>) => void;
     onStatusChange: (data: TaskDto, newStatus: TASK_STATUS) => void;
     onDelete: (deleteItem: TaskDto) => void;
-};
-
-const statusColors: Partial<Record<TASK_STATUS, 'warning' | 'info' | 'success'>> = {
-    [TASK_STATUS.TODO]: 'warning',
-    [TASK_STATUS.INPROGRESS]: 'info',
-    [TASK_STATUS.DONE]: 'success',
 };
 
 export const DraggableKanbanItem = ({ item, onSelect, onStatusChange, onDelete }: Props) => {

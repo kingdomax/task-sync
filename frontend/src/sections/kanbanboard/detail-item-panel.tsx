@@ -6,8 +6,11 @@ import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
+import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
+
+import { statusColors, statusLabels } from './viewdata/board-data';
 
 import type { TaskDto, Nullable } from './type/kanban-item';
 
@@ -46,15 +49,13 @@ export const DetailItemPanel = ({ item, onSelect }: Props) => {
                 <Typography
                     variant="h6"
                     color={theme.vars.palette.text.secondary}
-                    sx={{ flexBasis: 30, fontWeight: 300 }}
+                    sx={{ marginRight: 1, fontWeight: 300 }}
                 >
                     #{item.id}
                 </Typography>
-
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
                     {item.title}
                 </Typography>
-
                 <IconButton onClick={() => onSelect(null)}>
                     <Iconify icon="mingcute:close-line" />
                 </IconButton>
@@ -65,7 +66,28 @@ export const DetailItemPanel = ({ item, onSelect }: Props) => {
             <Scrollbar>
                 <Stack spacing={3} sx={{ p: 3 }}>
                     <Stack spacing={1}>
-                        <Typography variant="subtitle2">Test Haha</Typography>
+                        <Label color={statusColors[item.status]} sx={{ width: 80 }}>
+                            {statusLabels[item.status]}
+                        </Label>
+                    </Stack>
+                    <Stack spacing={1}>
+                        <Typography variant="subtitle2">[icon] Assignee</Typography>
+                        <Box>avatar / button to customize</Box>
+                    </Stack>
+                    <Stack spacing={1}>
+                        <Typography variant="subtitle2">[icon] Description</Typography>
+                        <Box>description</Box>
+                    </Stack>
+                    <Stack spacing={1}>
+                        <Typography variant="subtitle2">[icon] Attachment</Typography>
+                        <Box>link to download or none</Box>
+                    </Stack>
+                    <Stack spacing={1}>
+                        <Typography variant="subtitle2">[icon] Comments and activity</Typography>
+                        <Box>
+                            we can split vertical column to 2 like Trello or stick comment section
+                            at the bottom with Scrollbar component
+                        </Box>
                     </Stack>
                 </Stack>
             </Scrollbar>
