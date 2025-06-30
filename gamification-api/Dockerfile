@@ -28,7 +28,7 @@ COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/.env.production .env
 
 # 7. Expose port
-EXPOSE 3001
+EXPOSE 3000
 
 # 8. Start the app
 CMD ["node", "dist/main.js"]
