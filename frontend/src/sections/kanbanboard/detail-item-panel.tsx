@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
+import Avatar from '@mui/material/Avatar';
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import { useTheme } from '@mui/material/styles';
@@ -66,21 +67,36 @@ export const DetailItemPanel = ({ item, onSelect }: Props) => {
             <Scrollbar>
                 <Stack spacing={3} sx={{ p: 3 }}>
                     <Stack spacing={1}>
-                        <Label color={statusColors[item.status]} sx={{ width: 80 }}>
-                            {statusLabels[item.status]}
-                        </Label>
+                        <Typography variant="subtitle2">
+                            <Iconify
+                                height={16}
+                                width={16}
+                                icon="google-material-icon-outlined:insert-emoticon"
+                                sx={{ mr: 0.5 }}
+                            />
+                            Assignee
+                        </Typography>
+                        <Avatar
+                            src={
+                                item.assigneeId
+                                    ? `/assets/images/avatar/avatar-${item.assigneeId}.webp`
+                                    : ''
+                            }
+                        />
                     </Stack>
                     <Stack spacing={1}>
                         <Typography variant="subtitle2">
                             <Iconify
                                 height={16}
                                 width={16}
-                                icon="material-icon-outlined:account-circle"
+                                icon="google-material-icon-outlined:timeline"
                                 sx={{ mr: 0.5 }}
                             />
-                            Assignee
+                            Status
                         </Typography>
-                        <Box>avatar / button to customize</Box>
+                        <Label color={statusColors[item.status]} sx={{ width: 80 }}>
+                            {statusLabels[item.status]}
+                        </Label>
                     </Stack>
                     <Stack spacing={1}>
                         <Typography variant="subtitle2">
@@ -92,7 +108,15 @@ export const DetailItemPanel = ({ item, onSelect }: Props) => {
                             />
                             Description
                         </Typography>
-                        <Box>description</Box>
+                        <Typography variant="body2">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                            veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                            commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+                            velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
+                            occaecat cupidatat non proident, sunt in culpa qui officia deserunt
+                            mollit anim id est laborum.
+                        </Typography>
                     </Stack>
                     <Stack spacing={1}>
                         <Typography variant="subtitle2">
@@ -104,7 +128,7 @@ export const DetailItemPanel = ({ item, onSelect }: Props) => {
                             />
                             Attachment
                         </Typography>
-                        <Box>link to download or none</Box>
+                        <Typography variant="body2">link or none</Typography>
                     </Stack>
                     <Stack spacing={1}>
                         <Typography variant="subtitle2">
@@ -116,10 +140,10 @@ export const DetailItemPanel = ({ item, onSelect }: Props) => {
                             />
                             Comments and activity
                         </Typography>
-                        <Box>
+                        <Typography variant="body2">
                             we can split vertical column to 2 like Trello or stick comment section
-                            at the bottom with Scrollbar component
-                        </Box>
+                            at the bottom with Scrollbar component.
+                        </Typography>
                     </Stack>
                 </Stack>
             </Scrollbar>
