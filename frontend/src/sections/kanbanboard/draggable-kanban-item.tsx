@@ -7,7 +7,7 @@ import type { TaskDto, Nullable, TASK_STATUS } from './type/kanban-item';
 
 type Props = {
     item: TaskDto;
-    onSelect: (item: Nullable<TaskDto>) => void;
+    onSelect: (itemId: number) => void;
     onStatusChange: (data: TaskDto, newStatus: TASK_STATUS) => void;
     onDelete: (deleteItem: TaskDto) => void;
 };

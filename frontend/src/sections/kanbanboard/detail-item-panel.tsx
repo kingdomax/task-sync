@@ -1,8 +1,12 @@
+import type { SelectChangeEvent } from '@mui/material/Select';
+
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
+import Select from '@mui/material/Select';
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
+import MenuItem from '@mui/material/MenuItem';
 import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -13,25 +17,31 @@ import { Scrollbar } from 'src/components/scrollbar';
 
 import { statusColors, statusLabels } from './viewdata/board-data';
 
-import type { TaskDto, Nullable } from './type/kanban-item';
+import type { TaskDto, Nullable, TASK_STATUS } from './type/kanban-item';
 
 type Props = {
     item: Nullable<TaskDto>;
-    onSelect: (item: Nullable<TaskDto>) => void;
+    onSelect: (itemId: number) => void;
+    onStatusChange: (data: TaskDto, newStatus: TASK_STATUS) => void;
 };
 
-export const DetailItemPanel = ({ item, onSelect }: Props) => {
+export const DetailItemPanel = ({ item, onSelect, onStatusChange }: Props) => {
     const theme = useTheme();
 
-    if (item == null) {
-        return null;
-    }
+    const handleStatusChange = (event: SelectChangeEvent) => {
+        const newStatus = event.target.value as TASK_STATUS;
+        onStatusChange(item as TaskDto, newStatus);
+    };
 
-    return (
+    const handleClosePanel = () => {
+        onSelect(-1);
+    };
+
+    return item != null ? (
         <Drawer
             anchor="right"
             open={item != null}
-            onClose={() => onSelect(null)}
+            onClose={handleClosePanel}
             slotProps={{
                 paper: {
                     sx: { width: 800, overflow: 'hidden' },
@@ -57,7 +67,7 @@ export const DetailItemPanel = ({ item, onSelect }: Props) => {
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
                     {item.title}
                 </Typography>
-                <IconButton onClick={() => onSelect(null)}>
+                <IconButton onClick={handleClosePanel}>
                     <Iconify icon="mingcute:close-line" />
                 </IconButton>
             </Box>
@@ -94,9 +104,31 @@ export const DetailItemPanel = ({ item, onSelect }: Props) => {
                             />
                             Status
                         </Typography>
-                        <Label color={statusColors[item.status]} sx={{ width: 80 }}>
-                            {statusLabels[item.status]}
-                        </Label>
+                        <Select
+                            value={item.status}
+                            onChange={handleStatusChange}
+                            renderValue={(selected) => (
+                                <Label color={statusColors[item.status]} sx={{ width: 80 }}>
+                                    {statusLabels[item.status]}
+                                </Label>
+                            )}
+                            sx={{ width: 140, height: 40 }}
+                        >
+                            {Object.entries(statusLabels).map(([statusKey, label]) => (
+                                <MenuItem
+                                    key={`menuitem-${statusKey}`}
+                                    value={statusKey}
+                                    style={{
+                                        fontWeight:
+                                            statusKey == item.status
+                                                ? theme.typography.fontWeightMedium
+                                                : theme.typography.fontWeightRegular,
+                                    }}
+                                >
+                                    {label}
+                                </MenuItem>
+                            ))}
+                        </Select>
                     </Stack>
                     <Stack spacing={1}>
                         <Typography variant="subtitle2">
@@ -148,5 +180,5 @@ export const DetailItemPanel = ({ item, onSelect }: Props) => {
                 </Stack>
             </Scrollbar>
         </Drawer>
-    );
+    ) : null;
 };

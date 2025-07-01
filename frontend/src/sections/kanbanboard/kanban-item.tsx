@@ -22,7 +22,7 @@ import type { TaskDto, Nullable } from './type/kanban-item';
 
 type Props = {
     data: TaskDto;
-    onSelect: (item: Nullable<TaskDto>) => void;
+    onSelect: (itemId: number) => void;
     onStatusChange: (data: TaskDto, newStatus: TASK_STATUS) => void;
     onDelete: (deleteItem: TaskDto) => void;
     color?: PaletteColorKey;
@@ -65,8 +65,7 @@ export const KanbanItem = ({
     }, [data, onDelete]);
 
     const handleSelectItem = useCallback(() => {
-        console.log('handleSelectItem');
-        onSelect(data);
+        onSelect(data.id);
     }, [data, onSelect]);
 
     return (

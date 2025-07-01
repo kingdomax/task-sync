@@ -15,20 +15,19 @@ import { useKanbanCrud } from '../hooks/useKanbanCrud';
 import { useSignalRTaskHub } from '../hooks/useSignalRTaskHub';
 import { DraggableKanbanItem } from '../draggable-kanban-item';
 
-import type { TaskDto, Nullable } from '../type/kanban-item';
+import type { TaskDto } from '../type/kanban-item';
 
 export const KanbanBoardView = () => {
     const [kanbanItems, setKanbanItems] = useState<TaskDto[]>([]);
-    const [selectedItem, setSelectedItem] = useState<Nullable<TaskDto>>(null);
-
+    const [selectedItem, setSelectedItem] = useState<number>(-1);
     const { connectionIdRef } = useSignalRTaskHub(setKanbanItems);
     const { handleAddItem, handleStatusChange, handleDeleteItem } = useKanbanCrud(
         setKanbanItems,
         connectionIdRef
     );
 
-    const handleSelectItem = (item: Nullable<TaskDto>) => {
-        setSelectedItem(item);
+    const handleSelectItem = (itemId: number) => {
+        setSelectedItem(itemId);
     };
 
     const handleDragEnd = (event: DragEndEvent) => {
@@ -67,7 +66,11 @@ export const KanbanBoardView = () => {
     return (
         <DashboardContent maxWidth="xl">
             <AddItemPanel onAddItem={handleAddItem} />
-            <DetailItemPanel item={selectedItem} onSelect={handleSelectItem} />
+            <DetailItemPanel
+                item={kanbanItems.find((i) => i.id == selectedItem) ?? null}
+                onSelect={handleSelectItem}
+                onStatusChange={handleStatusChange}
+            />
 
             <DndContext onDragEnd={handleDragEnd}>
                 <Grid container spacing={3}>
