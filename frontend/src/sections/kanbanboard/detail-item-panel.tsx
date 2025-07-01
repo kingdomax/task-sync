@@ -1,3 +1,4 @@
+import type { IconifyName } from 'src/components/iconify';
 import type { SelectChangeEvent } from '@mui/material/Select';
 
 import Box from '@mui/material/Box';
@@ -76,16 +77,10 @@ export const DetailItemPanel = ({ item, onSelect, onStatusChange }: Props) => {
 
             <Scrollbar>
                 <Stack spacing={3} sx={{ p: 3 }}>
-                    <Stack spacing={1}>
-                        <Typography variant="subtitle2">
-                            <Iconify
-                                height={16}
-                                width={16}
-                                icon="google-material-icon-outlined:insert-emoticon"
-                                sx={{ mr: 0.5 }}
-                            />
-                            Assignee
-                        </Typography>
+                    <DetailSection
+                        label="Assignee"
+                        icon="google-material-icon-outlined:insert-emoticon"
+                    >
                         <Avatar
                             src={
                                 item.assigneeId
@@ -93,17 +88,8 @@ export const DetailItemPanel = ({ item, onSelect, onStatusChange }: Props) => {
                                     : ''
                             }
                         />
-                    </Stack>
-                    <Stack spacing={1}>
-                        <Typography variant="subtitle2">
-                            <Iconify
-                                height={16}
-                                width={16}
-                                icon="google-material-icon-outlined:timeline"
-                                sx={{ mr: 0.5 }}
-                            />
-                            Status
-                        </Typography>
+                    </DetailSection>
+                    <DetailSection label="Status" icon="google-material-icon-outlined:timeline">
                         <Select
                             value={item.status}
                             onChange={handleStatusChange}
@@ -129,17 +115,8 @@ export const DetailItemPanel = ({ item, onSelect, onStatusChange }: Props) => {
                                 </MenuItem>
                             ))}
                         </Select>
-                    </Stack>
-                    <Stack spacing={1}>
-                        <Typography variant="subtitle2">
-                            <Iconify
-                                height={16}
-                                width={16}
-                                icon="material-icon-outlined:description"
-                                sx={{ mr: 0.5 }}
-                            />
-                            Description
-                        </Typography>
+                    </DetailSection>
+                    <DetailSection label="Description" icon="material-icon-outlined:description">
                         <Typography variant="body2">
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
                             tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
@@ -149,36 +126,38 @@ export const DetailItemPanel = ({ item, onSelect, onStatusChange }: Props) => {
                             occaecat cupidatat non proident, sunt in culpa qui officia deserunt
                             mollit anim id est laborum.
                         </Typography>
-                    </Stack>
-                    <Stack spacing={1}>
-                        <Typography variant="subtitle2">
-                            <Iconify
-                                height={16}
-                                width={16}
-                                icon="material-icon-outlined:attach-file"
-                                sx={{ mr: 0.5 }}
-                            />
-                            Attachment
-                        </Typography>
+                    </DetailSection>
+                    <DetailSection label="Attachment" icon="material-icon-outlined:description">
                         <Typography variant="body2">link or none</Typography>
-                    </Stack>
-                    <Stack spacing={1}>
-                        <Typography variant="subtitle2">
-                            <Iconify
-                                height={16}
-                                width={16}
-                                icon="solar:chat-round-dots-bold"
-                                sx={{ mr: 0.5 }}
-                            />
-                            Comments and activity
-                        </Typography>
+                    </DetailSection>
+                    <DetailSection label="Comments and activity" icon="solar:chat-round-dots-bold">
                         <Typography variant="body2">
                             we can split vertical column to 2 like Trello or stick comment section
                             at the bottom with Scrollbar component.
                         </Typography>
-                    </Stack>
+                    </DetailSection>
                 </Stack>
             </Scrollbar>
         </Drawer>
     ) : null;
 };
+
+// todo-moch: this is temporary,
+//            when we implement edit description, assignee or comment we need to split to small component under '/detail-item-panel/'
+const DetailSection = ({
+    label,
+    icon,
+    children,
+}: {
+    label: string;
+    icon: IconifyName;
+    children: React.ReactNode;
+}) => (
+    <Stack spacing={1}>
+        <Typography variant="subtitle2">
+            <Iconify icon={icon} height={16} width={16} sx={{ mr: 0.5 }} />
+            {label}
+        </Typography>
+        {children}
+    </Stack>
+);
