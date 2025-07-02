@@ -13,12 +13,10 @@ namespace TaskSync.Controllers
     [Route("api/v{version:apiVersion}/auth")]
     public class AuthenticationController : ControllerBase
     {
-        private readonly IUserService _userService;
         private readonly IAuthenticationService _authenticationService;
 
-        public AuthenticationController(IUserService userService, IAuthenticationService authenticationService)
+        public AuthenticationController(IAuthenticationService authenticationService)
         {
-            _userService = userService;
             _authenticationService = authenticationService;
         }
 
@@ -33,13 +31,13 @@ namespace TaskSync.Controllers
         [HttpGet("me")]
         public IActionResult Me()
         {
+            var username = User.FindFirstValue(ClaimTypes.Name);
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var email = User.FindFirstValue(ClaimTypes.Email);
 
             return Ok(new
             {
                 userId,
-                email,
+                username,
             });
         }
     }

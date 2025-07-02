@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 using TaskSync.Infrastructure.Settings;
-using TaskSync.Models;
+using TaskSync.Repositories.Entities;
 using TaskSync.Services.Interfaces;
 
 namespace TaskSync.Services
@@ -20,12 +20,12 @@ namespace TaskSync.Services
             _jwtSettings = options.Value;
         }
 
-        public string GenerateJwtToken(User user)
+        public string GenerateJwtToken(UserEntity user)
         {
-            var claims = new[]
+            var claims = new[] // store only necessary and un-changed information so the token is small and not out of sync
             {
+                new Claim(ClaimTypes.Name, user.Username),
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));

@@ -34,7 +34,7 @@ namespace TaskSync.ExternalApi
                     {
                         TaskId = taskId,
                         TaskStatus = status,
-                        UserId = _httpContextReader.GetUserId(),
+                        UserId = _httpContextReader.GetUserId() ?? string.Empty,
                     }),
                 };
                 httpMessage.Headers.Add("x-gamapi-auth", "true");
