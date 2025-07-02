@@ -22,6 +22,7 @@ import type { TaskDto } from './type/kanban-item';
 
 type Props = {
     data: TaskDto;
+    onSelect: (itemId: number) => void;
     onStatusChange: (data: TaskDto, newStatus: TASK_STATUS) => void;
     onDelete: (deleteItem: TaskDto) => void;
     color?: PaletteColorKey;
@@ -32,6 +33,7 @@ type Props = {
 export const KanbanItem = ({
     color,
     data,
+    onSelect,
     onStatusChange,
     onDelete,
     isDragging,
@@ -61,6 +63,10 @@ export const KanbanItem = ({
         onDelete(data);
         setOpenPopover(null);
     }, [data, onDelete]);
+
+    const handleSelectItem = useCallback(() => {
+        onSelect(data.id);
+    }, [data, onSelect]);
 
     return (
         <>
@@ -101,20 +107,26 @@ export const KanbanItem = ({
                     //title="Shrimp and Chorizo Paella"
                 />
                 <CardContent
-                    {...dragHandleProps}
                     sx={{
                         pl: 3,
                         pr: 3,
-                        cursor: 'grab',
-                        '&:active': {
-                            cursor: 'grabbing',
-                        },
                     }}
                 >
                     <Typography variant="caption" color="primary.darker">
                         #{data.id}
                     </Typography>
-                    <Typography variant="subtitle2">{data.title}</Typography>
+                    <Typography
+                        variant="subtitle2"
+                        onClick={handleSelectItem}
+                        sx={{
+                            cursor: 'pointer',
+                            '&:hover': {
+                                textDecoration: 'underline',
+                            },
+                        }}
+                    >
+                        {data.title}
+                    </Typography>
                 </CardContent>
             </Card>
 

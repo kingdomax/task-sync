@@ -24,7 +24,7 @@ services:
             - ASPNETCORE_ENVIRONMENT=Production
             # Use double underscore (__) to map to nested JSON config keys, use internal docker port 5432 for Postgres
             - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=tasksync;Username=postgres;Password=123456789
-            - GamificationApi__BaseUrl=http://gamification-api:3001
+            - GamificationApi__BaseUrl=http://gamification-api:3000
         depends_on:
             - postgres # Start Postgres first
 
@@ -34,7 +34,7 @@ services:
         container_name: tasksync-gamapi
         restart: on-failure
         ports:
-            - "3001:3001"
+            - "3000:3000"
         env_file:
             - ./gamification-api/.env.production
         depends_on:

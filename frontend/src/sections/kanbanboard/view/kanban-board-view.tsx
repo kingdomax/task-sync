@@ -10,6 +10,7 @@ import { DashboardContent } from 'src/layouts/dashboard';
 import { AddItemPanel } from '../add-item-panel';
 import { TASK_STATUS } from '../type/kanban-item';
 import { DroppableColumn } from '../droppable-column';
+import { DetailItemPanel } from '../detail-item-panel';
 import { useKanbanCrud } from '../hooks/useKanbanCrud';
 import { useSignalRTaskHub } from '../hooks/useSignalRTaskHub';
 import { DraggableKanbanItem } from '../draggable-kanban-item';
@@ -18,11 +19,16 @@ import type { TaskDto } from '../type/kanban-item';
 
 export const KanbanBoardView = () => {
     const [kanbanItems, setKanbanItems] = useState<TaskDto[]>([]);
+    const [selectedItem, setSelectedItem] = useState<number>(-1);
     const { connectionIdRef } = useSignalRTaskHub(setKanbanItems);
     const { handleAddItem, handleStatusChange, handleDeleteItem } = useKanbanCrud(
         setKanbanItems,
         connectionIdRef
     );
+
+    const handleSelectItem = (itemId: number) => {
+        setSelectedItem(itemId);
+    };
 
     const handleDragEnd = (event: DragEndEvent) => {
         const { active, over } = event;
@@ -60,6 +66,11 @@ export const KanbanBoardView = () => {
     return (
         <DashboardContent maxWidth="xl">
             <AddItemPanel onAddItem={handleAddItem} />
+            <DetailItemPanel
+                item={kanbanItems.find((i) => i.id == selectedItem) ?? null}
+                onSelect={handleSelectItem}
+                onStatusChange={handleStatusChange}
+            />
 
             <DndContext onDragEnd={handleDragEnd}>
                 <Grid container spacing={3}>
@@ -72,6 +83,7 @@ export const KanbanBoardView = () => {
                                 <DraggableKanbanItem
                                     key={item.id}
                                     item={item}
+                                    onSelect={handleSelectItem}
                                     onStatusChange={handleStatusChange}
                                     onDelete={handleDeleteItem}
                                 />

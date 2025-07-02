@@ -11,6 +11,8 @@ export type KanbanBoardVm = {
     tasks: TaskDto[] | null;
 };
 
+export type Nullable<T> = T | null;
+
 export type TaskDto = {
     id: number;
     title: string;

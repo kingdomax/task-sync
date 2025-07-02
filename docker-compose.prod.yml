@@ -21,7 +21,7 @@ services:
         environment:
             - ASPNETCORE_ENVIRONMENT=Production
             - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=tasksync;Username=postgres;Password=123456789
-            - GamificationApi__BaseUrl=http://gamification-api:3001
+            - GamificationApi__BaseUrl=http://gamification-api:3000
         depends_on:
             - postgres
 
@@ -30,7 +30,7 @@ services:
         container_name: tasksync-gamapi
         restart: always
         ports:
-            - "3001:3001"
+            - "3000:3000"
         env_file:
             - ./gamification-api/.env.production # this is not good practice to commit .env.production file as part of repository
         depends_on:

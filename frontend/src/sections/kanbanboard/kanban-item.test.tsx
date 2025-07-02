@@ -22,14 +22,28 @@ const mockData = {
 
 describe('<KanbanItem />', () => {
     test('renders task title and id', () => {
-        render(<KanbanItem data={mockData} onStatusChange={jest.fn()} onDelete={jest.fn()} />);
+        render(
+            <KanbanItem
+                data={mockData}
+                onSelect={jest.fn()}
+                onStatusChange={jest.fn()}
+                onDelete={jest.fn()}
+            />
+        );
 
         expect(screen.getByText('#101')).toBeInTheDocument();
         expect(screen.getByText('Fix login bug')).toBeInTheDocument();
     });
 
     test('opens popover on settings icon click', () => {
-        render(<KanbanItem data={mockData} onStatusChange={jest.fn()} onDelete={jest.fn()} />);
+        render(
+            <KanbanItem
+                data={mockData}
+                onSelect={jest.fn()}
+                onStatusChange={jest.fn()}
+                onDelete={jest.fn()}
+            />
+        );
 
         const settingButton = screen.getByRole('button', { name: /settings/i }); // because we use <IconButton /> component, normall we can screen.GetByText()
         fireEvent.click(settingButton);
@@ -49,7 +63,12 @@ describe('<KanbanItem />', () => {
     ])('calls onStatusChange when "%s" is clicked', (status: TASK_STATUS, buttonName: string) => {
         const mockStatusChange = jest.fn(); // mock function
         render(
-            <KanbanItem data={mockData} onStatusChange={mockStatusChange} onDelete={jest.fn()} />
+            <KanbanItem
+                data={mockData}
+                onSelect={jest.fn()}
+                onStatusChange={mockStatusChange}
+                onDelete={jest.fn()}
+            />
         );
 
         // click setting to open pop over first
@@ -65,7 +84,14 @@ describe('<KanbanItem />', () => {
 
     test('calls onDelete when delete is clicked', () => {
         const mockDelete = jest.fn();
-        render(<KanbanItem data={mockData} onStatusChange={jest.fn()} onDelete={mockDelete} />);
+        render(
+            <KanbanItem
+                data={mockData}
+                onSelect={jest.fn()}
+                onStatusChange={jest.fn()}
+                onDelete={mockDelete}
+            />
+        );
 
         // click setting to open pop over first
         const settingButton = screen.getByRole('button', { name: /settings/i });
