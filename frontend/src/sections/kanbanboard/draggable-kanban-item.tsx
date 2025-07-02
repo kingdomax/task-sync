@@ -3,7 +3,7 @@ import { useDraggable } from '@dnd-kit/core';
 import { KanbanItem } from './kanban-item';
 import { statusColors } from './viewdata/board-data';
 
-import type { TaskDto, Nullable, TASK_STATUS } from './type/kanban-item';
+import type { TaskDto, TASK_STATUS } from './type/kanban-item';
 
 type Props = {
     item: TaskDto;

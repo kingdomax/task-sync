@@ -18,7 +18,7 @@ import { Iconify } from 'src/components/iconify/iconify';
 
 import { TASK_STATUS } from './type/kanban-item';
 
-import type { TaskDto, Nullable } from './type/kanban-item';
+import type { TaskDto } from './type/kanban-item';
 
 type Props = {
     data: TaskDto;
