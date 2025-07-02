@@ -15,11 +15,12 @@ namespace TaskSync.Repositories
             return await _dbContext.Tasks.Where(x => x.ProjectId == projectId).AsNoTracking().ToListAsync();
         }
 
-        public async Task<TaskEntity> AddAsync(string title, int? assigneeId, int projectId)
+        public async Task<TaskEntity> AddAsync(string title, int? assigneeId, int projectId, int? creatorId)
         {
             var newTask = new TaskEntity()
             {
                 Title = title,
+                CreatorId = creatorId,
                 AssigneeId = assigneeId,
                 StatusRaw = "backlog",
                 ProjectId = projectId,
@@ -28,6 +29,9 @@ namespace TaskSync.Repositories
 
             var entry = await _dbContext.Tasks.AddAsync(newTask);
             await _dbContext.SaveChangesAsync();
+
+            // todo-moch: add to "task_comments" table
+            // admin added this task to project Artemis
 
             return entry.Entity;
         }

@@ -9,6 +9,7 @@ namespace TaskSync.Repositories.Entities
     {
         [Column("id")] public int Id { get; set; }
         [Column("title")] public required string Title { get; set; }
+        [Column("creator_id")] public int? CreatorId { get; set; }
         [Column("assignee_id")] public int? AssigneeId { get; set; }
         [Column("project_id")] public int ProjectId { get; set; }
         [Column("status")] public required string StatusRaw { get; set; } = "backlog";

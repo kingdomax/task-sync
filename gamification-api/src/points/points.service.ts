@@ -26,7 +26,7 @@ export class PointsService {
                     const log = transactionalEntityManager.create(
                         PointsLogEntity,
                         {
-                            user_id: Number(dto.userId),
+                            user_id: dto.userId,
                             task_id: dto.taskId,
                             points_awarded: awardedPoint,
                             reason: awardedReason,
@@ -37,7 +37,7 @@ export class PointsService {
                     // Update user's point balance
                     await transactionalEntityManager.increment(
                         UserEntity,
-                        { id: Number(dto.userId) },
+                        { id: dto.userId },
                         'points',
                         awardedPoint
                     );

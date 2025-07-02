@@ -4,7 +4,7 @@
     {
         string? GetConnectionId();
         string? GetUsername();
-        string? GetUserId();
+        int? GetUserId();
         string? GetCookie(string cookieKey);
     }
 }

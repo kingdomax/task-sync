@@ -1,4 +1,4 @@
-import { IsInt, IsString, IsEnum } from 'class-validator';
+import { IsInt, IsEnum } from 'class-validator';
 
 export enum TASK_STATUS {
     BACKLOG,
@@ -10,8 +10,8 @@ export enum TASK_STATUS {
 }
 
 export class CreatePointDto {
-    @IsString()
-    userId: string;
+    @IsInt()
+    userId: number;
 
     @IsInt()
     taskId: number;

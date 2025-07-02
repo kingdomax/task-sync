@@ -19,9 +19,10 @@ namespace TaskSync.Infrastructure.Http
             return _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name);
         }
 
-        public string? GetUserId()
+        public int? GetUserId()
         {
-            return _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return string.IsNullOrEmpty(userId) ? null : int.Parse(userId);
         }
 
         public string? GetCookie(string cookieKey)
