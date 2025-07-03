@@ -20,9 +20,10 @@ export class PointsService {
         );
 
         if (awardedPoint > 0) {
+            // Commit as 1 transaction for atomicity
             await this.pointsRepo.manager.transaction(
                 async (transactionalEntityManager) => {
-                    // Insert log
+                    // Insert log, 1st db call
                     const log = transactionalEntityManager.create(
                         PointsLogEntity,
                         {
@@ -34,7 +35,7 @@ export class PointsService {
                     );
                     await transactionalEntityManager.save(log);
 
-                    // Update user's point balance
+                    // Update user's point balance, 2nd db call
                     await transactionalEntityManager.increment(
                         UserEntity,
                         { id: dto.userId },

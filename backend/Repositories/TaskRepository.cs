@@ -57,7 +57,7 @@ namespace TaskSync.Repositories
             await using var conn = _dbContext.Database.GetDbConnection();
             await conn.OpenAsync();
 
-            // delete and return in 1 query support by postgres
+            // delete and return in 1 query and 1 network call
             await using var cmd = conn.CreateCommand();
             cmd.CommandText = "DELETE FROM tasks WHERE id = @id RETURNING id, title, assignee_id, project_id, status, last_modified;";
 
