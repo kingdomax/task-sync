@@ -54,7 +54,7 @@ namespace TaskSync.Services
 
         public async Task<TaskDto> AddTaskAsync(int projectId, AddTaskRequest request)
         {
-            TaskEntity newTask = await _taskRepository.AddAsync(request.Title, request.AssigneeId, projectId);
+            TaskEntity newTask = await _taskRepository.AddAsync(request.Title, request.AssigneeId, projectId, _httpContextReader.GetUserId());
 
             TaskDto dto = new TaskDto
             {

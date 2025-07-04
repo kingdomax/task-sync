@@ -15,11 +15,12 @@ namespace TaskSync.Repositories
             return await _dbContext.Tasks.Where(x => x.ProjectId == projectId).AsNoTracking().ToListAsync();
         }
 
-        public async Task<TaskEntity> AddAsync(string title, int? assigneeId, int projectId)
+        public async Task<TaskEntity> AddAsync(string title, int? assigneeId, int projectId, int? creatorId)
         {
             var newTask = new TaskEntity()
             {
                 Title = title,
+                CreatorId = creatorId,
                 AssigneeId = assigneeId,
                 StatusRaw = "backlog",
                 ProjectId = projectId,
@@ -53,7 +54,7 @@ namespace TaskSync.Repositories
             await using var conn = _dbContext.Database.GetDbConnection();
             await conn.OpenAsync();
 
-            // delete and return in 1 query support by postgres
+            // delete and return in 1 query and 1 network call
             await using var cmd = conn.CreateCommand();
             cmd.CommandText = "DELETE FROM tasks WHERE id = @id RETURNING id, title, assignee_id, project_id, status, last_modified;";
 

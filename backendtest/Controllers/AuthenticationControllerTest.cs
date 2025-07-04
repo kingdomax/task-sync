@@ -17,7 +17,7 @@ namespace TaskSyncTest.Controllers
             var mockUserService = new Mock<IUserService>();
             var mockAuthenticationService = new Mock<IAuthenticationService>();
             mockAuthenticationService.Setup(x => x.AuthenticateAsync(It.IsAny<LoginRequest>())).ReturnsAsync(token);
-            var authenticationController = new AuthenticationController(mockUserService.Object, mockAuthenticationService.Object);
+            var authenticationController = new AuthenticationController(mockAuthenticationService.Object);
 
             // Act
             var request = new LoginRequest() { Email = "email", Password = "password" };

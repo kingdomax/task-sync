@@ -5,20 +5,17 @@ import { varAlpha } from 'minimal-shared/utils';
 
 import Card from '@mui/material/Card';
 import Avatar from '@mui/material/Avatar';
-import Popover from '@mui/material/Popover';
-import MenuList from '@mui/material/MenuList';
 import { useTheme } from '@mui/material/styles';
 import IconButton from '@mui/material/IconButton';
 import CardHeader from '@mui/material/CardHeader';
 import Typography from '@mui/material/Typography';
 import CardContent from '@mui/material/CardContent';
-import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 
 import { Iconify } from 'src/components/iconify/iconify';
 
-import { TASK_STATUS } from './type/kanban-item';
+import { KanbanItemMenu } from './kanban-item-menu';
 
-import type { TaskDto } from './type/kanban-item';
+import type { TaskDto, TASK_STATUS } from './type/kanban-item';
 
 type Props = {
     data: TaskDto;
@@ -70,6 +67,14 @@ export const KanbanItem = ({
 
     return (
         <>
+            {/* todo-moch: refactor by life <Popover/> component up to <KanbanBoardView />, so it does not bloat the VDOM (i.e. waste more memory) */}
+            <KanbanItemMenu
+                anchorEl={openPopover}
+                onClose={handleClosePopover}
+                onStatusChange={handleStatusChange}
+                onDelete={handleDeleteItem}
+            />
+
             <Card
                 sx={{
                     opacity: isDragging ? 0.5 : 1,
@@ -129,51 +134,6 @@ export const KanbanItem = ({
                     </Typography>
                 </CardContent>
             </Card>
-
-            <Popover
-                open={!!openPopover}
-                anchorEl={openPopover}
-                onClose={handleClosePopover}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-            >
-                <MenuList
-                    disablePadding
-                    sx={{
-                        p: 0.5,
-                        gap: 0.5,
-                        width: 160,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        [`& .${menuItemClasses.root}`]: {
-                            px: 1,
-                            gap: 2,
-                            borderRadius: 0.75,
-                            [`&.${menuItemClasses.selected}`]: { bgcolor: 'action.selected' },
-                        },
-                    }}
-                >
-                    <MenuItem onClick={() => handleStatusChange(TASK_STATUS.BACKLOG)}>
-                        <Iconify icon="material-symbols:pending-actions-rounded" />
-                        Backlog
-                    </MenuItem>
-                    <MenuItem onClick={() => handleStatusChange(TASK_STATUS.TODO)}>
-                        <Iconify icon="material-symbols:checklist-rounded" />
-                        To Do
-                    </MenuItem>
-                    <MenuItem onClick={() => handleStatusChange(TASK_STATUS.INPROGRESS)}>
-                        <Iconify icon="material-symbols:sync-rounded" />
-                        In Progress
-                    </MenuItem>
-                    <MenuItem onClick={() => handleStatusChange(TASK_STATUS.DONE)}>
-                        <Iconify icon="material-symbols:check-circle-rounded" />
-                        Done
-                    </MenuItem>
-                    <MenuItem onClick={() => handleDeleteItem()} sx={{ color: 'error.main' }}>
-                        <Iconify icon="solar:trash-bin-trash-bold" />
-                        Delete
-                    </MenuItem>
-                </MenuList>
-            </Popover>
         </>
     );
 };

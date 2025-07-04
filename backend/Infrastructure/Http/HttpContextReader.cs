@@ -14,9 +14,15 @@ namespace TaskSync.Infrastructure.Http
             return _httpContextAccessor.HttpContext?.Request.Headers["x-connection-id"].FirstOrDefault();
         }
 
-        public string GetUserId()
+        public string? GetUsername()
         {
-            return _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+            return _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name);
+        }
+
+        public int? GetUserId()
+        {
+            var userId = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return string.IsNullOrEmpty(userId) ? null : int.Parse(userId);
         }
 
         public string? GetCookie(string cookieKey)

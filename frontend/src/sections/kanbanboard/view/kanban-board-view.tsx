@@ -76,12 +76,12 @@ export const KanbanBoardView = () => {
                 <Grid container spacing={3}>
                     {Object.entries(groupedItems).map(([statusKey, items]) => (
                         <DroppableColumn
-                            key={`column-${statusKey}`}
+                            key={`droppable-column-${statusKey}`}
                             status={statusKey as TASK_STATUS}
                         >
                             {items.map((item) => (
                                 <DraggableKanbanItem
-                                    key={item.id}
+                                    key={`kanban-item-${item.id}`}
                                     item={item}
                                     onSelect={handleSelectItem}
                                     onStatusChange={handleStatusChange}

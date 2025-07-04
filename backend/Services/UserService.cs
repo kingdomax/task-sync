@@ -5,6 +5,7 @@ using TaskSync.Services.Interfaces;
 
 namespace TaskSync.Services
 {
+    // todo-moch: remove this service and User model
     public class UserService : IUserService
     {
         private readonly IRepository<UserEntity> _userRepository;
