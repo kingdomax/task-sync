@@ -38,6 +38,7 @@ namespace TaskSync.Infrastructure.Configurations
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<ITaskService, TaskService>();
+            services.AddScoped<ICommentService, CommentService>();
 
             services.AddScoped<IGamificationApi, GamificationApi>();
 

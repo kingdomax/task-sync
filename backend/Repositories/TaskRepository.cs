@@ -30,9 +30,6 @@ namespace TaskSync.Repositories
             var entry = await _dbContext.Tasks.AddAsync(newTask);
             await _dbContext.SaveChangesAsync();
 
-            // todo-moch: add to "task_comments" table
-            // admin added this task to project Artemis
-
             return entry.Entity;
         }
 
