@@ -18,14 +18,19 @@ namespace TaskSync.Services
         private readonly ITaskNotificationService _taskNotificationService;
         private readonly ICacheBackgroundRefresher _cacheBackgroundRefresher;
         private readonly IGamificationApi _gamificationApi;
+        private readonly ICommentService _commentService;
+        private readonly IProjectRepository _projectRepository;
 
+        // todo-moch: dependencies start to grow, maybe consider using MediatR or similar patterns
         public TaskService(
             IHttpContextReader httpContextReader,
             ITaskRepository taskRepository,
             IMemoryCacheService<IList<TaskEntity>> taskEntityCache,
             ITaskNotificationService taskNotificationService,
             ICacheBackgroundRefresher cacheBackgroundRefresher,
-            IGamificationApi gamificationApi)
+            IGamificationApi gamificationApi,
+            ICommentService commentService,
+            IProjectRepository projectRepository)
         {
             _httpContextReader = httpContextReader;
             _taskRepository = taskRepository;
@@ -33,6 +38,8 @@ namespace TaskSync.Services
             _taskNotificationService = taskNotificationService;
             _cacheBackgroundRefresher = cacheBackgroundRefresher;
             _gamificationApi = gamificationApi;
+            _commentService = commentService;
+            _projectRepository = projectRepository;
         }
 
         public async Task<IList<TaskDto>?> GetTasksAsync(int projectId)
@@ -69,6 +76,36 @@ namespace TaskSync.Services
             _ = _gamificationApi.UpdatePoint(dto.Id, TASK_STATUS.CREATE); // fire and forget, executes on the thread handling the request (non-thread-pooled).
             _ = _taskNotificationService.NotifyTaskCreateAsync(dto, _httpContextReader.GetConnectionId());
             return dto;
+        }
+
+        public async Task<TaskDto> AddTaskAsyncV2(int projectId, AddTaskRequest request)
+        {
+            // Add task record to "tasks" table and comment record to "task_comments" table
+            TaskEntity newTask;
+            var project = await _projectRepository.GetByIdAsync(projectId);
+            using (var tx = await _taskRepository.BeginTransactionAsync())
+            {
+                newTask = await _taskRepository.AddAsync(request.Title, request.AssigneeId, projectId, _httpContextReader.GetUserId());
+                await _commentService.AddTaskCreatedCommentAsync(newTask, project!, _httpContextReader.GetUsername()!);
+                await tx.CommitAsync();
+            }
+
+            // Mapping TaskEntity to TaskDto
+            var newTaskDto = new TaskDto
+            {
+                Id = newTask.Id,
+                Title = newTask.Title,
+                AssigneeId = newTask.AssigneeId,
+                Status = newTask.Status,
+                LastModified = newTask.LastModified,
+            };
+
+            // Perform side effect without waiting for completion
+            _cacheBackgroundRefresher.RefreshProjectTasks(projectId);
+            _ = _gamificationApi.UpdatePoint(newTaskDto.Id, TASK_STATUS.CREATE);
+            _ = _taskNotificationService.NotifyTaskCreateAsync(newTaskDto, _httpContextReader.GetConnectionId());
+
+            return newTaskDto;
         }
 
         public async Task<TaskDto?> UpdateTaskStatusAsync(int taskId, UpdateTaskRequest request)

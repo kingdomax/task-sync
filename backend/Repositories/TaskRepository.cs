@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 using TaskSync.Repositories.Entities;
 using TaskSync.Repositories.Interfaces;
@@ -9,6 +10,11 @@ namespace TaskSync.Repositories
     {
         private readonly AppDbContext _dbContext;
         public TaskRepository(AppDbContext dbContext) => _dbContext = dbContext;
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _dbContext.Database.BeginTransactionAsync();
+        }
 
         public async Task<IList<TaskEntity>?> GetAsync(int projectId)
         {
