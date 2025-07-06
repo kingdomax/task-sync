@@ -5,6 +5,7 @@ using TaskSync.Infrastructure.Http.Interface;
 using TaskSync.Repositories.Entities;
 using TaskSync.Repositories.Interfaces;
 using TaskSync.Services;
+using TaskSync.Services.Interfaces;
 using TaskSync.SignalR.Interfaces;
 
 
@@ -26,6 +27,8 @@ namespace TaskSyncTest.Services
             var cache = new Mock<IMemoryCacheService<IList<TaskEntity>>>();
             var cacheBgRefresher = new Mock<ICacheBackgroundRefresher>();
             var gamificationApi = new Mock<IGamificationApi>();
+            var commentService = new Mock<ICommentService>();
+            var projectRepo = new Mock<IProjectRepository>();
 
             repo.Setup(x => x.UpdateStatusAsync(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(returnEntity);
             cacheMock = cache;
@@ -33,7 +36,7 @@ namespace TaskSyncTest.Services
             cacheBgRefresherMock = cacheBgRefresher;
             gamificationApiMock = gamificationApi;
 
-            return new TaskService(http.Object, repo.Object, cache.Object, taskHub.Object, cacheBgRefresher.Object, gamificationApi.Object);
+            return new TaskService(http.Object, repo.Object, cache.Object, taskHub.Object, cacheBgRefresher.Object, gamificationApi.Object, commentService.Object, projectRepo.Object);
         }
 
         [Fact]
