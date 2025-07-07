@@ -61,25 +61,6 @@ namespace TaskSync.Services
 
         public async Task<TaskDto> AddTaskAsync(int projectId, AddTaskRequest request)
         {
-            TaskEntity newTask = await _taskRepository.AddAsync(request.Title, request.AssigneeId, projectId, _httpContextReader.GetUserId());
-
-            TaskDto dto = new TaskDto
-            {
-                Id = newTask.Id,
-                Title = newTask.Title,
-                AssigneeId = newTask.AssigneeId,
-                Status = newTask.Status,
-                LastModified = newTask.LastModified,
-            };
-
-            _cacheBackgroundRefresher.RefreshProjectTasks(projectId); // pre-warm cache in other thread pool (i.e. background task)
-            _ = _gamificationApi.UpdatePoint(dto.Id, TASK_STATUS.CREATE); // fire and forget, executes on the thread handling the request (non-thread-pooled).
-            _ = _taskNotificationService.NotifyTaskCreateAsync(dto, _httpContextReader.GetConnectionId());
-            return dto;
-        }
-
-        public async Task<TaskDto> AddTaskAsyncV2(int projectId, AddTaskRequest request)
-        {
             // Add task record to "tasks" table and comment record to "task_comments" table
             TaskEntity newTask;
             var project = await _projectRepository.GetByIdAsync(projectId);
