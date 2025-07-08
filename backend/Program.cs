@@ -4,9 +4,8 @@ using TaskSync.Infrastructure.Configurations;
 using TaskSync.MiddleWares;
 using TaskSync.SignalR;
 
+// ------------------------ Setup all services  ----------------------------------
 var builder = WebApplication.CreateBuilder(args);
-
-// -------------- Add services to the container  ----------------------------------
 builder.Services.AddSignalR().AddJsonProtocol(options => options.PayloadSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddControllers().AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddControllersWithViews();
@@ -24,22 +23,21 @@ builder.Services.ConfigureJwt(builder.Configuration);
 builder.Services.ConfigureDependencyInjection(builder.Configuration);
 // -------------------------------------------------------------------------------
 
+// -------------- Configure/Order the request pipeline (Middleware) --------------
+// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-9.0#middleware-order
 var app = builder.Build();
-
-// -------------- Configure the HTTP request pipeline (Middleware) --------------
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseStaticFiles(); // Required for serving CSS, JS, etc.
 app.UseCors();
-app.UseSwagger();
-app.UseSwaggerUI();
+app.UseResponseCompression();
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseRateLimiter();
-app.UseStaticFiles(); // Required for serving CSS, JS, etc.
-app.UseResponseCompression();
-app.MapControllers(); // or MapControllerRoute, inside it call UseRouting()
-app.MapHub<TaskHub>("/taskHub");
-app.UseMiddleware<ExceptionHandlingMiddleware>(); // custom middlewares
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseMiddleware<LoggerMiddleware>();
 app.UseMiddleware<RequestTimingMiddleware>();
-// -----------------------------------------------------------------------
-
+app.MapControllers(); // or MapControllerRoute, inside it call UseRouting()
+app.MapHub<TaskHub>("/taskHub");
 app.Run();
+// -----------------------------------------------------------------------
