@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using System.Diagnostics;
+
+using Microsoft.Extensions.Caching.Memory;
 
 using TaskSync.Infrastructure.Caching.Interfaces;
 
@@ -14,18 +16,23 @@ namespace TaskSync.Infrastructure.Caching
 
         public async Task<T?> GetAsync(int cacheKey, Func<Task<T?>> fallbackCall)
         {
+            T? data;
+            var sw = Stopwatch.StartNew();
+
             if (_memoryCache.TryGetValue(GetCacheKey(cacheKey), out T? cached))
             {
                 Console.WriteLine($"[MemoryCacheBase] get '{GetCacheKey(cacheKey)}' from memory");
-                return cached;
+                data = cached;
+            }
+            else
+            {
+                Console.WriteLine($"[MemoryCacheBase] get '{GetCacheKey(cacheKey)}' from database");
+                data = await fallbackCall();
+                if (data != null) { Set(cacheKey, data); }
             }
 
-            var data = await fallbackCall();
-            if (data != null)
-            {
-                Set(cacheKey, data);
-            }
-            Console.WriteLine($"[MemoryCacheBase] get '{GetCacheKey(cacheKey)}' from database");
+            sw.Stop();
+            Console.WriteLine($"[MemoryCacheBase] get '{GetCacheKey(cacheKey)}' {sw.ElapsedMilliseconds}ms");
 
             return data;
         }
