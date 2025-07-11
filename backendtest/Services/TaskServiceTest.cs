@@ -17,32 +17,33 @@ namespace TaskSyncTest.Services
         private TaskService CreateTaskService(
             TaskEntity? returnEntity,
             out Mock<ITaskNotificationService> notificationMock,
-            out Mock<IMemoryCacheService<IList<TaskEntity>>> cacheMock,
+            out Mock<IMemoryCacheService<IList<TaskEntity>>> taskCacheMock,
             out Mock<ICacheBackgroundRefresher> cacheBgRefresherMock,
             out Mock<IGamificationApi> gamificationApiMock)
         {
             var http = new Mock<IHttpContextReader>();
             var repo = new Mock<ITaskRepository>();
             var taskHub = new Mock<ITaskNotificationService>();
-            var cache = new Mock<IMemoryCacheService<IList<TaskEntity>>>();
+            var taskEntityCache = new Mock<IMemoryCacheService<IList<TaskEntity>>>();
             var cacheBgRefresher = new Mock<ICacheBackgroundRefresher>();
             var gamificationApi = new Mock<IGamificationApi>();
             var commentService = new Mock<ICommentService>();
             var projectRepo = new Mock<IProjectRepository>();
+            var projectEntityCache = new Mock<IMemoryCacheService<ProjectEntity>>();
 
             repo.Setup(x => x.UpdateStatusAsync(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(returnEntity);
-            cacheMock = cache;
+            taskCacheMock = taskEntityCache;
             notificationMock = taskHub;
             cacheBgRefresherMock = cacheBgRefresher;
             gamificationApiMock = gamificationApi;
 
-            return new TaskService(http.Object, repo.Object, cache.Object, taskHub.Object, cacheBgRefresher.Object, gamificationApi.Object, commentService.Object, projectRepo.Object);
+            return new TaskService(http.Object, repo.Object, taskCacheMock.Object, taskHub.Object, cacheBgRefresher.Object, gamificationApi.Object, commentService.Object, projectRepo.Object, projectEntityCache.Object);
         }
 
         [Fact]
         public async Task UpdateTaskStatusAsync_ShouldReturnNull_WhenUpdateFails()
         {
-            var service = CreateTaskService(null, out var notificationMock, out var cacheMock, out var cacheBgRefresherMock, out var gamificationApiMock);
+            var service = CreateTaskService(null, out var notificationMock, out var taskCacheMock, out var cacheBgRefresherMock, out var gamificationApiMock);
 
             var result = await service.UpdateTaskStatusAsync(1, new UpdateTaskRequest() { StatusRaw = "BACKLOG" });
 
@@ -60,7 +61,7 @@ namespace TaskSyncTest.Services
                 StatusRaw = "TODO",
                 LastModified = new DateTime(2025, 2, 2)
             };
-            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var cacheMock, out var cacheBgRefresherMock, out var gamificationApiMock);
+            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var taskCacheMock, out var cacheBgRefresherMock, out var gamificationApiMock);
 
             var result = await service.UpdateTaskStatusAsync(2, new UpdateTaskRequest() { StatusRaw = "TODO" });
 
@@ -82,7 +83,7 @@ namespace TaskSyncTest.Services
                 StatusRaw = "DONE",
                 LastModified = new DateTime(2025, 4, 4),
             };
-            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var cacheMock, out var cacheBgRefresherMock, out var gamificationApiMock);
+            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var taskCacheMock, out var cacheBgRefresherMock, out var gamificationApiMock);
 
             var result = await service.UpdateTaskStatusAsync(4, new UpdateTaskRequest() { StatusRaw = "INPROGRESS" });
 
@@ -108,7 +109,7 @@ namespace TaskSyncTest.Services
                 LastModified = new DateTime(2025, 5, 5),
                 ProjectId = 5,
             };
-            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var cacheMock, out var cacheBgRefresherMock, out var gamificationApiMock);
+            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var taskCacheMock, out var cacheBgRefresherMock, out var gamificationApiMock);
 
             var result = await service.UpdateTaskStatusAsync(5, new UpdateTaskRequest() { StatusRaw = "DONE" });
 
@@ -127,7 +128,7 @@ namespace TaskSyncTest.Services
                 LastModified = new DateTime(2025, 6, 6),
                 ProjectId = 6,
             };
-            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var cacheMock, out var cacheBgRefresherMock, out var gamificationApiMock);
+            var service = CreateTaskService(mockTaskEntity, out var notificationMock, out var taskCacheMock, out var cacheBgRefresherMock, out var gamificationApiMock);
 
             var result = await service.UpdateTaskStatusAsync(6, new UpdateTaskRequest() { StatusRaw = "DONE" });
 
