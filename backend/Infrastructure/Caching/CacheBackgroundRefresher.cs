@@ -20,7 +20,7 @@ namespace TaskSync.Infrastructure.Caching
             {
                 using var scope = _sp.CreateScope();
                 var repo = scope.ServiceProvider.GetRequiredService<ITaskRepository>();
-                var cache = _sp.GetRequiredService<IMemoryCacheService<IList<TaskEntity>>>();
+                var cache = _sp.GetRequiredService<IMemoryCacheService<IList<TaskEntity>>>(); // todo-moch: need to support other cache types
 
                 var tasks = await repo.GetAsync(projectId);
                 if (tasks != null)

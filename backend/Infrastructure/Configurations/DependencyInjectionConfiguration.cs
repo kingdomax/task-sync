@@ -28,7 +28,8 @@ namespace TaskSync.Infrastructure.Configurations
             services.AddSingleton<IHomeVmService, HomeVmService>();
             services.AddSingleton<ITaskNotificationService, TaskNotificationService>();
             services.AddSingleton<ICacheBackgroundRefresher, CacheBackgroundRefresher>();
-            services.AddSingleton<IMemoryCacheService<IList<TaskEntity>>, TaskEntitiesCache>();
+            services.AddSingleton<IMemoryCacheService<IList<TaskEntity>>, TaskEntityCache>();
+            services.AddSingleton<IMemoryCacheService<ProjectEntity>, ProjectEntityCache>();
 
             services.AddScoped<IHttpContextReader, HttpContextReader>();
             services.AddScoped<IRepository<UserEntity>, UserRepository>();
