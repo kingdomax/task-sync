@@ -20,6 +20,7 @@ namespace TaskSync.Services
         private readonly IGamificationApi _gamificationApi;
         private readonly ICommentService _commentService;
         private readonly IProjectRepository _projectRepository;
+        private readonly IMemoryCacheService<ProjectEntity> _projectEntityCache;
 
         // todo-moch: dependencies start to grow, maybe consider using MediatR or similar patterns
         public TaskService(
@@ -30,7 +31,8 @@ namespace TaskSync.Services
             ICacheBackgroundRefresher cacheBackgroundRefresher,
             IGamificationApi gamificationApi,
             ICommentService commentService,
-            IProjectRepository projectRepository)
+            IProjectRepository projectRepository,
+            IMemoryCacheService<ProjectEntity> projectEntityCache)
         {
             _httpContextReader = httpContextReader;
             _taskRepository = taskRepository;
@@ -40,6 +42,7 @@ namespace TaskSync.Services
             _gamificationApi = gamificationApi;
             _commentService = commentService;
             _projectRepository = projectRepository;
+            _projectEntityCache = projectEntityCache;
         }
 
         public async Task<IList<TaskDto>?> GetTasksAsync(int projectId)
@@ -63,7 +66,10 @@ namespace TaskSync.Services
         {
             // Add task record to "tasks" table and comment record to "task_comments" table
             TaskEntity newTask;
-            var project = await _projectRepository.GetByIdAsync(projectId);
+            var project = await _projectEntityCache.GetAsync(projectId, async () =>
+            {
+                return await _projectRepository.GetByIdAsync(projectId);
+            });
             using (var tx = await _taskRepository.BeginTransactionAsync())
             {
                 newTask = await _taskRepository.AddAsync(request.Title, request.AssigneeId, projectId, _httpContextReader.GetUserId());

@@ -4,9 +4,9 @@ using TaskSync.Repositories.Entities;
 
 namespace TaskSync.Infrastructure.Caching
 {
-    public class TaskEntitiesCache : MemoryCacheBase<IList<TaskEntity>>
+    public class TaskEntityCache : MemoryCacheBase<IList<TaskEntity>>
     {
-        public TaskEntitiesCache(IMemoryCache memorycache)
+        public TaskEntityCache(IMemoryCache memorycache)
             : base(memorycache)
         {
         }
