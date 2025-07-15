@@ -1,5 +1,4 @@
-using System;
-﻿using TaskSync.Enums;
+using TaskSync.Enums;
 using TaskSync.ExternalApi.Interfaces;
 using TaskSync.Infrastructure.Caching.Interfaces;
 using TaskSync.Infrastructure.Http.Interface;
@@ -72,14 +71,10 @@ namespace TaskSync.Services
                 return await _projectRepository.GetByIdAsync(projectId);
             });
 
-            if (project == null)
-            {
-                throw new ArgumentException($"Project {projectId} not found", nameof(projectId));
-            }
             using (var tx = await _taskRepository.BeginTransactionAsync())
             {
                 newTask = await _taskRepository.AddAsync(request.Title, request.AssigneeId, projectId, _httpContextReader.GetUserId());
-                await _commentService.AddTaskCreatedCommentAsync(newTask, project, _httpContextReader.GetUsername()!);
+                await _commentService.AddTaskCreatedCommentAsync(newTask, project!, _httpContextReader.GetUsername()!);
                 await tx.CommitAsync();
             }
 
