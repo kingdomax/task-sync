@@ -26,4 +26,4 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
-                  LLM_MODEL: "o3"
+                  LLM_MODEL: "o4-mini"
