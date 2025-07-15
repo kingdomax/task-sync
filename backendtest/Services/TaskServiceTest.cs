@@ -78,7 +78,7 @@ namespace TaskSyncTest.Services
             var mockTaskEntity = new TaskEntity()
             {
                 Id = 4,
-                Title = "Add timming middleware",
+                Title = "Add timing middleware",
                 AssigneeId = 4,
                 StatusRaw = "DONE",
                 LastModified = new DateTime(2025, 4, 4),
