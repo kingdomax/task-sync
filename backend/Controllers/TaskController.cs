@@ -36,7 +36,7 @@ namespace TaskSync.Controllers
 
         [Authorize]
         [HttpPatch("tasks/{taskId}")]
-        public async Task<IActionResult> UpdateStatus([FromRoute] int taskId, [FromBody] UpdateTaskRequest request) // [FromRoute], [FromBody] are called ModelBining
+        public async Task<IActionResult> UpdateStatus([FromRoute] int taskId, [FromBody] UpdateTaskRequest request) // [FromRoute], [FromBody] are called Model Binding
         {
             var taskDto = await _taskService.UpdateTaskStatusAsync(taskId, request);
 
