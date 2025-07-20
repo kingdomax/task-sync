@@ -28,7 +28,10 @@ namespace TaskSync.Infrastructure.Caching
             {
                 Console.WriteLine($"[MemoryCacheBase] get '{GetCacheKey(cacheKey)}' from database");
                 data = await fallbackCall();
-                if (data != null) { Set(cacheKey, data); }
+                if (data != null)
+                {
+                    Set(cacheKey, data);
+                }
             }
 
             sw.Stop();
