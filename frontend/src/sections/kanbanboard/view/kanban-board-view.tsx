@@ -66,6 +66,7 @@ export const KanbanBoardView = () => {
     return (
         <DashboardContent maxWidth="xl">
             <AddItemPanel onAddItem={handleAddItem} />
+
             <DetailItemPanel
                 item={kanbanItems.find((i) => i.id == selectedItem) ?? null}
                 onSelect={handleSelectItem}

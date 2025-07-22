@@ -1,7 +1,5 @@
 using System.Text.Json.Serialization;
 
-using OpenTelemetry.Metrics;
-
 using TaskSync.Infrastructure.Configurations;
 using TaskSync.MiddleWares;
 using TaskSync.SignalR;
@@ -23,11 +21,6 @@ builder.Services.ConfigureResponseCompression();
 builder.Services.ConfigureCors();
 builder.Services.ConfigureJwt(builder.Configuration);
 builder.Services.ConfigureDependencyInjection(builder.Configuration);
-builder.Services.AddOpenTelemetry()
-    .WithMetrics(metrics =>
-    {
-        metrics.AddAspNetCoreInstrumentation(); // .AddPrometheusExporter();
-    });
 // -------------------------------------------------------------------------------
 
 // -------------- Configure/Order the request pipeline (Middleware) --------------
@@ -46,6 +39,5 @@ app.UseMiddleware<LoggerMiddleware>();
 app.UseMiddleware<RequestTimingMiddleware>();
 app.MapControllers(); // or MapControllerRoute, inside it call UseRouting()
 app.MapHub<TaskHub>("/taskHub");
-// app.UseOpenTelemetryPrometheusScrapingEndpoint(); // exposes /metrics
 app.Run();
 // -----------------------------------------------------------------------
