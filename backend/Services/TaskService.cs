@@ -1,4 +1,4 @@
-﻿using TaskSync.Enums;
+using TaskSync.Enums;
 using TaskSync.ExternalApi.Interfaces;
 using TaskSync.Infrastructure.Caching.Interfaces;
 using TaskSync.Infrastructure.Http.Interface;
@@ -70,6 +70,7 @@ namespace TaskSync.Services
             {
                 return await _projectRepository.GetByIdAsync(projectId);
             });
+
             using (var tx = await _taskRepository.BeginTransactionAsync())
             {
                 newTask = await _taskRepository.AddAsync(request.Title, request.AssigneeId, projectId, _httpContextReader.GetUserId());
