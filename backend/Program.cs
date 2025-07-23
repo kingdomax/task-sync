@@ -15,6 +15,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 builder.Services.AddRateLimiter();
 builder.Services.AddMemoryCache(options => options.SizeLimit = 100);
+builder.ConfigureOpenTelemetry();
 builder.Services.ConfigureAppSettings(builder.Configuration);
 builder.Services.ConfigureApiVersion();
 builder.Services.ConfigureResponseCompression();
