@@ -5,6 +5,7 @@ using OpenTelemetry.Trace;
 
 namespace TaskSync.Infrastructure.Configurations
 {
+    // Note: The OpenTelemetry collector should be running in the same Docker network as the API service.
     public static class OpenTelemetryConfiguration
     {
         public static void ConfigureOpenTelemetry(this WebApplicationBuilder builder)
@@ -12,7 +13,7 @@ namespace TaskSync.Infrastructure.Configurations
             // Shared resource attributes (customize for app)
             var otelResource = ResourceBuilder.CreateDefault().AddService("Core.API", serviceVersion: "1.0.0");
 
-            // --- Add OpenTelemetry for Tracing and Metrics ---
+            // Add OpenTelemetry for Tracing and Metrics
             builder.Services.AddOpenTelemetry().ConfigureResource(rb => rb.AddService("Core.API")) // todo-moch: don't hardcode this
                 .WithTracing(tracing =>
                 {
@@ -40,7 +41,7 @@ namespace TaskSync.Infrastructure.Configurations
                         });
                 });
 
-            // --- Add OpenTelemetry Logging ---
+            // Add OpenTelemetry Logging
             builder.Logging.ClearProviders();
             builder.Logging.AddOpenTelemetry(loggerOptions =>
             {
