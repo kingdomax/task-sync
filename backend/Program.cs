@@ -15,13 +15,13 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
 builder.Services.AddRateLimiter();
 builder.Services.AddMemoryCache(options => options.SizeLimit = 100);
-builder.ConfigureOpenTelemetry();
 builder.Services.ConfigureAppSettings(builder.Configuration);
-builder.Services.ConfigureApiVersion();
+builder.Services.ConfigureDependencyInjection();
 builder.Services.ConfigureResponseCompression();
+builder.Services.ConfigureApiVersion();
 builder.Services.ConfigureCors();
-builder.Services.ConfigureJwt(builder.Configuration);
-builder.Services.ConfigureDependencyInjection(builder.Configuration);
+builder.Services.ConfigureJwt();
+builder.ConfigureTelemetry();
 // -------------------------------------------------------------------------------
 
 // -------------- Configure/Order the request pipeline (Middleware) --------------

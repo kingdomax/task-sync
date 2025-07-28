@@ -10,10 +10,9 @@ namespace TaskSync.Infrastructure.Configurations
 {
     public static class JwtConfiguration
     {
-        public static IServiceCollection ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureJwt(this IServiceCollection services)
         {
-            var provider = services.BuildServiceProvider();
-            var jwtSettings = provider.GetRequiredService<IOptions<JwtSettings>>().Value;
+            var jwtSettings = services.BuildServiceProvider().GetRequiredService<IOptions<JwtSettings>>().Value;
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
