@@ -13,12 +13,12 @@ namespace TaskSync.Repositories
 
         public async Task<UserEntity?> GetAsync()
         {
-            return await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == 1);
+            return await _dbContext.Users.AsNoTracking().SingleOrDefaultAsync(x => x.Id == 1);
         }
 
         public async Task<UserEntity?> GetAsync(string email)
         {
-            return await _dbContext.Users.SingleOrDefaultAsync(x => x.Email == email);
+            return await _dbContext.Users.AsNoTracking().SingleOrDefaultAsync(x => x.Email == email);
         }
 
         public Task<UserEntity?> GetAsync(int param1)

@@ -12,7 +12,7 @@ namespace TaskSync.Repositories
 
         public async Task<ProjectEntity?> GetByIdAsync(int projectId)
         {
-            return await _dbContext.Projects.FirstOrDefaultAsync(x => x.Id == projectId);
+            return await _dbContext.Projects.AsNoTracking().FirstOrDefaultAsync(x => x.Id == projectId);
         }
     }
 }
