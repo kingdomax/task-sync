@@ -25,7 +25,7 @@ namespace TaskSync.Infrastructure.Configurations
             var provider = services.BuildServiceProvider();
 
             services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(provider.GetRequiredService<IOptions<PostgreSqlSettings>>().Value.ConnectionString)
+                options.UseNpgsql(provider.GetRequiredService<IOptions<PostgreSqlSettings>>().Value.DefaultConnection)
             );
 
             services.AddSingleton<IJwtService, JwtService>();

@@ -30,7 +30,7 @@ namespace TaskSync.Infrastructure.Configurations
                         .AddSqlClientInstrumentation()
                         .AddOtlpExporter(opt =>
                         {
-                            opt.Endpoint = new Uri(otelSettings.BaseUrl); // Use Docker service name! and todo-moch: don't hardcode this
+                            opt.Endpoint = new Uri(otelSettings.BaseUrl); // http://otel-collector:4317 (grpc protocol)
                             opt.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
                         });
                 })
@@ -43,7 +43,7 @@ namespace TaskSync.Infrastructure.Configurations
                         .AddProcessInstrumentation() // CPU usage, Memory, Thread count
                         .AddOtlpExporter(opt =>
                         {
-                            opt.Endpoint = new Uri(otelSettings.BaseUrl); // http://otel-collector:4317
+                            opt.Endpoint = new Uri(otelSettings.BaseUrl);
                             opt.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
                         });
                 });

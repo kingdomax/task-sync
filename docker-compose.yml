@@ -16,6 +16,7 @@ services:
         build:
             context: . #  build from project roo
             dockerfile: backend/Dockerfile # Use Dockerfile in the ./backend directory
+        profiles: [app]
         container_name: tasksync-backend
         restart: on-failure
         ports:
@@ -31,6 +32,7 @@ services:
     gamification-api:
         build:
             context: ./gamification-api
+        profiles: [app]
         container_name: tasksync-gamapi
         restart: on-failure
         ports:
@@ -43,6 +45,7 @@ services:
     frontend:
         build:
             context: ./frontend
+        profiles: [app]
         container_name: tasksync-frontend
         restart: on-failure
         ports:
@@ -51,5 +54,63 @@ services:
             - backend # Ensure backend is up before serving frontend
             - gamification-api
 
+    otel-collector:
+        image: otel/opentelemetry-collector-contrib:0.97.0
+        profiles: [observability]
+        container_name: otel-collector
+        command: ["--config=/etc/otel-collector-config.yaml"]
+        volumes:
+            - ./observability/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+        ports:
+            - "4317:4317" # OTLP gRPC
+            - "4318:4318" # OTLP HTTP
+            - "8889:8889" # Collector internal metrics
+
+    prometheus:
+        image: prom/prometheus
+        profiles: [observability]
+        container_name: prometheus
+        volumes:
+            - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml
+        ports:
+            - "9090:9090"
+        depends_on:
+            - otel-collector
+
+    tempo:
+        image: grafana/tempo:2.4.1
+        profiles: [observability]
+        container_name: tempo
+        volumes:
+            - ./observability/tempo.yaml:/etc/tempo/tempo.yaml
+        command: ["-config.file=/etc/tempo/tempo.yaml"]
+        ports:
+            - "3200:3200" # For grafana, for otelcollector Tempo listens on 4317 for incoming traces by default
+        depends_on:
+            - otel-collector
+
+    loki:
+        image: grafana/loki:2.9.0
+        profiles: [observability]
+        container_name: loki
+        ports:
+            - "3100:3100"
+        depends_on:
+            - otel-collector
+
+    grafana:
+        image: grafana/grafana
+        profiles: [observability]
+        container_name: grafana
+        environment:
+            - GF_SECURITY_ADMIN_PASSWORD=admin
+        ports:
+            - "3001:3001"
+        depends_on:
+            - prometheus
+            - tempo
+            - loki
+
+# persistent volume
 volumes:
     pgdata: # Named volume to store Postgres data (managed by Docker)

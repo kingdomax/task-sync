@@ -6,19 +6,24 @@ receivers:
 
 exporters:
     prometheus:
-        endpoint: "0.0.0.0:8888"
-    loki:
-        endpoint: "http://loki:3100/loki/api/v1/push"
-    tempo:
-        endpoint: "tempo:4317"
+        endpoint: "0.0.0.0:8889" #pull model
+
+    otlp/tempo:
+        endpoint: tempo:4319 #push model
         tls:
             insecure: true
+
+    loki:
+        endpoint: "http://loki:3100/loki/api/v1/push" #push model
+
+    logging:
+        loglevel: info
 
 service:
     pipelines:
         traces:
             receivers: [otlp]
-            exporters: [tempo]
+            exporters: [otlp/tempo]
         metrics:
             receivers: [otlp]
             exporters: [prometheus]
