@@ -18,10 +18,14 @@ builder.Services.AddMemoryCache(options => options.SizeLimit = 100);
 builder.Services.ConfigureAppSettings(builder.Configuration);
 builder.Services.ConfigureDependencyInjection();
 builder.Services.ConfigureResponseCompression();
+builder.Services.ConfigureHttpClient();
 builder.Services.ConfigureApiVersion();
 builder.Services.ConfigureCors();
 builder.Services.ConfigureJwt();
-builder.ConfigureTelemetry();
+if (builder.Environment.IsDevelopment())
+{
+    builder.ConfigureTelemetry();
+}
 // -------------------------------------------------------------------------------
 
 // -------------- Configure/Order the request pipeline (Middleware) --------------

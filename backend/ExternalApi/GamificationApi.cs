@@ -23,7 +23,7 @@ namespace TaskSync.ExternalApi
         {
             try
             {
-                var httpMessage = new HttpRequestMessage(HttpMethod.Post, $"{_httpClient.BaseAddress}/points")
+                var httpMessage = new HttpRequestMessage(HttpMethod.Post, "points")
                 {
                     Content = JsonContent.Create(new CreatePointDto()
                     {
