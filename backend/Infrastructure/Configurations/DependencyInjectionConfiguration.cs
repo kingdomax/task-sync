@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 using TaskSync.ExternalApi;
 using TaskSync.ExternalApi.Interfaces;
@@ -6,6 +7,7 @@ using TaskSync.Infrastructure.Caching;
 using TaskSync.Infrastructure.Caching.Interfaces;
 using TaskSync.Infrastructure.Http;
 using TaskSync.Infrastructure.Http.Interface;
+using TaskSync.Infrastructure.Settings;
 using TaskSync.Repositories;
 using TaskSync.Repositories.Entities;
 using TaskSync.Repositories.Interfaces;
@@ -18,10 +20,12 @@ namespace TaskSync.Infrastructure.Configurations
 {
     public static class DependencyInjectionConfiguration
     {
-        public static IServiceCollection ConfigureDependencyInjection(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureDependencyInjection(this IServiceCollection services)
         {
+            var provider = services.BuildServiceProvider();
+
             services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+                options.UseNpgsql(provider.GetRequiredService<IOptions<PostgreSqlSettings>>().Value.DefaultConnection)
             );
 
             services.AddSingleton<IJwtService, JwtService>();

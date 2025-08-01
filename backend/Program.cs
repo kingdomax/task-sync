@@ -16,11 +16,16 @@ builder.Services.AddHttpClient();
 builder.Services.AddRateLimiter();
 builder.Services.AddMemoryCache(options => options.SizeLimit = 100);
 builder.Services.ConfigureAppSettings(builder.Configuration);
-builder.Services.ConfigureApiVersion();
+builder.Services.ConfigureDependencyInjection();
 builder.Services.ConfigureResponseCompression();
+builder.Services.ConfigureHttpClient();
+builder.Services.ConfigureApiVersion();
 builder.Services.ConfigureCors();
-builder.Services.ConfigureJwt(builder.Configuration);
-builder.Services.ConfigureDependencyInjection(builder.Configuration);
+builder.Services.ConfigureJwt();
+if (builder.Environment.IsDevelopment())
+{
+    builder.ConfigureTelemetry();
+}
 // -------------------------------------------------------------------------------
 
 // -------------- Configure/Order the request pipeline (Middleware) --------------

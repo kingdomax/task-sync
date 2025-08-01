@@ -3,7 +3,7 @@ import type { HubConnection } from '@microsoft/signalr';
 import { useRef, useLayoutEffect } from 'react';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 
-import { getSeverUrl } from 'src/utils/env';
+import { getServerUrl } from 'src/utils/env';
 
 import { NOTIFY_STATUS } from '../type/kanban-item';
 
@@ -19,7 +19,7 @@ export const useSignalRTaskHub = (
     useLayoutEffect(() => {
         const connectToHub = async () => {
             const connection = new HubConnectionBuilder()
-                .withUrl(`${getSeverUrl()}/taskHub`, {
+                .withUrl(`${getServerUrl()}/taskHub`, {
                     withCredentials: true, // Required
                 })
                 .withAutomaticReconnect()

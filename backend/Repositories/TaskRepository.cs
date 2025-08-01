@@ -18,7 +18,7 @@ namespace TaskSync.Repositories
 
         public async Task<IList<TaskEntity>?> GetAsync(int projectId)
         {
-            return await _dbContext.Tasks.Where(x => x.ProjectId == projectId).AsNoTracking().ToListAsync();
+            return await _dbContext.Tasks.AsNoTracking().Where(x => x.ProjectId == projectId).ToListAsync();
         }
 
         public async Task<TaskEntity> AddAsync(string title, int? assigneeId, int projectId, int? creatorId)
