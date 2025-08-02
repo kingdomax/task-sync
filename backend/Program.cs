@@ -32,6 +32,8 @@ if (builder.Environment.IsDevelopment())
 // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-9.0#middleware-order
 var app = builder.Build();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<LoggerMiddleware>();
+app.UseMiddleware<RequestTimingMiddleware>();
 app.UseStaticFiles(); // Required for serving CSS, JS, etc.
 app.UseCors();
 app.UseResponseCompression();
@@ -40,8 +42,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseMiddleware<LoggerMiddleware>();
-app.UseMiddleware<RequestTimingMiddleware>();
 app.MapControllers(); // or MapControllerRoute, inside it call UseRouting()
 app.MapHub<TaskHub>("/taskHub");
 app.Run();
