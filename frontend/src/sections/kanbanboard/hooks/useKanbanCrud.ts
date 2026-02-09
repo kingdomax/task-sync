@@ -110,7 +110,11 @@ export const useKanbanCrud = (
         }
     };
 
-    return { handleAddItem, handleStatusChange, handleDeleteItem };
+    return {
+        handleAddItem,
+        handleStatusChange,
+        handleDeleteItem,
+    };
 };
 
 const createHeader = (connectionId: string): Record<string, string> => ({

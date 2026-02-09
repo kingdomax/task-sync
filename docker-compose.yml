@@ -1,6 +1,7 @@
 services:
     postgres:
         image: postgres:17
+        profiles: [postgres]
         container_name: tasksync-postgres
         restart: on-failure # Restart container automatically if it crashes
         ports:
