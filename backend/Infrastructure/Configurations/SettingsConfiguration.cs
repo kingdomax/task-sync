@@ -8,6 +8,7 @@ namespace TaskSync.Infrastructure.Configurations
         {
             services.Configure<AppInfo>(configuration.GetSection("AppInfo"));
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+            services.Configure<RabbitMqSettings>(configuration.GetSection("RabbitMq"));
             services.Configure<FrontendSettings>(configuration.GetSection("Frontend"));
             services.Configure<PostgreSqlSettings>(configuration.GetSection("PostgreSql"));
             services.Configure<OtelCollectorSettings>(configuration.GetSection("OtelCollector"));

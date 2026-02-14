@@ -2,6 +2,7 @@
 using TaskSync.ExternalApi.Interfaces;
 using TaskSync.Infrastructure.Caching.Interfaces;
 using TaskSync.Infrastructure.Http.Interface;
+using TaskSync.Infrastructure.Messaging.Interfaces;
 using TaskSync.Infrastructure.SignalR.Interfaces;
 using TaskSync.Repositories.Entities;
 using TaskSync.Repositories.Interfaces;
@@ -11,7 +12,7 @@ using TaskSync.Services.Interfaces;
 
 namespace TaskSyncTest.Services
 {
-    // Test method run parallel in the same file as well as different test class
+    // Test method run parallel in the same file as well as different test class (with own context)
     public class TaskServiceTest
     {
         private TaskService CreateTaskService(
@@ -30,6 +31,7 @@ namespace TaskSyncTest.Services
             var commentService = new Mock<ICommentService>();
             var projectRepo = new Mock<IProjectRepository>();
             var projectEntityCache = new Mock<IMemoryCacheService<ProjectEntity>>();
+            var pointsEventPublisher = new Mock<IPointsEventPublisher>();
 
             repo.Setup(x => x.UpdateStatusAsync(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync(returnEntity);
             taskCacheMock = taskEntityCache;
@@ -37,7 +39,7 @@ namespace TaskSyncTest.Services
             cacheBgRefresherMock = cacheBgRefresher;
             gamificationApiMock = gamificationApi;
 
-            return new TaskService(http.Object, repo.Object, taskCacheMock.Object, taskHub.Object, cacheBgRefresher.Object, gamificationApi.Object, commentService.Object, projectRepo.Object, projectEntityCache.Object);
+            return new TaskService(http.Object, repo.Object, taskCacheMock.Object, taskHub.Object, cacheBgRefresher.Object, gamificationApi.Object, commentService.Object, projectRepo.Object, projectEntityCache.Object, pointsEventPublisher.Object);
         }
 
         [Fact]

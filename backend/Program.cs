@@ -22,6 +22,7 @@ builder.Services.ConfigureHttpClient();
 builder.Services.ConfigureApiVersion();
 builder.Services.ConfigureCors();
 builder.Services.ConfigureJwt();
+builder.Services.AddMessaging();
 if (builder.Environment.IsDevelopment())
 {
     builder.ConfigureTelemetry();

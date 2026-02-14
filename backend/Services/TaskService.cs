@@ -1,6 +1,7 @@
 using TaskSync.ExternalApi.Interfaces;
 using TaskSync.Infrastructure.Caching.Interfaces;
 using TaskSync.Infrastructure.Http.Interface;
+using TaskSync.Infrastructure.Messaging.Interfaces;
 using TaskSync.Infrastructure.SignalR.Interfaces;
 using TaskSync.Models.Dto;
 using TaskSync.Models.Enums;
@@ -21,6 +22,7 @@ namespace TaskSync.Services
         private readonly ICommentService _commentService;
         private readonly IProjectRepository _projectRepository;
         private readonly IMemoryCacheService<ProjectEntity> _projectEntityCache;
+        private readonly IPointsEventPublisher _pointsEventPublisher;
 
         // todo-moch: dependencies start to grow, maybe consider using MediatR or similar patterns
         public TaskService(
@@ -32,7 +34,8 @@ namespace TaskSync.Services
             IGamificationApi gamificationApi,
             ICommentService commentService,
             IProjectRepository projectRepository,
-            IMemoryCacheService<ProjectEntity> projectEntityCache)
+            IMemoryCacheService<ProjectEntity> projectEntityCache,
+            IPointsEventPublisher pointsEventPublisher)
         {
             _httpContextReader = httpContextReader;
             _taskRepository = taskRepository;
@@ -43,6 +46,7 @@ namespace TaskSync.Services
             _commentService = commentService;
             _projectRepository = projectRepository;
             _projectEntityCache = projectEntityCache;
+            _pointsEventPublisher = pointsEventPublisher;
         }
 
         public async Task<IList<TaskDto>?> GetTasksAsync(int projectId)
@@ -90,7 +94,8 @@ namespace TaskSync.Services
 
             // Perform side effect without waiting for completion
             _cacheBackgroundRefresher.RefreshProjectTasks(projectId);
-            _ = _gamificationApi.UpdatePoint(newTaskDto.Id, TASK_STATUS.CREATE);
+            // _ = _gamificationApi.UpdatePoint(newTaskDto.Id, TASK_STATUS.CREATE);
+            _ = _pointsEventPublisher.PublishPointAwardedAsync(newTaskDto.Id, TASK_STATUS.CREATE);
             _ = _taskNotificationService.NotifyTaskCreateAsync(newTaskDto, _httpContextReader.GetConnectionId());
 
             return newTaskDto;
@@ -114,7 +119,8 @@ namespace TaskSync.Services
             };
 
             _cacheBackgroundRefresher.RefreshProjectTasks(updatedTask.ProjectId);
-            _ = _gamificationApi.UpdatePoint(dto.Id, dto.Status);
+            // _ = _gamificationApi.UpdatePoint(dto.Id, dto.Status);
+            _ = _pointsEventPublisher.PublishPointAwardedAsync(dto.Id, dto.Status);
             _ = _taskNotificationService.NotifyTaskUpdateAsync(dto, _httpContextReader.GetConnectionId());
             return dto;
         }
@@ -128,7 +134,8 @@ namespace TaskSync.Services
             }
 
             _cacheBackgroundRefresher.RefreshProjectTasks(deletedTask.ProjectId);
-            _ = _gamificationApi.UpdatePoint(taskId, TASK_STATUS.DELETE);
+            // _ = _gamificationApi.UpdatePoint(taskId, TASK_STATUS.DELETE);
+            _ = _pointsEventPublisher.PublishPointAwardedAsync(taskId, TASK_STATUS.DELETE);
             _ = _taskNotificationService.NotifyTaskDeleteAsync(taskId, _httpContextReader.GetConnectionId());
             return true;
         }
