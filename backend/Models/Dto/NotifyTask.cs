@@ -1,4 +1,4 @@
-﻿using TaskSync.Enums;
+﻿using TaskSync.Models.Enums;
 
 namespace TaskSync.Models.Dto
 {

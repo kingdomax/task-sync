@@ -1,6 +1,6 @@
 ﻿using TaskSync.Models.Dto;
 
-namespace TaskSync.SignalR.Interfaces
+namespace TaskSync.Infrastructure.SignalR.Interfaces
 {
     public interface ITaskNotificationService
     {

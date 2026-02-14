@@ -1,4 +1,4 @@
-﻿using TaskStatus = TaskSync.Enums.TASK_STATUS;
+﻿using TaskStatus = TaskSync.Models.Enums.TASK_STATUS;
 
 namespace TaskSync.ExternalApi.Interfaces
 {

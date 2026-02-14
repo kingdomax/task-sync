@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
 using TaskSync.Infrastructure.Configurations;
+using TaskSync.Infrastructure.SignalR;
 using TaskSync.MiddleWares;
-using TaskSync.SignalR;
 
 // ------------------------ Setup all services  ----------------------------------
 var builder = WebApplication.CreateBuilder(args);

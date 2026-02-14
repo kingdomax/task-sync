@@ -2,7 +2,7 @@
 using TaskSync.Infrastructure.Http.Interface;
 using TaskSync.Models.Dto;
 
-using TaskStatus = TaskSync.Enums.TASK_STATUS;
+using TaskStatus = TaskSync.Models.Enums.TASK_STATUS;
 
 namespace TaskSync.ExternalApi
 {
@@ -25,6 +25,7 @@ namespace TaskSync.ExternalApi
             {
                 var httpMessage = new HttpRequestMessage(HttpMethod.Post, "points")
                 {
+                    // Serialize Object -> JSON
                     Content = JsonContent.Create(new CreatePointDto()
                     {
                         TaskId = taskId,

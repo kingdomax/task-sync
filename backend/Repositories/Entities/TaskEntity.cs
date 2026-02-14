@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-using TaskSync.Enums;
+using TaskSync.Models.Enums;
 
 namespace TaskSync.Repositories.Entities
 {

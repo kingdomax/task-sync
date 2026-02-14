@@ -1,12 +1,12 @@
-using TaskSync.Enums;
 using TaskSync.ExternalApi.Interfaces;
 using TaskSync.Infrastructure.Caching.Interfaces;
 using TaskSync.Infrastructure.Http.Interface;
+using TaskSync.Infrastructure.SignalR.Interfaces;
 using TaskSync.Models.Dto;
+using TaskSync.Models.Enums;
 using TaskSync.Repositories.Entities;
 using TaskSync.Repositories.Interfaces;
 using TaskSync.Services.Interfaces;
-using TaskSync.SignalR.Interfaces;
 
 namespace TaskSync.Services
 {

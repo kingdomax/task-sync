@@ -8,13 +8,13 @@ using TaskSync.Infrastructure.Caching.Interfaces;
 using TaskSync.Infrastructure.Http;
 using TaskSync.Infrastructure.Http.Interface;
 using TaskSync.Infrastructure.Settings;
+using TaskSync.Infrastructure.SignalR;
+using TaskSync.Infrastructure.SignalR.Interfaces;
 using TaskSync.Repositories;
 using TaskSync.Repositories.Entities;
 using TaskSync.Repositories.Interfaces;
 using TaskSync.Services;
 using TaskSync.Services.Interfaces;
-using TaskSync.SignalR;
-using TaskSync.SignalR.Interfaces;
 
 namespace TaskSync.Infrastructure.Configurations
 {

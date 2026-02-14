@@ -1,4 +1,4 @@
-﻿namespace TaskSync.Enums
+﻿namespace TaskSync.Models.Enums
 {
     public enum TASK_STATUS
     {
