@@ -7,7 +7,9 @@ using TaskSync.Models.Enums;
 
 namespace TaskSync.Infrastructure.Messaging
 {
-    public class PointsEventPublisher : IPointsEventPublisher
+    // sealed for better performance, since it won't be inherited by other classes
+    // used with service, repo, api, infra, any class that need no inheritance
+    public sealed class PointsEventPublisher : IPointsEventPublisher
     {
         private readonly IPublishEndpoint _publish;
         private readonly IHttpContextReader _httpContextReader;
