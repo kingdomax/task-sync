@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 
 using TaskSync.Infrastructure.Configurations;
+using TaskSync.Infrastructure.Messaging;
 using TaskSync.Infrastructure.SignalR;
 using TaskSync.MiddleWares;
 
@@ -22,7 +23,7 @@ builder.Services.ConfigureHttpClient();
 builder.Services.ConfigureApiVersion();
 builder.Services.ConfigureCors();
 builder.Services.ConfigureJwt();
-builder.Services.AddMessaging();
+builder.Services.AddHostedService<RabbitMqTopologyInitializer>();
 if (builder.Environment.IsDevelopment())
 {
     builder.ConfigureTelemetry();

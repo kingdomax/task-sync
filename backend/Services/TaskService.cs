@@ -94,9 +94,9 @@ namespace TaskSync.Services
 
             // Perform side effect without waiting for completion
             _cacheBackgroundRefresher.RefreshProjectTasks(projectId);
-            // _ = _gamificationApi.UpdatePoint(newTaskDto.Id, TASK_STATUS.CREATE);
-            _ = _pointsEventPublisher.PublishPointAwardedAsync(newTaskDto.Id, TASK_STATUS.CREATE);
             _ = _taskNotificationService.NotifyTaskCreateAsync(newTaskDto, _httpContextReader.GetConnectionId());
+            // _ = _gamificationApi.UpdatePoint(newTaskDto.Id, TASK_STATUS.CREATE);
+            _ = _pointsEventPublisher.PublishPointAwardedAsync(newTaskDto.Id, TASK_STATUS.CREATE, _httpContextReader.GetUserId());
 
             return newTaskDto;
         }
@@ -119,9 +119,9 @@ namespace TaskSync.Services
             };
 
             _cacheBackgroundRefresher.RefreshProjectTasks(updatedTask.ProjectId);
-            // _ = _gamificationApi.UpdatePoint(dto.Id, dto.Status);
-            _ = _pointsEventPublisher.PublishPointAwardedAsync(dto.Id, dto.Status);
             _ = _taskNotificationService.NotifyTaskUpdateAsync(dto, _httpContextReader.GetConnectionId());
+            // _ = _gamificationApi.UpdatePoint(dto.Id, dto.Status);
+            _ = _pointsEventPublisher.PublishPointAwardedAsync(dto.Id, dto.Status, _httpContextReader.GetUserId());
             return dto;
         }
 
@@ -134,9 +134,10 @@ namespace TaskSync.Services
             }
 
             _cacheBackgroundRefresher.RefreshProjectTasks(deletedTask.ProjectId);
-            // _ = _gamificationApi.UpdatePoint(taskId, TASK_STATUS.DELETE);
-            _ = _pointsEventPublisher.PublishPointAwardedAsync(taskId, TASK_STATUS.DELETE);
             _ = _taskNotificationService.NotifyTaskDeleteAsync(taskId, _httpContextReader.GetConnectionId());
+            // _ = _gamificationApi.UpdatePoint(taskId, TASK_STATUS.DELETE);
+            _ = _pointsEventPublisher.PublishPointAwardedAsync(taskId, TASK_STATUS.DELETE, _httpContextReader.GetUserId());
+
             return true;
         }
     }

@@ -1,43 +1,86 @@
-﻿using MassTransit;
+﻿using System.Text;
+using System.Text.Json;
 
-using TaskSync.Infrastructure.Http.Interface;
+using Microsoft.Extensions.Options;
+
+using RabbitMQ.Client;
+
 using TaskSync.Infrastructure.Messaging.Contracts;
 using TaskSync.Infrastructure.Messaging.Interfaces;
+using TaskSync.Infrastructure.Settings;
 using TaskSync.Models.Enums;
 
 namespace TaskSync.Infrastructure.Messaging
 {
     // sealed for better performance, since it won't be inherited by other classes
     // used with service, repo, api, infra, any class that need no inheritance
-    public sealed class PointsEventPublisher : IPointsEventPublisher
+    public sealed class PointsEventPublisher : IPointsEventPublisher, IAsyncDisposable
     {
-        private readonly IPublishEndpoint _publish;
-        private readonly IHttpContextReader _httpContextReader;
-        private readonly ISendEndpointProvider _sendEndpointProvider;
+        private readonly ConnectionFactory _factory;
+        private IConnection? _connection;
 
-        public PointsEventPublisher(IPublishEndpoint publish, ISendEndpointProvider sendEndpointProvider, IHttpContextReader httpContextReader)
+        public PointsEventPublisher(IOptions<RabbitMqSettings> options)
         {
-            _publish = publish;
-            _sendEndpointProvider = sendEndpointProvider;
-            _httpContextReader = httpContextReader;
+            var s = options.Value;
+            _factory = new ConnectionFactory
+            {
+                HostName = s.Host,
+                Port = s.Port,
+                UserName = s.Username,
+                Password = s.Password,
+                VirtualHost = s.VirtualHost,
+            };
         }
 
         // RabbitMQ Overview: https://www.youtube.com/watch?v=deG25y_r6OY
-        // Consumer(.NET) -> Exchange(RabbitMQ's points.award.queue) -> Queue(RabbitMQ's points.award.queue) -> Consumer(NestJs)
-        public async Task PublishPointAwardedAsync(int taskId, TASK_STATUS status, CancellationToken ct = default)
+        // Producer(.NET) -> Exchange(points.award.x) -> Queue(points.award.q) -> Consumer(NestJs)
+        public async Task PublishPointAwardedAsync(int taskId, TASK_STATUS status, int? userId, CancellationToken ct = default)
         {
-            Console.WriteLine($"[PointsEventPublisher] Publishing PointAwardedEvent = userId:{_httpContextReader.GetUserId()}, taskid:{taskId}, status:{status}");
+            var connection = await GetConnectionAsync(ct);
+            await using var channel = await connection.CreateChannelAsync();
+
             var evt = new PointAwardedEvent(
                 EventId: Guid.NewGuid(),
-                UserId: _httpContextReader.GetUserId(),
+                UserId: userId,
                 TaskId: taskId,
                 TaskStatus: status,
                 OccurredAtUtc: DateTimeOffset.UtcNow,
                 Source: "tasksync-backend"
-            ); // todo-moch: need to pass EventId into database for idempotency check, otherwise the consumer might  process it twice and award points twice
+            );
+            var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(evt));
+            var props = new BasicProperties
+            {
+                Persistent = true,
+                ContentType = "application/json",
+            };
 
-            var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri("queue:points.award.queue"));
-            await endpoint.Send(evt, ct); // MassTransit automatically create exchange "points.award.queue" and bind to the queue
+            await channel.BasicPublishAsync(
+                exchange: RabbitMqTopologyInitializer.MainExchange,
+                routingKey: RabbitMqTopologyInitializer.MainRoutingKey,
+                mandatory: false,
+                basicProperties: props,
+                body: body,
+                cancellationToken: ct
+            );
+            Console.WriteLine($"[PointsEventPublisher] Published -> {RabbitMqTopologyInitializer.MainExchange} rk={RabbitMqTopologyInitializer.MainRoutingKey}: userId={evt.UserId}, taskId={evt.TaskId}, status={evt.TaskStatus}");
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (_connection != null)
+            {
+                await _connection.DisposeAsync();
+            }
+        }
+
+        private async Task<IConnection> GetConnectionAsync(CancellationToken ct)
+        {
+            if (_connection != null)
+            {
+                return _connection;
+            }
+            _connection = await _factory.CreateConnectionAsync(ct);
+            return _connection;
         }
     }
 }

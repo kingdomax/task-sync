@@ -36,6 +36,7 @@ namespace TaskSync.Infrastructure.Configurations
             services.AddSingleton<ICacheBackgroundRefresher, CacheBackgroundRefresher>();
             services.AddSingleton<IMemoryCacheService<IList<TaskEntity>>, TaskEntityCache>();
             services.AddSingleton<IMemoryCacheService<ProjectEntity>, ProjectEntityCache>();
+            services.AddSingleton<IPointsEventPublisher, PointsEventPublisher>();
 
             services.AddScoped<IHttpContextReader, HttpContextReader>();
             services.AddScoped<IRepository<UserEntity>, UserRepository>();
@@ -47,7 +48,6 @@ namespace TaskSync.Infrastructure.Configurations
             services.AddScoped<ITaskService, TaskService>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IGamificationApi, GamificationApi>();
-            services.AddScoped<IPointsEventPublisher, PointsEventPublisher>();
 
             return services;
         }
