@@ -3,6 +3,7 @@ import {
     PrimaryGeneratedColumn,
     Column,
     CreateDateColumn,
+    Index,
 } from 'typeorm';
 
 @Entity('points_log')
@@ -24,4 +25,8 @@ export class PointsLogEntity {
 
     @CreateDateColumn({ type: 'timestamp' })
     created_at: Date;
+
+    @Index({ unique: true })
+    @Column({ type: 'uuid', name: 'event_id' })
+    event_id: string;
 }

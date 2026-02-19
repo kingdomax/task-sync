@@ -1,4 +1,6 @@
-import { Repository } from 'typeorm';
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { QueryFailedError, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -19,35 +21,47 @@ export class PointsService {
             dto.taskStatus
         );
 
-        if (awardedPoint > 0) {
-            // Commit as 1 transaction for atomicity
-            await this.pointsRepo.manager.transaction(
-                async (transactionalEntityManager) => {
-                    // Insert log, 1st db query
-                    const log = transactionalEntityManager.create(
-                        PointsLogEntity,
-                        {
-                            user_id: dto.userId,
-                            task_id: dto.taskId,
-                            points_awarded: awardedPoint,
-                            reason: awardedReason,
-                        }
-                    );
-                    await transactionalEntityManager.save(log);
+        if (awardedPoint <= 0) return;
 
-                    // Update user's point balance, 2nd db query
-                    await transactionalEntityManager.increment(
-                        UserEntity,
-                        { id: dto.userId },
-                        'points',
-                        awardedPoint
-                    );
-                }
-            );
+        try {
+            await this.pointsRepo.manager.transaction(async (em) => {
+                // 1) Insert log first (unique event_id)
+                const log = em.create(PointsLogEntity, {
+                    event_id: dto.eventId,
+                    user_id: dto.userId,
+                    task_id: dto.taskId,
+                    points_awarded: awardedPoint,
+                    reason: awardedReason,
+                });
+
+                await em.save(log);
+
+                // 2) Only increment if insert succeeded
+                await em.increment(
+                    UserEntity,
+                    { id: dto.userId },
+                    'points',
+                    awardedPoint
+                );
+            });
 
             console.log(
-                `[PointsService] Award Point = points_awarded:${awardedPoint}, reason:${awardedReason}`
+                `[PointsService] Awarded ${awardedPoint} (${awardedReason})`
             );
+        } catch (err) {
+            // PostgreSQL unique violation
+            if (err instanceof QueryFailedError) {
+                const pgErr = err as any;
+
+                if (pgErr?.code === '23505') {
+                    console.log(
+                        `[PointsService] Duplicate event ignored: ${dto.eventId}`
+                    );
+                    return; // idempotent success
+                }
+            }
+
+            throw err; // real error → consumer will nack → DLQ
         }
     }
 

@@ -11,7 +11,7 @@ import {
 } from 'amqp-connection-manager';
 import type { ConsumeMessage } from 'amqplib';
 import { PointsService } from './points.service';
-import { CreatePointDto, TASK_STATUS } from './dto/create-point.dto';
+import { TASK_STATUS } from './dto/create-point.dto';
 
 type PointAwardedEvent = {
     EventId: string;
@@ -54,6 +54,7 @@ export class PointsRmqConsumer implements OnModuleInit, OnModuleDestroy {
                                 userId: evt.UserId,
                                 taskId: evt.TaskId,
                                 taskStatus: evt.TaskStatus,
+                                eventId: evt.EventId,
                             });
 
                             ch.ack(msg);
