@@ -7,14 +7,16 @@ using TaskSync.Infrastructure.Caching;
 using TaskSync.Infrastructure.Caching.Interfaces;
 using TaskSync.Infrastructure.Http;
 using TaskSync.Infrastructure.Http.Interface;
+using TaskSync.Infrastructure.Messaging;
+using TaskSync.Infrastructure.Messaging.Interfaces;
 using TaskSync.Infrastructure.Settings;
+using TaskSync.Infrastructure.SignalR;
+using TaskSync.Infrastructure.SignalR.Interfaces;
 using TaskSync.Repositories;
 using TaskSync.Repositories.Entities;
 using TaskSync.Repositories.Interfaces;
 using TaskSync.Services;
 using TaskSync.Services.Interfaces;
-using TaskSync.SignalR;
-using TaskSync.SignalR.Interfaces;
 
 namespace TaskSync.Infrastructure.Configurations
 {
@@ -34,6 +36,7 @@ namespace TaskSync.Infrastructure.Configurations
             services.AddSingleton<ICacheBackgroundRefresher, CacheBackgroundRefresher>();
             services.AddSingleton<IMemoryCacheService<IList<TaskEntity>>, TaskEntityCache>();
             services.AddSingleton<IMemoryCacheService<ProjectEntity>, ProjectEntityCache>();
+            services.AddSingleton<IPointsEventPublisher, PointsEventPublisher>();
 
             services.AddScoped<IHttpContextReader, HttpContextReader>();
             services.AddScoped<IRepository<UserEntity>, UserRepository>();
@@ -44,7 +47,6 @@ namespace TaskSync.Infrastructure.Configurations
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<ITaskService, TaskService>();
             services.AddScoped<ICommentService, CommentService>();
-
             services.AddScoped<IGamificationApi, GamificationApi>();
 
             return services;

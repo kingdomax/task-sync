@@ -22,7 +22,8 @@ namespace TaskSync.MiddleWares
             catch (Exception ex)
             {
                 await HandleExceptionResponseAsync(context, ex);
-                _logger.LogError(ex, ex.Message);
+                _logger.LogError(ex, ex.Message); // todo-moch: fix why it does not show on console
+                Console.WriteLine($"Exception: {ex.Message} StackTrace: {ex.StackTrace}");
             }
         }
 

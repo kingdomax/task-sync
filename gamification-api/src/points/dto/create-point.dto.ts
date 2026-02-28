@@ -1,4 +1,4 @@
-import { IsInt, IsEnum } from 'class-validator';
+import { IsInt, IsEnum, IsString } from 'class-validator';
 
 export enum TASK_STATUS {
     BACKLOG,
@@ -18,4 +18,7 @@ export class CreatePointDto {
 
     @IsEnum(TASK_STATUS)
     taskStatus: TASK_STATUS;
+
+    @IsString()
+    eventId: string;
 }

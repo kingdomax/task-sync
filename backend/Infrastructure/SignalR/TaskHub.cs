@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace TaskSync.SignalR
+namespace TaskSync.Infrastructure.SignalR
 {
     public class TaskHub : Hub
     {

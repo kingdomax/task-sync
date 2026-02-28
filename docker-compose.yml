@@ -1,6 +1,7 @@
 services:
     postgres:
         image: postgres:17
+        profiles: [localdev, postgres]
         container_name: tasksync-postgres
         restart: on-failure # Restart container automatically if it crashes
         ports:
@@ -11,6 +12,20 @@ services:
             POSTGRES_DB: tasksync # Database name to auto-create
         volumes:
             - pgdata:/var/lib/postgresql/data # Persist Postgres data outside the container
+
+    rabbitmq:
+        image: rabbitmq:4-management
+        profiles: [localdev, messaging]
+        container_name: tasksync-rabbitmq
+        restart: on-failure
+        ports:
+            - "5672:5672" # AMQP
+            - "15672:15672" # Management UI
+        environment:
+            RABBITMQ_DEFAULT_USER: user
+            RABBITMQ_DEFAULT_PASS: password
+        volumes:
+            - rabbitmqdata:/var/lib/rabbitmq
 
     backend:
         build:
@@ -26,8 +41,12 @@ services:
             # Use double underscore (__) to map to nested JSON config keys, use internal docker port 5432 for Postgres
             - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=tasksync;Username=postgres;Password=123456789
             - GamificationApi__BaseUrl=http://gamification-api:3000
+            - RabbitMq__Host=rabbitmq
+            - RabbitMq__Username=user
+            - RabbitMq__Password=password
         depends_on:
             - postgres # Start Postgres first
+            - rabbitmq
 
     gamification-api:
         build:
@@ -37,10 +56,14 @@ services:
         restart: on-failure
         ports:
             - "3000:3000"
+        environment:
+            - RABBITMQ_URL=amqp://user:password@rabbitmq:5672
+            - RABBITMQ_QUEUE=points.award.queue
         env_file:
             - ./gamification-api/.env.production
         depends_on:
             - postgres
+            - rabbitmq
 
     frontend:
         build:
@@ -56,7 +79,7 @@ services:
 
     otel-collector:
         image: otel/opentelemetry-collector-contrib:0.97.0
-        profiles: [observability]
+        profiles: [localdev, observability]
         container_name: otel-collector
         command: ["--config=/etc/otel-collector-config.yaml"]
         volumes:
@@ -68,7 +91,7 @@ services:
 
     prometheus:
         image: prom/prometheus
-        profiles: [observability]
+        profiles: [localdev, observability]
         container_name: prometheus
         volumes:
             - ./observability/prometheus.yml:/etc/prometheus/prometheus.yml
@@ -79,7 +102,7 @@ services:
 
     tempo:
         image: grafana/tempo:2.4.1
-        profiles: [observability]
+        profiles: [localdev, observability]
         container_name: tempo
         volumes:
             - ./observability/tempo.yaml:/etc/tempo/tempo.yaml
@@ -91,7 +114,7 @@ services:
 
     loki:
         image: grafana/loki:2.9.0
-        profiles: [observability]
+        profiles: [localdev, observability]
         container_name: loki
         ports:
             - "3100:3100"
@@ -100,7 +123,7 @@ services:
 
     grafana:
         image: grafana/grafana
-        profiles: [observability]
+        profiles: [localdev, observability]
         container_name: grafana
         environment:
             - GF_SECURITY_ADMIN_PASSWORD=admin
@@ -114,3 +137,4 @@ services:
 # persistent volume
 volumes:
     pgdata: # Named volume to store Postgres data (managed by Docker)
+    rabbitmqdata:

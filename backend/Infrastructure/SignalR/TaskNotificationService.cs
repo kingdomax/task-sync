@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-using TaskSync.Enums;
+using TaskSync.Infrastructure.SignalR.Interfaces;
 using TaskSync.Models.Dto;
-using TaskSync.SignalR.Interfaces;
+using TaskSync.Models.Enums;
 
-namespace TaskSync.SignalR
+namespace TaskSync.Infrastructure.SignalR
 {
     public class TaskNotificationService : ITaskNotificationService
     {

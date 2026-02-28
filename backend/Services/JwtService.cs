@@ -29,7 +29,7 @@ namespace TaskSync.Services
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256); // MAC not hashing
 
             var token = new JwtSecurityToken(
                 issuer: _jwtSettings.Issuer,
@@ -39,6 +39,8 @@ namespace TaskSync.Services
                 signingCredentials: creds
             );
 
+            // Ex. eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjMiLCJuYW1lIjoiam9obiIsImV4cCI6MTcxMDAwMDAwMH0.Dp0Y5W6wzH2pJ9Z8R1R0o9nYz0o5xFQ4vR4Gk2U6xKQ
+            // The token consists of three parts: header, payload, and signature, separated by dots. It is encoding based.
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }

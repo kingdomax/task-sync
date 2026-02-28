@@ -22,7 +22,7 @@ namespace TaskSync.Services
         {
             var user = await _userRepository.GetAsync(request.Email);
 
-            // string passwordHash = BCrypt.Net.BCrypt.HashPassword("mypassword");
+            // string passwordHash = BCrypt.Net.BCrypt.HashPassword("mypassword"); generate hash password
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
             {
                 return null;

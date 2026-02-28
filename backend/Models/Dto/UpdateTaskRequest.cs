@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-using TaskSync.Enums;
+using TaskSync.Models.Enums;
 
 public class UpdateTaskRequest : IValidatableObject
 {
