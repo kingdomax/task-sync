@@ -15,13 +15,13 @@ A collaborative real-time task management platform inspired by Jira-style Kanban
 
 ## Tech Stack
 
-- **Frontend:** React, TypeScript, Material UI, Vite
-- **Core API:** ASP.NET, SignalR, JWT, RESTful APIs
-- **Gamification API:** NestJS, GraphQL
+- **Frontend:** React, TypeScript, Material UI, Vite, Nginx
+- **Core API:** ASP.NET, SignalR, RabbitMQ, JWT
+- **Gamification API:** NestJS
 - **Chat API:** to be determined....
 - **Database:** PostgreSQL
-- **CI/CD:** Docker, Azure, GitHub Actions
-- **Testing:** Jest, xUnit, Playwright
+- **CI/CD:** Docker, Azure, GitHub Actions, Prometheus, Loki, Grafana, Tempo, OpenTelemetry, Presubmit.ai
+- **Testing:** Jest, xUnit
 
 ## Running Locally
 
